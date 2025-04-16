@@ -3,3 +3,6 @@
   --color-primary: #11375b;
   --color-secondary: #181f38;
 }
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

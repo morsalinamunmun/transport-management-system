@@ -37,21 +37,23 @@ const StatisticsCard = () => {
         {statisticsData.map((card, index) => (
           <li
             key={index}
-            className="bg-white p-3 rounded-md drop-shadow-lg w-full"
+            className="bg-white p-2 md:p-3 rounded-md drop-shadow-lg w-full"
           >
             <div className="bg-gray-100 rounded-r-md flex gap-2 md:gap-10 items-center md:pr-7 p-3 md:p-0">
               <span className="hidden md:flex bg-[#11375B] p-3 rounded-md">
                 {card.icon}
               </span>
               <div>
-                <h3 className="text-[#11375B] font-semibold">{card.title}</h3>
+                <h3 className="text-[#11375B] md:font-semibold">
+                  {card.title}
+                </h3>
                 <span className="text-gray-500 font-semibold">
                   {card.value}
                 </span>
               </div>
             </div>
-            <button className="w-full mt-7 text-white font-semibold text-sm bg-[#11375B] px-3 py-1 rounded-md hover:bg-[#062238] transition-all duration-700 cursor-pointer hover:scale-105">
-              <span className="pr-3">আরও তথ্য</span>
+            <button className="w-full mt-3 md:mt-7 text-white font-semibold text-sm bg-[#11375B] md:px-3 py-1 rounded-md hover:bg-[#062238] transition-all duration-700 cursor-pointer hover:scale-105">
+              <span className="pr-1 md:pr-3">আরও তথ্য</span>
               <FaArrowUp className="inline-block" />
             </button>
           </li>
