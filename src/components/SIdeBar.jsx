@@ -199,13 +199,39 @@ const Sidebar = () => {
 
             {openMenu.business && (
               <ul className="space-y-3 px-3 text-sm mt-2">
-                <li className="flex gap-2 items-center text-gray-500 cursor-pointer px-3 py-1 rounded-sm">
-                  <div className="bg-primary w-[6px] h-[6px] rounded-full"></div>
-                  <span>দৈনিক আয়</span>
+                <li>
+                  <Link
+                    to="/DailyIncome"
+                    className={`flex gap-2 items-center px-3 py-1 rounded-sm font-medium ${
+                      isActive("/DailyIncome")
+                        ? "text-white bg-primary"
+                        : "text-gray-500 hover:text-primary"
+                    }`}
+                  >
+                    <div
+                      className={`w-[6px] h-[6px] rounded-full bg-primary ${
+                        isActive("/DailyIncome") ? "bg-white" : "bg-primary"
+                      }`}
+                    ></div>
+                    <span>দৈনিক আয়</span>
+                  </Link>
                 </li>
-                <li className="flex gap-2 items-center text-gray-500 cursor-pointer px-3 py-1 rounded-sm">
-                  <div className="bg-primary w-[6px] h-[6px] rounded-full"></div>
-                  <span>দৈনিক ব্যয়</span>
+                <li>
+                  <Link
+                    to="/DailyExpense"
+                    className={`flex gap-2 items-center px-3 py-1 rounded-sm font-medium ${
+                      isActive("/DailyExpense")
+                        ? "text-white bg-primary"
+                        : "text-gray-500 hover:text-primary"
+                    }`}
+                  >
+                    <div
+                      className={`w-[6px] h-[6px] rounded-full bg-primary ${
+                        isActive("/DailyExpense") ? "bg-white" : "bg-primary"
+                      }`}
+                    ></div>
+                    <span>দৈনিক ব্যয়</span>
+                  </Link>
                 </li>
               </ul>
             )}
@@ -226,9 +252,22 @@ const Sidebar = () => {
 
             {openMenu.user && (
               <ul className="space-y-3 px-3 text-sm mt-2">
-                <li className="flex gap-2 items-center text-gray-500 cursor-pointer px-3 py-1 rounded-sm">
-                  <div className="bg-primary w-[6px] h-[6px] rounded-full"></div>
-                  <span>সকল ইউজার</span>
+                <li>
+                  <Link
+                    to="/AllUsers"
+                    className={`flex gap-2 items-center px-3 py-1 rounded-sm font-medium ${
+                      isActive("/AllUsers")
+                        ? "text-white bg-primary"
+                        : "text-gray-500 hover:text-primary"
+                    }`}
+                  >
+                    <div
+                      className={`w-[6px] h-[6px] rounded-full bg-primary ${
+                        isActive("/AllUsers") ? "bg-white" : "bg-primary"
+                      }`}
+                    ></div>
+                    <span>সকল ইউজার</span>
+                  </Link>
                 </li>
               </ul>
             )}

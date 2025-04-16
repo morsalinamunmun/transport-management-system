@@ -13,6 +13,10 @@ import FuelForm from "../Pages/FuelForm";
 import Parts from "../Pages/Parts";
 import Maintenance from "../Pages/Maintenance";
 import MaintenanceForm from "../Pages/MaintenanceForm";
+import DailyIncome from "../Pages/DailyIncome";
+import DailyExpense from "../Pages/DailyExpense";
+import AllUsers from "../Pages/AllUsers";
+import AddUserForm from "../Pages/AddUserForm";
 
 export const router = createBrowserRouter([
   {
@@ -70,6 +74,22 @@ export const router = createBrowserRouter([
       {
         path: "MaintenanceForm",
         element: <MaintenanceForm />,
+      },
+      {
+        path: "DailyIncome",
+        element: <DailyIncome />,
+      },
+      {
+        path: "DailyExpense",
+        element: <DailyExpense />,
+      },
+      {
+        path: "AllUsers",
+        element: <AllUsers />,
+      },
+      {
+        path: "AddUserForm",
+        element: <AddUserForm />,
       },
     ],
   },
