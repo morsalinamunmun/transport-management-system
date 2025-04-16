@@ -10,14 +10,15 @@ const Login = () => {
   };
 
   return (
-    <div className="px-40 py-8">
+    <div className="px-40 h-screen flex items-center justify-center">
       <div className="border-2 border-primary rounded-xl flex justify-between">
         {/* img */}
         <div className="w-1/2">
-          <img src={bgImage} alt="" className="w-fit h-fit rounded-l-lg" />
+          <img src={bgImage} alt="" className="rounded-l-lg" />
         </div>
+        {/* form */}
         <div className="flex items-center justify-center w-1/2 bg-white shadow-lg rounded-xl p-8">
-          <div className="">
+          <div className="bg-white shadow-lg p-7 rounded-md">
             <h2 className="text-3xl font-extrabold text-center text-[#11375B] mb-1">
               এডমিন{" "}
               <span className="font-semibold text-red-500">Nalitabari</span>
@@ -25,16 +26,16 @@ const Login = () => {
             <p className="text-sm text-center text-primary mb-6">লগিন করুন</p>
 
             <ReusableForm onSubmit={handleLogin}>
-              {/* Email / Mobile */}
+              {/* Email */}
               <div className="relative">
                 <input
                   type="text"
                   name="email"
                   placeholder="ইমেইল"
-                  className="w-full px-4 py-2 border rounded-md"
+                  className="md:w-80 text-sm px-4 py-2 border border-primary rounded-md outline-none"
                   required
                 />
-                <span className="absolute right-3 top-2.5 text-gray-500">
+                <span className="absolute right-0 bg-primary text-white px-4 py-[11px] rounded-r-md hover:bg-secondary transition-all duration-500 cursor-pointer">
                   <FaEnvelope />
                 </span>
               </div>
@@ -44,10 +45,10 @@ const Login = () => {
                   type="password"
                   name="password"
                   placeholder="পাসওয়ার্ড"
-                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+                  className="md:w-80 text-sm px-4 py-2 border border-primary rounded-md outline-none"
                   required
                 />
-                <span className="absolute right-3 top-2.5 text-gray-500">
+                <span className="absolute right-0 bg-primary text-white px-4 py-[11px] rounded-r-md hover:bg-secondary transition-all duration-500 cursor-pointer">
                   <FaLock />
                 </span>
               </div>

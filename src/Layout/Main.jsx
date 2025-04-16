@@ -6,7 +6,9 @@ import Footer from "../components/Shared/Footer";
 
 const Main = () => {
   const location = useLocation();
-  const hideMenu = location.pathname.includes("/Login");
+  const hideMenu =
+    location.pathname.includes("/Login") ||
+    location.pathname.includes("/ResetPass");
   return (
     <div className="flex">
       {/* Sidebar stays fixed on all routes */}

@@ -11,7 +11,7 @@ const Header = () => {
         {/* Title */}
         <h3 className="text-primary flex items-center gap-3">
           <FaBars />
-          <span className="font-semibold">Home</span>
+          <span className="font-semibold">Homeee</span>
         </h3>
 
         {/* Search */}
