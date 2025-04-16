@@ -1,22 +1,24 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import SIdeBar from "../components/SIdeBar";
 import Header from "../components/Shared/Header";
 import Footer from "../components/Shared/Footer";
 
 const Main = () => {
+  const location = useLocation();
+  const hideMenu = location.pathname.includes("/Login");
   return (
     <div className="flex">
       {/* Sidebar stays fixed on all routes */}
-      <div className="bg-gray-200 w-64">
-        <SIdeBar />
-      </div>
+      {hideMenu || (
+        <div className="bg-gray-200 w-64">{hideMenu || <SIdeBar />}</div>
+      )}
 
       {/* Main content (changes via routing) */}
       <div className="flex-1">
-        <Header />
+        {hideMenu || <Header />}
         <Outlet />
-        <Footer />
+        {hideMenu || <Footer />}
       </div>
     </div>
   );

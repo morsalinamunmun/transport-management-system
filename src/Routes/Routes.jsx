@@ -17,6 +17,8 @@ import DailyIncome from "../Pages/DailyIncome";
 import DailyExpense from "../Pages/DailyExpense";
 import AllUsers from "../Pages/AllUsers";
 import AddUserForm from "../Pages/AddUserForm";
+import Login from "../components/Form/Login";
+import ResetPass from "../components/Form/ResetPass";
 
 export const router = createBrowserRouter([
   {
@@ -90,6 +92,14 @@ export const router = createBrowserRouter([
       {
         path: "AddUserForm",
         element: <AddUserForm />,
+      },
+      {
+        path: "Login",
+        element: <Login />,
+      },
+      {
+        path: "ResetPass",
+        element: <ResetPass />,
       },
     ],
   },

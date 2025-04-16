@@ -57,7 +57,6 @@ const ReusableForm = ({ children, onSubmit }) => {
           />
         );
       }
-
       // Handle standard form fields
       if (
         child.props?.name &&
@@ -88,7 +87,7 @@ const ReusableForm = ({ children, onSubmit }) => {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {enhanceChildren(children)}
 
-      <div className="mt-10">
+      <div className="flex justify-center mt-10">
         <button
           type="submit"
           className="font-semibold uppercase text-sm bg-primary text-white px-16 py-2 rounded hover:bg-secondary cursor-pointer transition-all duration-700"

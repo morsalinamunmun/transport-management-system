@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  FaTruck,
-  FaPlus,
-  FaFilter,
-  FaPen,
-  FaEye,
-  FaTrashAlt,
-} from "react-icons/fa";
+import { FaTruck, FaPlus, FaFilter } from "react-icons/fa";
 import { Link } from "react-router-dom";
 const Fuel = () => {
   const [showFilter, setShowFilter] = useState(false); // State to toggle filter section
@@ -18,7 +11,7 @@ const Fuel = () => {
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-extrabold text-[#11375B] flex items-center gap-3">
             <FaTruck className="text-[#11375B] text-2xl" />
-            গাড়ির তালিকা
+            ফুয়েল হিসাব
           </h1>
           <div className="flex gap-2">
             <Link to="/FuelForm">

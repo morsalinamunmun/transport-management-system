@@ -30,10 +30,12 @@ const Sidebar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <main className="bg-gray-50 min-h-screen fixed w-64 drop-shadow">
+    <main className="w-64 bg-gray-50 min-h-screen fixed drop-shadow">
       {/* Logo */}
       <div className="flex justify-center border-b border-gray-300">
-        <img src={logo} alt="Logo" className="w-28" />
+        <Link to="/">
+          <img src={logo} alt="Logo" className="w-28" />
+        </Link>
       </div>
 
       {/* Admin Info */}
@@ -126,7 +128,7 @@ const Sidebar = () => {
                         isActive("/TripList") ? "bg-white" : "bg-primary"
                       }`}
                     ></div>
-                    <span>ট্রিপ তালিকা</span>
+                    <span>ট্রিপ হিসাব</span>
                   </Link>
                 </li>
                 <li>
@@ -143,7 +145,7 @@ const Sidebar = () => {
                         isActive("/Fuel") ? "bg-white" : "bg-primary"
                       }`}
                     ></div>
-                    <span>ফুয়েল</span>
+                    <span>ফুয়েল হিসাব</span>
                   </Link>
                 </li>
                 <li>
