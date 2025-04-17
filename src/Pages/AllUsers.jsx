@@ -3,23 +3,24 @@ import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 const AllUsers = () => {
   return (
-    <main className="bg-gradient-to-br from-gray-100 to-white p-6">
-      <div className="max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-8 border border-gray-200">
+    <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
+      <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-8 border border-gray-200">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="md:flex items-center justify-between mb-6">
           <h1 className="text-xl font-extrabold text-[#11375B] flex items-center gap-3">
             <FaTruck className="text-[#11375B] text-2xl" />
             সকল ইউজারের তালিকা
           </h1>
-          <Link to="/AddUserForm">
-            <button className="bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 py-1 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer">
-              <FaPlus /> ইউজার
-            </button>
-          </Link>
+          <div className="mt-3 md:mt-0">
+            <Link to="/AddUserForm">
+              <button className="bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 py-1 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer">
+                <FaPlus /> ইউজার
+              </button>
+            </Link>
+          </div>
         </div>
-
         {/* export */}
-        <div className="flex justify-between items-center">
+        <div className="md:flex justify-between items-center">
           <div className="flex bg-gray-200 text-primary font-semibold rounded-md">
             <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
               CSV
@@ -34,7 +35,7 @@ const AllUsers = () => {
               Print
             </button>
           </div>
-          <div>
+          <div className="mt-3 md:mt-0">
             <span className="text-primary font-semibold pr-3">Search: </span>
             <input
               type="text"

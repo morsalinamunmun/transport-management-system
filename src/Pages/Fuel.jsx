@@ -5,15 +5,15 @@ const Fuel = () => {
   const [showFilter, setShowFilter] = useState(false); // State to toggle filter section
 
   return (
-    <main className="bg-gradient-to-br from-gray-100 to-white p-6">
-      <div className="max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-8 border border-gray-200">
+    <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
+      <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-8 border border-gray-200">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="md:flex items-center justify-between mb-6">
           <h1 className="text-xl font-extrabold text-[#11375B] flex items-center gap-3">
             <FaTruck className="text-[#11375B] text-2xl" />
             ফুয়েল হিসাব
           </h1>
-          <div className="flex gap-2">
+          <div className="mt-3 md:mt-0 flex gap-2">
             <Link to="/FuelForm">
               <button className="bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 py-1 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer">
                 <FaPlus /> ফুয়েল
@@ -28,7 +28,7 @@ const Fuel = () => {
           </div>
         </div>
         {/* export */}
-        <div className="flex justify-between items-center">
+        <div className="md:flex justify-between items-center">
           <div className="flex bg-gray-200 text-primary font-semibold rounded-md">
             <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
               CSV
@@ -43,7 +43,7 @@ const Fuel = () => {
               Print
             </button>
           </div>
-          <div>
+          <div className="mt-3 md:mt-0">
             <span className="text-primary font-semibold pr-3">Search: </span>
             <input
               type="text"
@@ -85,13 +85,13 @@ const Fuel = () => {
           <table className="min-w-full text-sm text-left">
             <thead className="bg-[#11375B] text-white uppercase text-sm">
               <tr>
-                <th className="px-4 py-3">#</th>
-                <th className="px-4 py-3">তারিখ</th>
-                <th className="px-4 py-3">ড্রাইভার ইনফো</th>
-                <th className="px-4 py-3">ট্রিপ এবং গন্তব্য</th>
-                <th className="px-4 py-3">চলমান খরচ</th>
-                <th className="px-4 py-3">নির্ধারিত খরচ</th>
-                <th className="px-4 py-3">টোটাল ফলাফল</th>
+                <th className="px-2 md:px-4 py-3">#</th>
+                <th className="px-2 md:px-4 py-3">তারিখ</th>
+                <th className="px-2 md:px-4 py-3">ড্রাইভার ইনফো</th>
+                <th className="px-2 md:px-4 py-3">ট্রিপ এবং গন্তব্য</th>
+                <th className="px-2 md:px-4 py-3">চলমান খরচ</th>
+                <th className="px-2 md:px-4 py-3">নির্ধারিত খরচ</th>
+                <th className="px-2 md:px-4 py-3">টোটাল ফলাফল</th>
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">

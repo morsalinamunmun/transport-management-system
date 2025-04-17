@@ -15,7 +15,7 @@ const Header = () => {
         <h3 className="text-primary" onClick={() => setMobileSidebarOpen(true)}>
           <FaBars />
         </h3>
-        <Link to="/" className="font-semibold">
+        <Link to="/" className="font-semibold text-primary">
           Home
         </Link>
       </div>
