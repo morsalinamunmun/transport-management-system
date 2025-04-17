@@ -10,15 +10,15 @@ const ResetPass = () => {
   };
 
   return (
-    <div className="px-40 h-screen flex items-center">
-      <div className="border-2 border-primary rounded-xl flex justify-between">
+    <div className="md:px-40 h-screen flex items-center">
+      <div className="md:border-2 border-primary rounded-xl flex justify-between">
         {/* img */}
-        <div className="w-1/2">
+        <div className="hidden md:block w-1/2">
           <img src={bgImage} alt="" className="w-fit h-fit rounded-l-lg" />
         </div>
         {/* form */}
-        <div className="flex items-center justify-center w-1/2 px-16 rounded-xl p-8">
-          <div className="bg-white shadow-lg p-7 rounded-md">
+        <div className="flex items-center justify-center md:w-1/2 md:px-16 rounded-xl p-3 md:p-8">
+          <div className="bg-white shadow-lg p-7 rounded-md border md:border-none border-gray-200">
             <h2 className="text-3xl font-extrabold text-center text-[#11375B] mb-1">
               এডমিন{" "}
               <span className="font-semibold text-red-500">Nalitabari</span>
