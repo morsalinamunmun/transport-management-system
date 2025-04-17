@@ -119,10 +119,10 @@ const CarList = () => {
                 </td>
                 <td>
                   <div className="flex gap-2">
-                    <button className="text-green-900 bg-green-50 border border-green-700 hover:bg-green-900 hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                    <button className="text-primary bg-green-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
                       <FaPen className="text-[12px]" />
                     </button>
-                    <button className="text-blue-900 bg-blue-50 border border-blue-700 hover:bg-blue-900 hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                    <button className="text-primary bg-blue-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
                       <FaEye className="text-[12px]" />
                     </button>
                     <button className="text-red-900 bg-red-50 border border-red-700 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer">

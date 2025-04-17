@@ -17,7 +17,7 @@ const AddUserForm = () => {
       <div className="mx-auto p-6 bg-gray-100 rounded-md shadow">
         <ReusableForm onSubmit={handleSubmit}>
           {/*  */}
-          <div className="flex justify-between gap-3">
+          <div className="md:flex justify-between gap-3">
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
                 নাম *
@@ -42,7 +42,7 @@ const AddUserForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="flex justify-between gap-3">
+          <div className="md:flex justify-between gap-3">
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
                 ইমেইল *
@@ -54,7 +54,7 @@ const AddUserForm = () => {
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
             </div>
-            <div className="w-full relative">
+            <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 পাসওয়ার্ড
               </label>
@@ -65,7 +65,7 @@ const AddUserForm = () => {
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
             </div>
-            <div className="w-full relative">
+            <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 কনফার্ম পাসওয়ার্ড
               </label>
@@ -78,7 +78,7 @@ const AddUserForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="flex justify-between gap-3">
+          <div className="md:flex justify-between gap-3">
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
                 ইউজারের ধরন
@@ -94,7 +94,7 @@ const AddUserForm = () => {
               </select>
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>
-            <div className="relative w-full">
+            <div className="mt-3 md:mt-0 relative w-full">
               <label className="text-primary text-sm font-semibold">
                 স্ট্যাটাস
               </label>

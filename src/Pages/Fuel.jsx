@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaTruck, FaPlus, FaFilter } from "react-icons/fa";
+import { FaTruck, FaPlus, FaFilter, FaPen, FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 const Fuel = () => {
   const [showFilter, setShowFilter] = useState(false); // State to toggle filter section
@@ -86,23 +86,36 @@ const Fuel = () => {
             <thead className="bg-[#11375B] text-white uppercase text-sm">
               <tr>
                 <th className="px-2 md:px-4 py-3">#</th>
-                <th className="px-2 md:px-4 py-3">তারিখ</th>
-                <th className="px-2 md:px-4 py-3">ড্রাইভার ইনফো</th>
-                <th className="px-2 md:px-4 py-3">ট্রিপ এবং গন্তব্য</th>
-                <th className="px-2 md:px-4 py-3">চলমান খরচ</th>
-                <th className="px-2 md:px-4 py-3">নির্ধারিত খরচ</th>
-                <th className="px-2 md:px-4 py-3">টোটাল ফলাফল</th>
+                <th className="px-2 md:px-4 py-3">ড্রাইভারের নাম</th>
+                <th className="px-2 md:px-4 py-3">গাড়ির নাম</th>
+                <th className="px-2 md:px-4 py-3">ফুয়েলের ধরন</th>
+                <th className="px-2 md:px-4 py-3">ফুয়েলিং তারিখ</th>
+                <th className="px-2 md:px-4 py-3">গ্যালন/লিটার</th>
+                <th className="px-2 md:px-4 py-3">লিটার প্রতি খরচ</th>
+                <th className="px-2 md:px-4 py-3">সকল খরচ</th>
+                <th className="px-2 md:px-4 py-3">অ্যাকশন</th>
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
               <tr className="hover:bg-gray-50 transition-all">
                 <td className="px-4 py-4 font-bold">1</td>
-                <td className="px-4 py-4">Jamal</td>
-                <td className="px-4 py-4">0165241524</td>
-                <td className="px-4 py-4">Freezer Van</td>
-                <td className="px-4 py-4">Baddha</td>
-                <td className="px-4 py-4">2</td>
-                <td className="px-4 py-4">0</td>
+                <td className="px-4 py-4">Rofikul hasan</td>
+                <td className="px-4 py-4">Sylhet Metro-DA 45-1247</td>
+                <td className="px-4 py-4">Diesel</td>
+                <td className="px-4 py-4">12-01-2025</td>
+                <td className="px-4 py-4">10</td>
+                <td className="px-4 py-4">110</td>
+                <td className="px-4 py-4">34433</td>
+                <td className="px-4 py-4">
+                  <div className="flex gap-2">
+                    <button className="text-primary bg-green-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                      <FaPen className="text-[12px]" />
+                    </button>
+                    <button className="text-red-900 bg-red-50 border border-red-700 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                      <FaTrashAlt className="text-[12px]" />
+                    </button>
+                  </div>
+                </td>
               </tr>
             </tbody>
           </table>

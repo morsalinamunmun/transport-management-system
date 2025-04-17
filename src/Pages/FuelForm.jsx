@@ -17,7 +17,7 @@ const FuelForm = () => {
       <div className="mx-auto p-6 bg-gray-100 rounded-md shadow">
         <ReusableForm onSubmit={handleSubmit}>
           {/*  */}
-          <div className="flex justify-between gap-3">
+          <div className="md:flex justify-between gap-3">
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
                 তারিখ ও সময় *
@@ -46,8 +46,8 @@ const FuelForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="flex justify-between gap-3">
-            <div className="w-full relative">
+          <div className="md:flex justify-between gap-3">
+            <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 ড্রাইভারের নাম
               </label>
@@ -62,7 +62,7 @@ const FuelForm = () => {
               </select>
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>
-            <div className="w-full relative">
+            <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 ট্রিপ আইডি / ইনভয়েস নাম্বার
               </label>
@@ -75,8 +75,8 @@ const FuelForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="flex justify-between gap-3">
-            <div className="w-full relative">
+          <div className="md:flex justify-between gap-3">
+            <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 পাম্পের নাম ও ঠিকানা
               </label>
@@ -100,8 +100,8 @@ const FuelForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="flex justify-between gap-3">
-            <div className="w-full">
+          <div className="md:flex justify-between gap-3">
+            <div className="mt-3 md:mt-0 w-full">
               <label className="text-primary text-sm font-semibold">
                 তেলের ধরন
               </label>
@@ -133,8 +133,8 @@ const FuelForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="flex justify-between gap-3">
-            <div className="w-full relative">
+          <div className="md:flex justify-between gap-3">
+            <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 প্রতি লিটারের দাম
               </label>

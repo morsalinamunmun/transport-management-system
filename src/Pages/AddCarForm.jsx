@@ -17,7 +17,7 @@ const AddCarForm = () => {
       <div className="mx-auto p-6 bg-gray-100 rounded-md shadow">
         <ReusableForm onSubmit={handleSubmit}>
           {/*  */}
-          <div className="flex justify-between gap-3">
+          <div className="md:flex justify-between gap-3">
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
                 গাড়ির নাম
@@ -29,7 +29,7 @@ const AddCarForm = () => {
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
             </div>
-            <div className="w-full relative">
+            <div className="mt-2 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 ড্রাইভারের নাম
               </label>
@@ -47,7 +47,7 @@ const AddCarForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="flex justify-between gap-3">
+          <div className="md:flex justify-between gap-3">
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
                 গাড়ির ধরন
@@ -67,7 +67,7 @@ const AddCarForm = () => {
               </select>
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>
-            <div className="w-full relative">
+            <div className="mt-2 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 গাড়ির সাইজ
               </label>
@@ -90,7 +90,7 @@ const AddCarForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="flex justify-between gap-3">
+          <div className="md:flex justify-between gap-3">
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
                 রেজিস্ট্রেশন নাম্বার
@@ -183,8 +183,7 @@ const AddCarForm = () => {
               </select>
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>
-
-            <div className="w-full relative">
+            <div className="mt-2 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 রেজিস্ট্রেশন সিরিয়াল
               </label>
@@ -206,7 +205,7 @@ const AddCarForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="flex justify-between gap-3">
+          <div className="md:flex justify-between gap-3">
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
                 রেজিস্ট্রেশন এলাকা
@@ -218,7 +217,7 @@ const AddCarForm = () => {
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
             </div>
-            <div className="w-full">
+            <div className="mt-2 md:mt-0 w-full">
               <label className="text-primary text-sm font-semibold">
                 রেজিস্ট্রেশন তারিখ
               </label>
@@ -234,7 +233,7 @@ const AddCarForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="flex justify-between gap-3">
+          <div className="md:flex justify-between gap-3">
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
                 ট্যাক্স তারিখ
@@ -249,7 +248,7 @@ const AddCarForm = () => {
                 />
               </div>
             </div>
-            <div className="w-full">
+            <div className="mt-2 md:mt-0 w-full">
               <label className="text-primary text-sm font-semibold">
                 রোড পারমিট তারিখ
               </label>
@@ -263,7 +262,7 @@ const AddCarForm = () => {
                 />
               </div>
             </div>
-            <div className="w-full">
+            <div className="mt-2 md:mt-0 w-full">
               <label className="text-primary text-sm font-semibold">
                 ফিটনেস তারিখ
               </label>

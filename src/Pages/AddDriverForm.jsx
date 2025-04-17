@@ -1,17 +1,16 @@
 import React from "react";
 import ReusableForm from "../components/Form/ReusableForm";
 import "react-datepicker/dist/react-datepicker.css";
-import { MdOutlineArrowDropDown } from "react-icons/md";
+import { MdOutlineArrowDropDown, MdOutlineFileUpload } from "react-icons/md";
 
 const AddDriverForm = () => {
   // const dateRef = useRef(null);
+
   const handleSubmit = (data) => {
     console.log("Form data:", data);
   };
 
   return (
-    // todo
-    // image / papers file upload
     <div className="mt-10">
       <h3 className="px-6 py-2 bg-primary text-white font-semibold rounded-t-md">
         ড্রাইভার তৈরি করুন
@@ -19,7 +18,7 @@ const AddDriverForm = () => {
       <div className="mx-auto p-6 bg-gray-100 rounded-md shadow">
         <ReusableForm onSubmit={handleSubmit}>
           {/*  */}
-          <div className="flex justify-between gap-3">
+          <div className="md:flex justify-between gap-3">
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
                 ড্রাইভারের নাম *
@@ -31,7 +30,7 @@ const AddDriverForm = () => {
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
             </div>
-            <div className="w-full relative">
+            <div className="mt-2 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 ড্রাইভারের মোবাইল *
               </label>
@@ -44,7 +43,7 @@ const AddDriverForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="flex justify-between gap-3">
+          <div className="md:flex justify-between gap-3">
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
                 ন.আই.ডি নাম্বার *
@@ -56,7 +55,7 @@ const AddDriverForm = () => {
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
             </div>
-            <div className="w-full relative">
+            <div className="mt-2 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 জরুরী যোগাযোগ
               </label>
@@ -69,7 +68,7 @@ const AddDriverForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="flex justify-between gap-3">
+          <div className="md:flex justify-between gap-3">
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
                 ঠিকানা *
@@ -81,7 +80,7 @@ const AddDriverForm = () => {
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
             </div>
-            <div className="w-full relative">
+            <div className="mt-2 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 বিঃদ্রঃ
               </label>
@@ -94,7 +93,7 @@ const AddDriverForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="flex justify-between gap-3">
+          <div className="md:flex justify-between gap-3">
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
                 লাইসেন্স না. *
@@ -106,7 +105,7 @@ const AddDriverForm = () => {
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
             </div>
-            <div className="w-full">
+            <div className="mt-2 md:mt-0 w-full">
               <label className="text-primary text-sm font-semibold">
                 মেয়াদোত্তীর্ণ তারিখ *
               </label>
@@ -122,10 +121,10 @@ const AddDriverForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="flex justify-between gap-3">
+          <div className="md:flex justify-between gap-3">
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
-                অবস্থা *
+                স্ট্যাটাস *
               </label>
               <select
                 name="status"
@@ -137,6 +136,19 @@ const AddDriverForm = () => {
                 <option value="Inactive">Inactive</option>
               </select>
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
+            </div>
+            <div className="mt-3 md:mt-0 w-full">
+              <label className="text-primary text-sm font-semibold">
+                লাইসেন্সের ছবি যুক্ত করুন
+              </label>
+              <div className="relative mt-1">
+                <input
+                  type="file"
+                  name="file"
+                  placeholder=""
+                  className="border p-2 rounded"
+                />
+              </div>
             </div>
           </div>
         </ReusableForm>

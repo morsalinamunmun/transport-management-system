@@ -17,13 +17,13 @@ const AddTripForm = () => {
       <div className="mx-auto p-6 bg-gray-100 rounded-md shadow">
         <ReusableForm onSubmit={handleSubmit}>
           {/*  */}
-          <div className="border border-gray-300 p-5 rounded-md">
-            <h5 className="text-primary font-semibold text-center pb-5">
+          <div className="border border-gray-300 p-3 md:p-5 rounded-md">
+            <h5 className="text-primary font-semibold text-center md:pb-5">
               <span className="py-2 border-b-2 border-primary">
                 ট্রিপ এবং গন্তব্য সেকশন
               </span>
             </h5>
-            <div className="flex justify-between gap-3">
+            <div className="mt-5 md:mt-0 md:flex justify-between gap-3">
               <div className="w-full">
                 <label className="text-primary text-sm font-semibold">
                   তারিখ *
@@ -35,7 +35,7 @@ const AddTripForm = () => {
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
-              <div className="w-full relative">
+              <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   ট্রিপের সময়
                 </label>
@@ -48,8 +48,8 @@ const AddTripForm = () => {
               </div>
             </div>
             {/*  */}
-            <div className="flex justify-between gap-3">
-              <div className="w-full relative">
+            <div className="md:flex justify-between gap-3">
+              <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   লোড পয়েন্ট
                 </label>
@@ -60,7 +60,7 @@ const AddTripForm = () => {
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
-              <div className="w-full relative">
+              <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   আনলোড পয়েন্ট
                 </label>
@@ -72,31 +72,6 @@ const AddTripForm = () => {
                 />
               </div>
             </div>
-            {/*  */}
-            {/* <div className="flex justify-between gap-3">
-              <div className="w-full relative">
-                <label className="text-primary text-sm font-semibold">
-                  দূরত্ব কিমি.
-                </label>
-                <input
-                  name="distance"
-                  type="text"
-                  placeholder="দূরত্ব কিমি..."
-                  className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-                />
-              </div>
-              <div className="w-full relative">
-                <label className="text-primary text-sm font-semibold">
-                  তেল প্রয়োজন
-                </label>
-                <input
-                  name="requiredFuel"
-                  type="text"
-                  placeholder="তেল প্রয়োজন..."
-                  className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-                />
-              </div>
-            </div> */}
           </div>
           {/*  */}
           <div className="border border-gray-300 p-5 rounded-md">
@@ -105,7 +80,7 @@ const AddTripForm = () => {
                 গাড়ি এবং ড্রাইভারের তথ্য
               </span>
             </h5>
-            <div className="flex justify-between gap-3">
+            <div className="md:flex justify-between gap-3">
               <div className="w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   ড্রাইভারের নাম
@@ -121,7 +96,7 @@ const AddTripForm = () => {
                 </select>
                 <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
               </div>
-              <div className="w-full relative">
+              <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   ড্রাইভারের মোবাইল
                 </label>
@@ -132,7 +107,7 @@ const AddTripForm = () => {
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
-              <div className="w-full relative">
+              <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   ড্রাইভারের কমিশন
                 </label>
@@ -144,14 +119,13 @@ const AddTripForm = () => {
                 />
               </div>
             </div>
-            {/*  */}
           </div>
           {/*  */}
           <div className="border border-gray-300 p-5 rounded-md">
             <h5 className="text-primary font-semibold text-center pb-5">
               <span className="py-2 border-b-2 border-primary">চলমান খরচ</span>
             </h5>
-            <div className="flex justify-between gap-3">
+            <div className="md:flex justify-between gap-3">
               <div className="w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   তেলের মূল্য
@@ -163,7 +137,7 @@ const AddTripForm = () => {
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
-              <div className="w-full relative">
+              <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   গ্যাসের মূল্য
                 </label>
@@ -174,7 +148,7 @@ const AddTripForm = () => {
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
-              <div className="w-full relative">
+              <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   গাড়ির নম্বর
                 </label>
@@ -190,8 +164,8 @@ const AddTripForm = () => {
                 <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
               </div>
             </div>
-            <div className="flex justify-between gap-3">
-              <div className="w-full relative">
+            <div className="md:flex justify-between gap-3">
+              <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   অন্যান্য খরচ
                 </label>
@@ -202,7 +176,7 @@ const AddTripForm = () => {
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
-              <div className="w-full relative">
+              <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   ট্রিপের ভাড়া
                 </label>

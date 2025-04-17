@@ -10,7 +10,7 @@ const MaintenanceForm = () => {
 
   return (
     // todo
-    // image / papers file upload
+    // image / papers file upload/ cash memo er chobi
     <div className="mt-10">
       <h3 className="px-6 py-2 bg-primary text-white font-semibold rounded-t-md">
         মেইনটেনেন্স ফর্ম
@@ -18,8 +18,8 @@ const MaintenanceForm = () => {
       <div className="mx-auto p-6 bg-gray-100 rounded-md shadow">
         <ReusableForm onSubmit={handleSubmit}>
           {/*  */}
-          <div className="flex justify-between gap-3">
-            <div className="w-full">
+          <div className="md:flex justify-between gap-3">
+            <div className="mt-3 md:mt-0 w-full">
               <label className="text-primary text-sm font-semibold">
                 মেইনটেনেন্স ও সময় *
               </label>
@@ -33,7 +33,7 @@ const MaintenanceForm = () => {
                 />
               </div>
             </div>
-            <div className="w-full relative">
+            <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 সার্ভিসের ধরন
               </label>
@@ -50,8 +50,8 @@ const MaintenanceForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="flex justify-between gap-3">
-            <div className="w-full relative">
+          <div className="md:flex justify-between gap-3">
+            <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 পার্টস এন্ড স্পায়ারস
               </label>
@@ -68,7 +68,7 @@ const MaintenanceForm = () => {
               </select>
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>
-            <div className="w-full relative">
+            <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 মেইনটেনেসের ধরন
               </label>
@@ -87,8 +87,8 @@ const MaintenanceForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="flex justify-between gap-3">
-            <div className="w-full relative">
+          <div className="md:flex justify-between gap-3">
+            <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">খরচ</label>
               <input
                 name="খরচ"
@@ -97,7 +97,7 @@ const MaintenanceForm = () => {
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
             </div>
-            <div className="w-full relative">
+            <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 গাড়ির নাম্বার
               </label>
@@ -110,8 +110,8 @@ const MaintenanceForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="flex justify-between gap-3">
-            <div className="w-full">
+          <div className="md:flex justify-between gap-3">
+            <div className="mt-3 md:mt-0 w-full">
               <label className="text-primary text-sm font-semibold">
                 চার্জ বাই
               </label>
@@ -123,7 +123,7 @@ const MaintenanceForm = () => {
               />
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>
-            <div className="w-full">
+            <div className="mt-3 md:mt-0 w-full">
               <label className="text-primary text-sm font-semibold">
                 সর্বমোট খরচ
               </label>
@@ -138,10 +138,10 @@ const MaintenanceForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="flex justify-between gap-3">
+          <div className="md:flex justify-between gap-3">
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
-                মর্যাদা
+                প্রিয়োরিটি
               </label>
               <select
                 name="priority"
@@ -156,7 +156,7 @@ const MaintenanceForm = () => {
               </select>
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>
-            <div className="w-full relative">
+            <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 সার্ভিস ফর
               </label>
@@ -172,6 +172,19 @@ const MaintenanceForm = () => {
                 <option value="BrakeDrum">Brake Drum</option>
               </select>
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
+            </div>
+            <div className="mt-3 md:mt-0 w-full">
+              <label className="text-primary text-sm font-semibold">
+                লাইসেন্সের ছবি যুক্ত করুন
+              </label>
+              <div className="relative mt-1">
+                <input
+                  type="file"
+                  name="file"
+                  placeholder=""
+                  className="border p-2 rounded"
+                />
+              </div>
             </div>
           </div>
         </ReusableForm>
