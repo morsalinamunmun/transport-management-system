@@ -207,7 +207,7 @@ const Sidebar = ({ mobileSidebarOpen, setMobileSidebarOpen }) => {
               >
                 <span className="flex items-center gap-2">
                   <FaBriefcase />
-                  <span>বিজনেস বিবৃতি</span>
+                  <span>বিজনেসের বিবরণ</span>
                 </span>
                 {openMenu.business ? <FaChevronUp /> : <FaChevronDown />}
               </div>

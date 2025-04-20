@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import {
   FaTruck,
   FaPlus,
@@ -9,11 +10,31 @@ import {
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 const CarList = () => {
-  const [showFilter, setShowFilter] = useState(false); // State to toggle filter section
+  const [showFilter, setShowFilter] = useState(false);
+  const [drivers, setDrivers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    axios
+      .get("https://api.dropshep.com/api/driver")
+      .then((response) => {
+        if (response.data.status === "success") {
+          setDrivers(response.data.data);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching driver data:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p>Loading drivers...</p>;
+
+  console.log(drivers);
 
   return (
-    <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
-      <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-8 border border-gray-200">
+    <main className="bg-gradient-to-br from-gray-100 to-white md:p-4">
+      <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-6 border border-gray-200">
         {/* Header */}
         <div className="md:flex items-center justify-between mb-6">
           <h1 className="text-xl font-extrabold text-[#11375B] flex items-center gap-3">
@@ -104,33 +125,37 @@ const CarList = () => {
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
-              <tr className="hover:bg-gray-50 transition-all">
-                <td className="px-2 md:px-4 py-4 font-bold">1</td>
-                <td className="px-2 md:px-4 py-4">Jamal</td>
-                <td className="px-2 md:px-4 py-4">0165241524</td>
-                <td className="px-2 md:px-4 py-4">Freezer Van</td>
-                <td className="px-2 md:px-4 py-4">Baddha</td>
-                <td className="px-2 md:px-4 py-4">2</td>
-                <td className="px-2 md:px-4 py-4">0</td>
-                <td className="px-2 md:px-4 py-4">
-                  <span className="text-white bg-green-700 px-3 py-1 rounded-md text-xs font-semibold">
-                    Active
-                  </span>
-                </td>
-                <td>
-                  <div className="flex gap-2">
-                    <button className="text-primary bg-green-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                      <FaPen className="text-[12px]" />
-                    </button>
-                    <button className="text-primary bg-blue-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                      <FaEye className="text-[12px]" />
-                    </button>
-                    <button className="text-red-900 bg-red-50 border border-red-700 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                      <FaTrashAlt className="text-[12px]" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
+              {drivers?.map((driver, index) => (
+                <tr key={index} className="hover:bg-gray-50 transition-all">
+                  <td className="px-2 md:px-4 py-4 font-bold">{index + 1}</td>
+                  <td className="px-2 md:px-4 py-4">{driver.name}</td>
+                  <td className="px-2 md:px-4 py-4">{driver.contact}</td>
+                  <td className="px-2 md:px-4 py-4">{driver.address}</td>
+                  <td className="px-2 md:px-4 py-4">
+                    {driver.emergency_contact}
+                  </td>
+                  <td className="px-2 md:px-4 py-4">{driver.license}</td>
+                  <td className="px-2 md:px-4 py-4">{driver.status}</td>
+                  <td className="px-2 md:px-4 py-4">
+                    <span className="text-white bg-green-700 px-3 py-1 rounded-md text-xs font-semibold">
+                      Active
+                    </span>
+                  </td>
+                  <td className="px-2 md:px-4">
+                    <div className="flex gap-2">
+                      <button className="text-primary bg-green-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                        <FaPen className="text-[12px]" />
+                      </button>
+                      <button className="text-primary bg-blue-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                        <FaEye className="text-[12px]" />
+                      </button>
+                      <button className="text-red-900 bg-red-50 border border-red-700 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                        <FaTrashAlt className="text-[12px]" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

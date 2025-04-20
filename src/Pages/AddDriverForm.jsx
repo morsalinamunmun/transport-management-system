@@ -1,13 +1,38 @@
 import React from "react";
+import { useForm } from "react-hook-form";
 import ReusableForm from "../components/Form/ReusableForm";
 import "react-datepicker/dist/react-datepicker.css";
-import { MdOutlineArrowDropDown, MdOutlineFileUpload } from "react-icons/md";
+import { MdOutlineArrowDropDown } from "react-icons/md";
+import axios from "axios";
 
 const AddDriverForm = () => {
-  // const dateRef = useRef(null);
+  const { handleSubmit } = useForm();
 
-  const handleSubmit = (data) => {
-    console.log("Form data:", data);
+  const onSubmit = async (data) => {
+    const formData = new FormData();
+
+    for (const key in data) {
+      if (key === "license_image" && data[key]?.[0]) {
+        formData.append(key, data[key][0]); // file input
+      } else {
+        formData.append(key, data[key]);
+      }
+    }
+
+    try {
+      const response = await axios.post(
+        "https://api.dropshep.com/api/driver",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("✅ Success:", response.data);
+    } catch (error) {
+      console.error("❌ Error:", error);
+    }
   };
 
   return (
@@ -16,15 +41,15 @@ const AddDriverForm = () => {
         ড্রাইভার তৈরি করুন
       </h3>
       <div className="mx-auto p-6 bg-gray-100 rounded-md shadow">
-        <ReusableForm onSubmit={handleSubmit}>
-          {/*  */}
+        <ReusableForm onSubmit={handleSubmit(onSubmit)}>
           <div className="md:flex justify-between gap-3">
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
                 ড্রাইভারের নাম *
               </label>
               <input
-                name="driverName"
+                // {...register("name")}
+                name="name"
                 type="text"
                 placeholder="ড্রাইভারের নাম..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -35,22 +60,24 @@ const AddDriverForm = () => {
                 ড্রাইভারের মোবাইল *
               </label>
               <input
-                name="driverMobile"
+                // {...register("contact")}
+                name="contact"
                 type="text"
                 placeholder="ড্রাইভারের মোবাইল..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
             </div>
           </div>
-          {/*  */}
+
           <div className="md:flex justify-between gap-3">
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
                 ন.আই.ডি নাম্বার *
               </label>
               <input
-                name="nidNumber"
-                type="text"
+                // {...register("nid")}
+                name="nid"
+                type="number"
                 placeholder="ন.আই.ডি নাম্বার..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
@@ -60,20 +87,22 @@ const AddDriverForm = () => {
                 জরুরী যোগাযোগ
               </label>
               <input
-                name="emergencyContact"
+                // {...register("emergency_contact")}
+                name="emergency_contact"
                 type="text"
                 placeholder="জরুরী যোগাযোগ নাম্বার..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
             </div>
           </div>
-          {/*  */}
+
           <div className="md:flex justify-between gap-3">
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
                 ঠিকানা *
               </label>
               <input
+                // {...register("address")}
                 name="address"
                 type="text"
                 placeholder="ঠিকানা..."
@@ -85,6 +114,7 @@ const AddDriverForm = () => {
                 বিঃদ্রঃ
               </label>
               <input
+                // {...register("note")}
                 name="note"
                 type="text"
                 placeholder="বিঃদ্রঃ..."
@@ -92,14 +122,15 @@ const AddDriverForm = () => {
               />
             </div>
           </div>
-          {/*  */}
+
           <div className="md:flex justify-between gap-3">
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
                 লাইসেন্স না. *
               </label>
               <input
-                name="licence"
+                // {...register("license")}
+                name="license"
                 type="text"
                 placeholder="লাইসেন্স না. ..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -111,8 +142,9 @@ const AddDriverForm = () => {
               </label>
               <div className="relative">
                 <input
+                  // {...register("expire_date")}
                   data-datepicker
-                  name="expiredDate"
+                  name="expire_date"
                   type="text"
                   placeholder="মেয়াদোত্তীর্ণ তারিখ..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -120,16 +152,16 @@ const AddDriverForm = () => {
               </div>
             </div>
           </div>
-          {/*  */}
+
           <div className="md:flex justify-between gap-3">
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
                 স্ট্যাটাস *
               </label>
               <select
+                // {...register("status")}
                 name="status"
                 className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
-                // defaultValue=""
               >
                 <option value="">স্ট্যাটাস নির্বাচন করুন</option>
                 <option value="Active">Active</option>
@@ -143,9 +175,10 @@ const AddDriverForm = () => {
               </label>
               <div className="relative mt-1">
                 <input
+                  // {...register("license_image")}
                   type="file"
-                  name="file"
-                  placeholder=""
+                  name="license_image"
+                  accept="image/*"
                   className="border p-2 rounded"
                 />
               </div>

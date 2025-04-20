@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import {
   FaTruck,
   FaPlus,
@@ -9,7 +10,27 @@ import {
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 const CarList = () => {
-  const [showFilter, setShowFilter] = useState(false); // State to toggle filter section
+  const [showFilter, setShowFilter] = useState(false);
+  const [vehicles, setVehicle] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    axios
+      .get("https://api.dropshep.com/api/vehicle")
+      .then((response) => {
+        if (response.data.status === "success") {
+          setVehicle(response.data.data);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching driver data:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p>Loading vehicle...</p>;
+
+  console.log(vehicles);
 
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
@@ -105,6 +126,36 @@ const CarList = () => {
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
+              {vehicles?.map((vehicle, index) => (
+                <tr key={index} className="hover:bg-gray-50 transition-all">
+                  <td className="px-2 md:px-4 py-4 font-bold">{index + 1}</td>
+                  <td className="px-2 md:px-4 py-4">{vehicle.driver_name}</td>
+                  <td className="px-2 md:px-4 py-4">{vehicle.driver_name}</td>
+                  <td className="px-2 md:px-4 py-4">{vehicle.category}</td>
+                  <td className="px-2 md:px-4 py-4">{vehicle.driver_name}</td>
+                  <td className="px-2 md:px-4 py-4">{vehicle.driver_name}</td>
+                  <td className="px-2 md:px-4 py-4">{vehicle.driver_name}</td>
+                  <td className="px-2 md:px-4 py-4">{vehicle.driver_name}</td>
+                  <td className="px-2 md:px-4 py-4">
+                    <span className="text-white bg-green-700 px-3 py-1 rounded-md text-xs font-semibold">
+                      Active
+                    </span>
+                  </td>
+                  <td>
+                    <div className="flex gap-2">
+                      <button className="text-primary bg-green-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                        <FaPen className="text-[12px]" />
+                      </button>
+                      <button className="text-primary bg-blue-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                        <FaEye className="text-[12px]" />
+                      </button>
+                      <button className="text-red-900 bg-red-50 border border-red-700 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                        <FaTrashAlt className="text-[12px]" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
               <tr className="hover:bg-gray-50 transition-all">
                 <td className="px-2 md:px-4 py-4 font-bold">1</td>
                 <td className="px-2 md:px-4 py-4">Jamal</td>

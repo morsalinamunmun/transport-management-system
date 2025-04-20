@@ -1,8 +1,29 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { FaTruck, FaPlus, FaFilter, FaPen, FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 const Fuel = () => {
-  const [showFilter, setShowFilter] = useState(false); // State to toggle filter section
+  const [showFilter, setShowFilter] = useState(false);
+  const [fuel, setFuel] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    axios
+      .get("https://api.dropshep.com/api/fuel")
+      .then((response) => {
+        if (response.data.status === "success") {
+          setFuel(response.data.data);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching driver data:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p>Loading fuel...</p>;
+
+  console.log("fuel", fuel);
 
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
@@ -97,26 +118,28 @@ const Fuel = () => {
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
-              <tr className="hover:bg-gray-50 transition-all">
-                <td className="px-4 py-4 font-bold">1</td>
-                <td className="px-4 py-4">Rofikul hasan</td>
-                <td className="px-4 py-4">Sylhet Metro-DA 45-1247</td>
-                <td className="px-4 py-4">Diesel</td>
-                <td className="px-4 py-4">12-01-2025</td>
-                <td className="px-4 py-4">10</td>
-                <td className="px-4 py-4">110</td>
-                <td className="px-4 py-4">34433</td>
-                <td className="px-4 py-4">
-                  <div className="flex gap-2">
-                    <button className="text-primary bg-green-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                      <FaPen className="text-[12px]" />
-                    </button>
-                    <button className="text-red-900 bg-red-50 border border-red-700 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                      <FaTrashAlt className="text-[12px]" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
+              {fuel?.map((dt, index) => (
+                <tr className="hover:bg-gray-50 transition-all">
+                  <td className="px-4 py-4 font-bold">{index + 1}</td>
+                  <td className="px-4 py-4">{dt.driver_name}</td>
+                  <td className="px-4 py-4">{dt.driver_name}</td>
+                  <td className="px-4 py-4">{dt.type}</td>
+                  <td className="px-4 py-4">{dt.date_time}</td>
+                  <td className="px-4 py-4">{dt.quantity}</td>
+                  <td className="px-4 py-4">{dt.price}</td>
+                  <td className="px-4 py-4">{dt.quantity * dt.price}.00</td>
+                  <td className="px-4 py-4">
+                    <div className="flex gap-2">
+                      <button className="text-primary bg-green-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                        <FaPen className="text-[12px]" />
+                      </button>
+                      <button className="text-red-900 bg-red-50 border border-red-700 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                        <FaTrashAlt className="text-[12px]" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

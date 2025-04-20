@@ -1,10 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaTruck, FaPlus, FaTrashAlt, FaPen } from "react-icons/fa";
 import ReusableForm from "../components/Form/ReusableForm.jsx";
 import { IoMdClose } from "react-icons/io";
+import axios from "axios";
 
 const Parts = () => {
   const [showFilter, setShowFilter] = useState(false);
+  const [parts, setParts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    axios
+      .get("https://api.dropshep.com/api/parts")
+      .then((response) => {
+        if (response.data.status === "success") {
+          setParts(response.data.data);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching driver data:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p>Loading parts...</p>;
+
+  console.log(parts);
 
   return (
     <main className="relative bg-gradient-to-br from-gray-100 to-white md:p-6">
@@ -24,7 +45,6 @@ const Parts = () => {
             </button>
           </div>
         </div>
-
         {/* Export + Search */}
         <div className="md:flex justify-end items-center">
           <div className="mt-3 md:mt-0">
@@ -37,34 +57,39 @@ const Parts = () => {
           </div>
         </div>
         {/* Table */}
-        <div className="mt-5 overflow-x-auto rounded-xl border border-gray-200">
+        <div className="mt-5 overflow-x-auto rounded-xl">
           <table className="min-w-full text-sm text-left">
             <thead className="bg-[#11375B] text-white uppercase text-sm">
               <tr>
-                <th className="px-2 md:px-4 py-3">#</th>
+                <th className="px-2 md:px-4 py-3">SL</th>
                 <th className="px-2 md:px-4 py-3">নাম</th>
                 <th className="px-2 md:px-4 py-3">অ্যাকশন</th>
               </tr>
             </thead>
-            <tbody className="text-[#11375B] font-semibold bg-gray-100">
-              <tr className="hover:bg-gray-50 transition-all">
-                <td className="md:border-r border-gray-400 px-2 md:px-4 py-4 font-bold">
-                  1
-                </td>
-                <td className="md:border-r border-gray-400 px-2 md:px-4 py-4">
-                  Jamal
-                </td>
-                <td className="md:border-r border-gray-400 px-2 md:px-4 py-4">
-                  <div className="flex gap-2">
-                    <button className="text-primary bg-green-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                      <FaPen className="text-[12px]" />
-                    </button>
-                    <button className="text-red-900 bg-red-50 border border-red-700 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                      <FaTrashAlt className="text-[12px]" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
+            <tbody className="text-[#11375B] font-semibold">
+              {parts?.map((part, index) => (
+                <tr
+                  key={index}
+                  className="hover:bg-gray-300 border-b border-r border-l border-gray-400 transition-all cursor-pointer"
+                >
+                  <td className="md:border-r border-gray-400 px-2 md:px-4 py-4 font-bold">
+                    {index + 1}
+                  </td>
+                  <td className="md:border-r border-gray-400 px-2 md:px-4 py-4">
+                    {part.name}
+                  </td>
+                  <td className="px-2 md:px-4 py-4">
+                    <div className="flex gap-2">
+                      <button className="text-primary bg-green-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                        <FaPen className="text-[12px]" />
+                      </button>
+                      <button className="text-red-900 bg-red-50 border border-red-700 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                        <FaTrashAlt className="text-[12px]" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

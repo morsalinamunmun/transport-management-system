@@ -1,8 +1,27 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { FaTruck, FaPlus, FaFilter } from "react-icons/fa";
 import { Link } from "react-router-dom";
 const TripList = () => {
   const [showFilter, setShowFilter] = useState(false);
+  const [trip, setTrip] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    axios
+      .get("https://api.dropshep.com/api/trip")
+      .then((response) => {
+        if (response.data.status === "success") {
+          setTrip(response.data.data);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching driver data:", error);
+        setLoading(false);
+      });
+  }, []);
+  if (loading) return <p>Loading trip...</p>;
+  console.log("trip:", trip);
 
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
@@ -89,21 +108,42 @@ const TripList = () => {
                 <th className="px-2 md:px-4 py-3">তারিখ</th>
                 <th className="px-2 md:px-4 py-3">ড্রাইভার ইনফো</th>
                 <th className="px-2 md:px-4 py-3">ট্রিপ এবং গন্তব্য</th>
-                <th className="px-2 md:px-4 py-3">চলমান খরচ</th>
-                <th className="px-2 md:px-4 py-3">নির্ধারিত খরচ</th>
+                <th className="px-2 md:px-4 py-3">ট্রিপের খরচ</th>
+                <th className="px-2 md:px-4 py-3">ট্রিপের ভাড়া</th>
                 <th className="px-2 md:px-4 py-3">টোটাল ফলাফল</th>
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
-              <tr className="hover:bg-gray-50 transition-all">
-                <td className="px-4 py-4 font-bold">1</td>
-                <td className="px-4 py-4">Jamal</td>
-                <td className="px-4 py-4">0165241524</td>
-                <td className="px-4 py-4">Freezer Van</td>
-                <td className="px-4 py-4">Baddha</td>
-                <td className="px-4 py-4">2</td>
-                <td className="px-4 py-4">0</td>
-              </tr>
+              {trip?.map((dt, index) => {
+                const fuel = parseFloat(dt.fuel_price ?? "0") || 0;
+                const gas = parseFloat(dt.gas_price ?? "0") || 0;
+                const others = parseFloat(dt.other_expenses ?? "0") || 0;
+                const commision = dt.driver_percentage;
+                const totalCost = (fuel + gas + others + commision).toFixed(2);
+
+                return (
+                  <tr key={index} className="hover:bg-gray-50 transition-all">
+                    <td className="px-4 py-4 font-bold">{index + 1}</td>
+                    <td className="px-4 py-4">{dt.trip_date}</td>
+                    <td className="px-4 py-4">
+                      <p>নামঃ {dt.driver_name}</p>
+                      <p>মোবাইলঃ {dt.driver_contact}</p>
+                      <p>কমিশনঃ {dt.driver_percentage}</p>
+                    </td>
+                    <td className="px-4 py-4">
+                      <p>তারিখঃ {dt.trip_date}</p>
+                      <p>লোড পয়েন্টঃ {dt.load_point}</p>
+                      <p>আনলোড পয়েন্টঃ {dt.unload_point}</p>
+                      <p>ট্রিপের সময়ঃ {dt.trip_time}</p>
+                    </td>
+                    <td className="px-4 py-4">{totalCost}</td>
+                    <td className="px-4 py-4">{dt.trip_price}</td>
+                    <td className="px-4 py-4">
+                      {dt.trip_price - totalCost}.00
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
