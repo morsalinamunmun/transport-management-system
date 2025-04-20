@@ -33,8 +33,8 @@ const CarList = () => {
   console.log(vehicles);
 
   return (
-    <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
-      <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-8 border border-gray-200">
+    <main className="bg-gradient-to-br from-gray-100 to-white md:p-4">
+      <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-6 border border-gray-200">
         {/* Header */}
         <div className="md:flex items-center justify-between mb-6">
           <h1 className="text-xl font-extrabold text-[#11375B] flex items-center gap-3">
@@ -113,35 +113,35 @@ const CarList = () => {
           <table className="min-w-full text-sm text-left">
             <thead className="bg-[#11375B] text-white uppercase text-sm">
               <tr>
-                <th className="px-2 md:px-4 py-3">#</th>
-                <th className="px-2 md:px-4 py-3">নাম</th>
-                <th className="px-2 md:px-4 py-3">মোবাইল</th>
-                <th className="px-2 md:px-4 py-3">ধরন</th>
-                <th className="px-2 md:px-4 py-3">এলাকা</th>
-                <th className="px-2 md:px-4 py-3">গাড়ি</th>
-                <th className="px-2 md:px-4 py-3">ট্রিপ</th>
-                <th className="px-2 md:px-4 py-3">যোগদানের তারিখ</th>
-                <th className="px-2 md:px-4 py-3">স্ট্যাটাস</th>
-                <th className="px-2 md:px-4 py-3">অ্যাকশন</th>
+                <th className="px-2 py-3">#</th>
+                <th className="px-2 py-3">নাম</th>
+                <th className="px-2 py-3">মোবাইল</th>
+                <th className="px-2 py-3">ধরন</th>
+                <th className="px-2 py-3">এলাকা</th>
+                <th className="px-2 py-3">গাড়ি</th>
+                <th className="px-2 py-3">ট্রিপ</th>
+                <th className="px-2 py-3">যোগদানের তারিখ</th>
+                <th className="px-2 py-3">স্ট্যাটাস</th>
+                <th className="px-2 py-3">অ্যাকশন</th>
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
               {vehicles?.map((vehicle, index) => (
                 <tr key={index} className="hover:bg-gray-50 transition-all">
-                  <td className="px-2 md:px-4 py-4 font-bold">{index + 1}</td>
-                  <td className="px-2 md:px-4 py-4">{vehicle.driver_name}</td>
-                  <td className="px-2 md:px-4 py-4">{vehicle.driver_name}</td>
-                  <td className="px-2 md:px-4 py-4">{vehicle.category}</td>
-                  <td className="px-2 md:px-4 py-4">{vehicle.driver_name}</td>
-                  <td className="px-2 md:px-4 py-4">{vehicle.driver_name}</td>
-                  <td className="px-2 md:px-4 py-4">{vehicle.driver_name}</td>
-                  <td className="px-2 md:px-4 py-4">{vehicle.driver_name}</td>
-                  <td className="px-2 md:px-4 py-4">
+                  <td className="px-2 py-4 font-bold">{index + 1}</td>
+                  <td className="px-2 py-4">{vehicle.driver_name}</td>
+                  <td className="px-2 py-4">{vehicle.driver_name}</td>
+                  <td className="px-2 py-4">{vehicle.category}</td>
+                  <td className="px-2 py-4">{vehicle.registration_zone}</td>
+                  <td className="px-2 py-4">{vehicle.vehicle_name}</td>
+                  <td className="px-2 py-4">{vehicle.driver_name}</td>
+                  <td className="px-2 py-4">{vehicle.driver_name}</td>
+                  <td className="px-2 py-4">
                     <span className="text-white bg-green-700 px-3 py-1 rounded-md text-xs font-semibold">
                       Active
                     </span>
                   </td>
-                  <td>
+                  <td className="px-2 py-4">
                     <div className="flex gap-2">
                       <button className="text-primary bg-green-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
                         <FaPen className="text-[12px]" />
@@ -156,34 +156,6 @@ const CarList = () => {
                   </td>
                 </tr>
               ))}
-              <tr className="hover:bg-gray-50 transition-all">
-                <td className="px-2 md:px-4 py-4 font-bold">1</td>
-                <td className="px-2 md:px-4 py-4">Jamal</td>
-                <td className="px-2 md:px-4 py-4">0165241524</td>
-                <td className="px-2 md:px-4 py-4">Freezer Van</td>
-                <td className="px-2 md:px-4 py-4">Baddha</td>
-                <td className="px-2 md:px-4 py-4">2</td>
-                <td className="px-2 md:px-4 py-4">0</td>
-                <td className="px-2 md:px-4 py-4">21-10-2024</td>
-                <td className="px-2 md:px-4 py-4">
-                  <span className="text-white bg-green-700 px-3 py-1 rounded-md text-xs font-semibold">
-                    Active
-                  </span>
-                </td>
-                <td>
-                  <div className="flex gap-2">
-                    <button className="text-primary bg-green-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                      <FaPen className="text-[12px]" />
-                    </button>
-                    <button className="text-primary bg-blue-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                      <FaEye className="text-[12px]" />
-                    </button>
-                    <button className="text-red-900 bg-red-50 border border-red-700 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                      <FaTrashAlt className="text-[12px]" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
             </tbody>
           </table>
         </div>

@@ -113,35 +113,29 @@ const CarList = () => {
           <table className="min-w-full text-sm text-left">
             <thead className="bg-[#11375B] text-white uppercase text-sm">
               <tr>
-                <th className="px-2 md:px-4 py-3">#</th>
-                <th className="px-2 md:px-4 py-3">নাম</th>
-                <th className="px-2 md:px-4 py-3">মোবাইল</th>
-                <th className="px-2 md:px-4 py-3">ঠিকানা</th>
-                <th className="px-2 md:px-4 py-3">জরুরি অবস্থা</th>
-                <th className="px-2 md:px-4 py-3">লাইসেন্স</th>
-                <th className="px-2 md:px-4 py-3">লা.মেয়াদোত্তীর্ণ</th>
-                <th className="px-2 md:px-4 py-3">স্ট্যাটাস</th>
-                <th className="px-2 md:px-4 py-3">অ্যাকশন</th>
+                <th className="px-2 py-3">নাম</th>
+                <th className="px-2 py-3">#</th>
+                <th className="px-2 py-3">মোবাইল</th>
+                <th className="px-2 py-3">ঠিকানা</th>
+                <th className="px-2 py-3">জরুরি অবস্থা</th>
+                <th className="px-2 py-3">লাইসেন্স</th>
+                <th className="px-2 py-3">লা.মেয়াদোত্তীর্ণ</th>
+                <th className="px-2 py-3">স্ট্যাটাস</th>
+                <th className="px-2 py-3">অ্যাকশন</th>
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
               {drivers?.map((driver, index) => (
                 <tr key={index} className="hover:bg-gray-50 transition-all">
-                  <td className="px-2 md:px-4 py-4 font-bold">{index + 1}</td>
-                  <td className="px-2 md:px-4 py-4">{driver.name}</td>
-                  <td className="px-2 md:px-4 py-4">{driver.contact}</td>
-                  <td className="px-2 md:px-4 py-4">{driver.address}</td>
-                  <td className="px-2 md:px-4 py-4">
-                    {driver.emergency_contact}
-                  </td>
-                  <td className="px-2 md:px-4 py-4">{driver.license}</td>
-                  <td className="px-2 md:px-4 py-4">{driver.status}</td>
-                  <td className="px-2 md:px-4 py-4">
-                    <span className="text-white bg-green-700 px-3 py-1 rounded-md text-xs font-semibold">
-                      Active
-                    </span>
-                  </td>
-                  <td className="px-2 md:px-4">
+                  <td className="px-2 py-4 font-bold">{index + 1}</td>
+                  <td className="px-2 py-4">{driver.name}</td>
+                  <td className="px-2 py-4">{driver.contact}</td>
+                  <td className="px-2 py-4">{driver.address}</td>
+                  <td className="px-2 py-4">{driver.emergency_contact}</td>
+                  <td className="px-2 py-4">{driver.license}</td>
+                  <td className="px-2 py-4">{driver.expire_date}</td>
+                  <td className="px-2 py-4">{driver.status}</td>
+                  <td className="px-2">
                     <div className="flex gap-2">
                       <button className="text-primary bg-green-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
                         <FaPen className="text-[12px]" />

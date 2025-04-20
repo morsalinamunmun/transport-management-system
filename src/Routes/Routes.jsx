@@ -19,6 +19,7 @@ import AllUsers from "../Pages/AllUsers";
 import AddUserForm from "../Pages/AddUserForm";
 import Login from "../components/Form/Login";
 import ResetPass from "../components/Form/ResetPass";
+import PrivateRoute from "./PrivateRoute";
 
 export const router = createBrowserRouter([
   {
@@ -27,7 +28,11 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: (
+          <PrivateRoute>
+            <Home />,
+          </PrivateRoute>
+        ),
       },
       {
         path: "AddCustomer",

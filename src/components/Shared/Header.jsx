@@ -2,11 +2,21 @@ import React, { useState } from "react";
 import { FaBars, FaMagnifyingGlass } from "react-icons/fa6";
 import avatar from "../../assets/avatar.png";
 import Sidebar from "../SIdeBar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../providers/AuthProvider";
+import { useContext } from "react";
 
 const Header = () => {
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const { logout, user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  // handle signout
+  const handleSignout = () => {
+    logout();
+    navigate("/Login");
+  };
 
   return (
     <div className="flex justify-between items-center px-5 py-2.5 border-b border-gray-300 relative z-50 bg-white">
@@ -58,10 +68,13 @@ const Header = () => {
         {isAdminOpen && (
           <div className="absolute right-0 top-14 w-52 bg-white drop-shadow p-5 rounded-md shadow-lg z-50">
             <p className="font-semibold text-primary">Admin</p>
-            <span className="text-sm text-gray-600">admin@gmail.com</span>
+            <span className="text-sm text-gray-600">{user?.user.email}</span>
             <p className="mt-4">
-              <button className="text-red-500 font-medium hover:underline">
-                Sign out
+              <button
+                onClick={handleSignout}
+                className="text-red-500 font-medium hover:underline cursor-pointer"
+              >
+                Logout
               </button>
             </p>
           </div>

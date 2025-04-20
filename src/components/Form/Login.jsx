@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useContext } from "react";
 import bgImage from "../../assets/bannerImg.jpeg";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import ReusableForm from "./ReusableForm";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../providers/AuthProvider";
 
 const Login = () => {
-  const handleLogin = (data) => {
-    console.log("Login Data:", data);
-    // Add login logic here
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogin = async (data) => {
+    const { email, password } = data;
+    const result = await login(email, password);
+
+    if (result.success) {
+      navigate("/");
+    } else {
+      alert(result.message || "Login failed");
+    }
   };
 
   return (
@@ -27,7 +37,6 @@ const Login = () => {
             <p className="text-sm text-center text-primary mb-6">লগিন করুন</p>
 
             <ReusableForm onSubmit={handleLogin}>
-              {/* Email */}
               <div className="relative">
                 <input
                   type="text"
@@ -40,7 +49,6 @@ const Login = () => {
                   <FaEnvelope />
                 </span>
               </div>
-              {/* Password */}
               <div className="relative">
                 <input
                   type="password"
