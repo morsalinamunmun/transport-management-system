@@ -1,63 +1,114 @@
 import React from "react";
 
-const cardData = [
-  {
-    title: "যানবাহন",
-    items: [
-      { label: "On requisition", value: 0 },
-      { label: "On maintenance", value: 395 },
-      { label: "Available", value: 0 },
-    ],
-  },
-  {
-    title: "আজকের রিকুইজিশন",
-    items: [
-      { label: "Vehicle requisition", value: 0 },
-      { label: "Pick & drop requisition", value: 0 },
-      { label: "Maintenance requisition", value: 0 },
-      { label: "Fuel requisition", value: 0 },
-    ],
-  },
-  {
-    title: "রিমাইন্ডার",
-    items: [
-      { label: "Legal doc soon expire", value: 0 },
-      { label: "Legal doc expired", value: 1014 },
-    ],
-  },
-  {
-    title: "অন্যান্য কার্যক্রম",
-    items: [
-      { label: "Stock in", value: 477199 },
-      { label: "Stock out", value: 1170325 },
-    ],
-  },
-];
-
 const OverViewCard = () => {
   return (
     <div className="p-5">
       <ul className="md:flex gap-3 flex-wrap">
-        {cardData.map((card, index) => (
-          <li
-            key={index}
-            className="bg-white rounded-md p-3 w-full md:w-[calc(50%-0.375rem)] lg:w-[calc(25%-0.75rem)] mb-3"
-          >
-            <div className="text-primary border-b pb-3 border-gray-300">
-              <h3 className="font-semibold">{card.title}</h3>
+        {/* Card 1 */}
+        <li className="bg-white rounded-md p-3 w-full md:w-[calc(50%-0.375rem)] lg:w-[calc(25%-0.75rem)] mb-3">
+          <div className="text-primary border-b pb-3 border-gray-300">
+            <h3 className="font-semibold">আজকের আয়</h3>
+          </div>
+          <div className="p-3 text-primary font-semibold text-sm space-y-2">
+            <div className="flex items-center gap-3">
+              <div className="bg-primary w-[6px] h-[6px] rounded-full" />
+              <p className="flex justify-between w-full">
+                <span>ফুয়েল খরচ</span> - <span>0</span>
+              </p>
             </div>
-            <div className="p-3 text-primary font-semibold text-sm space-y-2">
-              {card.items.map((item, idx) => (
-                <div key={idx} className="flex items-center gap-3">
-                  <div className="bg-primary w-[6px] h-[6px] rounded-full" />
-                  <p className="flex justify-between w-full">
-                    <span>{item.label}</span> - <span>{item.value}</span>
-                  </p>
-                </div>
-              ))}
+            <div className="flex items-center gap-3">
+              <div className="bg-primary w-[6px] h-[6px] rounded-full" />
+              <p className="flex justify-between w-full">
+                <span>ট্রিপের খরচ</span> - <span>395</span>
+              </p>
             </div>
-          </li>
-        ))}
+            <div className="flex items-center gap-3">
+              <p className="flex justify-between w-full border-t mt-3 pt-3">
+                <span>টোটাল আয়</span> - <span>200</span>
+              </p>
+            </div>
+          </div>
+        </li>
+
+        {/* Card 2 */}
+        <li className="bg-white rounded-md p-3 w-full md:w-[calc(50%-0.375rem)] lg:w-[calc(25%-0.75rem)] mb-3">
+          <div className="text-primary border-b pb-3 border-gray-300">
+            <h3 className="font-semibold">আজকের ব্যয়</h3>
+          </div>
+          <div className="p-3 text-primary font-semibold text-sm space-y-2">
+            <div className="flex items-center gap-3">
+              <div className="bg-primary w-[6px] h-[6px] rounded-full" />
+              <p className="flex justify-between w-full">
+                <span>ফুয়েল খরচ</span> - <span>0</span>
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="bg-primary w-[6px] h-[6px] rounded-full" />
+              <p className="flex justify-between w-full">
+                <span>ট্রিপের খরচ</span> - <span>0</span>
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <p className="flex justify-between w-full border-t mt-3 pt-3">
+                <span>টোটাল খরচ</span> - <span>200</span>
+              </p>
+            </div>
+          </div>
+        </li>
+
+        {/* Card 3 */}
+        <li className="bg-white rounded-md p-3 w-full md:w-[calc(50%-0.375rem)] lg:w-[calc(25%-0.75rem)] mb-3">
+          <div className="text-primary border-b pb-3 border-gray-300">
+            <h3 className="font-semibold">রিকুইজিশন</h3>
+          </div>
+          <div className="p-3 text-primary font-semibold text-sm space-y-2">
+            <div className="flex items-center gap-3">
+              <div className="bg-primary w-[6px] h-[6px] rounded-full" />
+              <p className="flex justify-between w-full">
+                <span>গাড়ির নাম্বার</span> - <span>0</span>
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="bg-primary w-[6px] h-[6px] rounded-full" />
+              <p className="flex justify-between w-full">
+                <span>Pick & drop requisition</span> - <span>0</span>
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="bg-primary w-[6px] h-[6px] rounded-full" />
+              <p className="flex justify-between w-full">
+                <span>Maintenance requisition</span> - <span>0</span>
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="bg-primary w-[6px] h-[6px] rounded-full" />
+              <p className="flex justify-between w-full">
+                <span>Fuel requisition</span> - <span>0</span>
+              </p>
+            </div>
+          </div>
+        </li>
+
+        {/* Card 4 */}
+        <li className="bg-white rounded-md p-3 w-full md:w-[calc(50%-0.375rem)] lg:w-[calc(25%-0.75rem)] mb-3">
+          <div className="text-primary border-b pb-3 border-gray-300">
+            <h3 className="font-semibold">রিমাইন্ডার</h3>
+          </div>
+          <div className="p-3 text-primary font-semibold text-sm space-y-2">
+            <div className="flex items-center gap-3">
+              <div className="bg-primary w-[6px] h-[6px] rounded-full" />
+              <p className="flex justify-between w-full">
+                <span>Legal doc soon expire</span> - <span>0</span>
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="bg-primary w-[6px] h-[6px] rounded-full" />
+              <p className="flex justify-between w-full">
+                <span>Legal doc expired</span> - <span>1014</span>
+              </p>
+            </div>
+          </div>
+        </li>
       </ul>
     </div>
   );

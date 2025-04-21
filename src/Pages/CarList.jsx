@@ -10,7 +10,6 @@ import {
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 const CarList = () => {
-  const [showFilter, setShowFilter] = useState(false);
   const [vehicles, setVehicle] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -28,7 +27,7 @@ const CarList = () => {
       });
   }, []);
 
-  if (loading) return <p>Loading vehicle...</p>;
+  if (loading) return <p className="text-center mt-16">Loading vehicle...</p>;
 
   console.log(vehicles);
 
@@ -47,12 +46,6 @@ const CarList = () => {
                 <FaPlus /> গাড়ি
               </button>
             </Link>
-            <button
-              onClick={() => setShowFilter((prev) => !prev)} // Toggle filter
-              className="bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 py-1 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer"
-            >
-              <FaFilter /> ফিল্টার
-            </button>
           </div>
         </div>
         {/* export */}
@@ -80,34 +73,7 @@ const CarList = () => {
             />
           </div>
         </div>
-        {/* Conditional Filter Section */}
-        {showFilter && (
-          <div className="mt-5 space-y-5 transition-all duration-300 pb-5">
-            <div>
-              <h3 className="text-[#11375B] font-semibold">Employee type</h3>
-              <select className="border border-[#11375B] border-b-2 mt-2 py-2 px-3 outline-none rounded-md bg-transparent">
-                <option>Please select one</option>
-                <option>External</option>
-                <option>Internal</option>
-              </select>
-            </div>
 
-            <div>
-              <h3 className="text-[#11375B] font-semibold">Blood group</h3>
-              <select className="border border-[#11375B] border-b-2 mt-2 py-2 px-3 outline-none rounded-md bg-transparent">
-                <option>Please select one</option>
-                <option>A+</option>
-                <option>A-</option>
-                <option>B+</option>
-                <option>B-</option>
-                <option>O+</option>
-                <option>O-</option>
-                <option>AB+</option>
-                <option>AB-</option>
-              </select>
-            </div>
-          </div>
-        )}
         {/* Table */}
         <div className="mt-5 overflow-x-auto rounded-xl border border-gray-200">
           <table className="min-w-full text-sm text-left">

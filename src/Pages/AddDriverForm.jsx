@@ -1,38 +1,12 @@
 import React from "react";
-import { useForm } from "react-hook-form";
 import ReusableForm from "../components/Form/ReusableForm";
 import "react-datepicker/dist/react-datepicker.css";
 import { MdOutlineArrowDropDown } from "react-icons/md";
-import axios from "axios";
+// import axios from "axios";
 
 const AddDriverForm = () => {
-  const { handleSubmit } = useForm();
-
-  const onSubmit = async (data) => {
-    const formData = new FormData();
-
-    for (const key in data) {
-      if (key === "license_image" && data[key]?.[0]) {
-        formData.append(key, data[key][0]); // file input
-      } else {
-        formData.append(key, data[key]);
-      }
-    }
-
-    try {
-      const response = await axios.post(
-        "https://api.dropshep.com/api/driver",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log("✅ Success:", response.data);
-    } catch (error) {
-      console.error("❌ Error:", error);
-    }
+  const handleSubmit = async (data) => {
+    console.log("data", data);
   };
 
   return (
@@ -41,7 +15,7 @@ const AddDriverForm = () => {
         ড্রাইভার তৈরি করুন
       </h3>
       <div className="mx-auto p-6 bg-gray-100 rounded-md shadow">
-        <ReusableForm onSubmit={handleSubmit(onSubmit)}>
+        <ReusableForm onSubmit={handleSubmit}>
           <div className="md:flex justify-between gap-3">
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">

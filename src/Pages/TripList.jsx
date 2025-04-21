@@ -1,9 +1,14 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import DatePicker from "react-datepicker";
 import { FaTruck, FaPlus, FaFilter } from "react-icons/fa";
+import { HiMiniCalendarDateRange } from "react-icons/hi2";
+import { MdOutlineArrowDropDown } from "react-icons/md";
 import { Link } from "react-router-dom";
 const TripList = () => {
   const [showFilter, setShowFilter] = useState(false);
+  const [taxDate, setTaxDate] = useState(null);
+  const dateRef = useRef(null);
   const [trip, setTrip] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -73,29 +78,56 @@ const TripList = () => {
         </div>
         {/* Conditional Filter Section */}
         {showFilter && (
-          <div className="mt-5 space-y-5 transition-all duration-300 pb-5">
-            <div>
-              <h3 className="text-[#11375B] font-semibold">Employee type</h3>
-              <select className="border border-[#11375B] border-b-2 mt-2 py-2 px-3 outline-none rounded-md bg-transparent">
-                <option>Please select one</option>
-                <option>External</option>
-                <option>Internal</option>
-              </select>
+          <div className="flex gap-5 border border-gray-300 rounded-md p-5 my-5 transition-all duration-300 pb-5">
+            <div className="relative w-64">
+              <DatePicker
+                selected={taxDate}
+                onChange={(date) => setTaxDate(date)}
+                ref={dateRef}
+                placeholderText="শুরুর তারিখ..."
+                className="mt-1 w-64 text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+                dateFormat="dd/MM/yyyy"
+              />
+              <span
+                onClick={() => dateRef.current?.setOpen(true)}
+                className="absolute top-1 right-0 text-xl text-white bg-primary px-4 py-[9px] rounded-r-md cursor-pointer"
+              >
+                <HiMiniCalendarDateRange />
+              </span>
             </div>
-
-            <div>
-              <h3 className="text-[#11375B] font-semibold">Blood group</h3>
-              <select className="border border-[#11375B] border-b-2 mt-2 py-2 px-3 outline-none rounded-md bg-transparent">
-                <option>Please select one</option>
-                <option>A+</option>
-                <option>A-</option>
-                <option>B+</option>
-                <option>B-</option>
-                <option>O+</option>
-                <option>O-</option>
-                <option>AB+</option>
-                <option>AB-</option>
+            <div className="relative w-64">
+              <DatePicker
+                selected={taxDate}
+                onChange={(date) => setTaxDate(date)}
+                ref={dateRef}
+                placeholderText="শেষের তারিখ..."
+                className="mt-1 w-64 text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+                dateFormat="dd/MM/yyyy"
+              />
+              <span
+                onClick={() => dateRef.current?.setOpen(true)}
+                className="absolute top-1 right-0 text-xl text-white bg-primary px-4 py-[9px] rounded-r-md cursor-pointer"
+              >
+                <HiMiniCalendarDateRange />
+              </span>
+            </div>
+            <div className="mt-2 md:mt-0 w-full relative">
+              <select
+                name="driverName"
+                className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
+                // defaultValue=""
+              >
+                <option value="">গাড়ির নাম...</option>
+                <option value="Motin Ali">Motin Ali</option>
+                <option value="Korim Ali">Korim Ali</option>
+                <option value="Solaiman Ali">Solaiman Ali</option>
               </select>
+              <MdOutlineArrowDropDown className="absolute top-3 right-2 pointer-events-none text-xl text-gray-500" />
+            </div>
+            <div className="flex gap-2">
+              <button className="bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 py-1 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer">
+                <FaFilter /> ফিল্টার
+              </button>
             </div>
           </div>
         )}
@@ -122,7 +154,10 @@ const TripList = () => {
                 const totalCost = (fuel + gas + others + commision).toFixed(2);
 
                 return (
-                  <tr key={index} className="hover:bg-gray-50 transition-all">
+                  <tr
+                    key={index}
+                    className="hover:bg-gray-50 transition-all border-b border-gray-300"
+                  >
                     <td className="px-4 py-4 font-bold">{index + 1}</td>
                     <td className="px-4 py-4">{dt.trip_date}</td>
                     <td className="px-4 py-4">

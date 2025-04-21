@@ -5,7 +5,7 @@ import { HiMiniCalendarDateRange } from "react-icons/hi2";
 const DailyIncome = () => {
   const [taxDate, setTaxDate] = useState(null);
   const dateRef = useRef(null);
-  const [showFilter, setShowFilter] = useState(false); // State to toggle filter section
+  const [showFilter, setShowFilter] = useState(false);
 
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
@@ -62,7 +62,7 @@ const DailyIncome = () => {
               </span>
             </div>
             <div className="flex gap-2">
-              <button className="bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 py-1 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer">
+              <button className="mt-1 bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white text-sm px-4 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer">
                 <FaFilter /> ফিল্টার
               </button>
             </div>

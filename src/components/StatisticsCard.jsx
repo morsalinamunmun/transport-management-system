@@ -24,7 +24,7 @@ const statisticsData = [
     value: 50,
   },
   {
-    title: "Total Dealer",
+    title: "কাস্টমার",
     icon: <FaUserPlus className="text-white text-3xl" />,
     value: 50,
   },

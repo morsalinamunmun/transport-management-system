@@ -15,7 +15,7 @@ const Header = () => {
   // handle signout
   const handleSignout = () => {
     logout();
-    navigate("/Login");
+    navigate("/");
   };
 
   return (
@@ -68,7 +68,8 @@ const Header = () => {
         {isAdminOpen && (
           <div className="absolute right-0 top-14 w-52 bg-white drop-shadow p-5 rounded-md shadow-lg z-50">
             <p className="font-semibold text-primary">Admin</p>
-            <span className="text-sm text-gray-600">{user?.user.email}</span>
+            <span className="text-sm text-gray-600">{user?.user?.email}</span>
+            <p className="text-sm text-gray-600">{user?.user?.phone}</p>
             <p className="mt-4">
               <button
                 onClick={handleSignout}

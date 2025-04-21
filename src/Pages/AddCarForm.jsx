@@ -1,14 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
 import ReusableForm from "../components/Form/ReusableForm";
 import "react-datepicker/dist/react-datepicker.css";
 import { MdOutlineArrowDropDown } from "react-icons/md";
+import axios from "axios";
 
 const AddCarForm = () => {
-  // const dateRef = useRef(null);
-  const handleSubmit = (data) => {
-    console.log("Form data:", data);
-  };
+  const [loading, setLoading] = useState(false); // To handle loading state
+  const [error, setError] = useState(null); // To handle error state
+  const [success, setSuccess] = useState(null);
+  const handleSubmit = async (data) => {
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
 
+    try {
+      // Make the POST request to your API
+      const response = await axios.post(
+        "https://api.dropshep.com/api/vehicle",
+        data
+      );
+
+      // Handle successful response
+      console.log("Response:", response);
+      setSuccess("Vehicle added successfully!");
+    } catch (err) {
+      // Handle error
+      console.error("Error:", err);
+      setError(
+        "There was an error while submitting the form. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+  console.log(loading, error, success);
   return (
     <div className="mt-10">
       <h3 className="px-6 py-2 bg-primary text-white font-semibold rounded-t-md">
