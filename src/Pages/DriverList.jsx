@@ -10,8 +10,10 @@ const CarList = () => {
   // delete modal
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDriverId, setSelectedDriverId] = useState(null);
-
   const toggleModal = () => setIsOpen(!isOpen);
+  // get single driver info by id
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [selectedDriver, setSelectedDriver] = useState(null);
   useEffect(() => {
     axios
       .get("https://api.dropshep.com/api/driver")
@@ -27,7 +29,7 @@ const CarList = () => {
       });
   }, []);
 
-  if (loading) return <p>Loading drivers...</p>;
+  if (loading) return <p className="text-center mt-16">Loading drivers...</p>;
 
   console.log(drivers);
   // delete by id
@@ -58,6 +60,23 @@ const CarList = () => {
         position: "top-right",
         autoClose: 3000,
       });
+    }
+  };
+  // view driver by id
+  const handleView = async (id) => {
+    try {
+      const response = await axios.get(
+        `https://api.dropshep.com/api/driver/${id}`
+      );
+      if (response.data.status === "success") {
+        setSelectedDriver(response.data.data);
+        setViewModalOpen(true);
+      } else {
+        toast.error("ড্রাইভারের তথ্য লোড করা যায়নি");
+      }
+    } catch (error) {
+      console.error("View error:", error);
+      toast.error("ড্রাইভারের তথ্য আনতে সমস্যা হয়েছে");
     }
   };
 
@@ -113,7 +132,7 @@ const CarList = () => {
                 <th className="px-2 py-3">নাম</th>
                 <th className="px-2 py-3">মোবাইল</th>
                 <th className="px-2 py-3">ঠিকানা</th>
-                <th className="px-2 py-3">জরুরি অবস্থা</th>
+                <th className="px-2 py-3">জরুরি যোগাযোগ</th>
                 <th className="px-2 py-3">লাইসেন্স</th>
                 <th className="px-2 py-3">লা.মেয়াদোত্তীর্ণ</th>
                 <th className="px-2 py-3">স্ট্যাটাস</th>
@@ -130,13 +149,20 @@ const CarList = () => {
                   <td className="px-2 py-4">{driver.emergency_contact}</td>
                   <td className="px-2 py-4">{driver.license}</td>
                   <td className="px-2 py-4">{driver.expire_date}</td>
-                  <td className="px-2 py-4">{driver.status}</td>
+                  <td className="px-2 py-4">
+                    <span className="text-white bg-green-700 px-3 py-1 rounded-md text-xs font-semibold">
+                      {driver.status}
+                    </span>
+                  </td>
                   <td className="px-2">
-                    <div className="flex gap-2">
-                      <button className="text-primary bg-green-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                    <div className="flex gap-1">
+                      <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
                         <FaPen className="text-[12px]" />
                       </button>
-                      <button className="text-primary bg-blue-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                      <button
+                        onClick={() => handleView(driver.id)}
+                        className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer"
+                      >
                         <FaEye className="text-[12px]" />
                       </button>
                       <button
@@ -144,104 +170,116 @@ const CarList = () => {
                           setSelectedDriverId(driver.id);
                           setIsOpen(true);
                         }}
-                        className="text-red-900 bg-red-50 border border-red-700 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer"
+                        className="text-red-900 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer"
                       >
                         <FaTrashAlt className="text-[12px]" />
                       </button>
                     </div>
                     <Toaster />
                   </td>
-                  {/* Delete modal */}
-                  <td className="flex justify-center items-center">
-                    {isOpen && (
-                      <div className="fixed left-[25%] top-[25%] flex items-center justify-center z-50">
-                        <div className="relative bg-white rounded-lg shadow-lg p-6 w-72 max-w-sm border border-gray-300">
-                          <button
-                            onClick={toggleModal}
-                            className="text-2xl absolute top-2 right-2 text-white bg-red-500 hover:bg-red-700 cursor-pointer rounded-sm"
-                          >
-                            <IoMdClose />
-                          </button>
-                          <div className="flex justify-center mb-4 text-red-500 text-4xl">
-                            <FaTrashAlt />
-                          </div>
-                          <p className="text-center text-gray-700 font-medium mb-6">
-                            আপনি কি ড্রাইভারটি ডিলিট করতে চান?
-                          </p>
-                          <div className="flex justify-center space-x-4">
-                            <button
-                              onClick={toggleModal}
-                              className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-primary hover:text-white cursor-pointer"
-                            >
-                              না
-                            </button>
-                            <button
-                              onClick={() => handleDelete(selectedDriverId)}
-                              className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 cursor-pointer"
-                            >
-                              হা
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <div className="w-4xl p-5 bg-gray-100 mt-10">
+        </div>
+      </div>
+      {/* Delete modal */}
+      <td className="flex justify-center items-center">
+        {isOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-[#000000ad] z-50">
+            <div className="relative bg-white rounded-lg shadow-lg p-6 w-72 max-w-sm border border-gray-300">
+              <button
+                onClick={toggleModal}
+                className="text-2xl absolute top-2 right-2 text-white bg-red-500 hover:bg-red-700 cursor-pointer rounded-sm"
+              >
+                <IoMdClose />
+              </button>
+              <div className="flex justify-center mb-4 text-red-500 text-4xl">
+                <FaTrashAlt />
+              </div>
+              <p className="text-center text-gray-700 font-medium mb-6">
+                আপনি কি ড্রাইভারটি ডিলিট করতে চান?
+              </p>
+              <div className="flex justify-center space-x-4">
+                <button
+                  onClick={toggleModal}
+                  className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-primary hover:text-white cursor-pointer"
+                >
+                  না
+                </button>
+                <button
+                  onClick={() => handleDelete(selectedDriverId)}
+                  className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 cursor-pointer"
+                >
+                  হা
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </td>
+      {/* get driver information by id */}
+      {viewModalOpen && selectedDriver && (
+        <div className="fixed inset-0 w-full h-full flex items-center justify-center bg-[#000000ad] z-50">
+          <div className="w-4xl p-5 bg-gray-100 rounded-xl mt-10">
             <h3 className="text-primary font-semibold">ড্রাইভারের তথ্য</h3>
             <div className="mt-5">
               <ul className="flex border border-gray-300">
                 <li className="w-[428px] flex text-primary font-semibold px-3 py-2 border-r border-gray-300">
-                  <p className="w-48">Name</p> <p>Korim Ali</p>
+                  <p className="w-48">নামঃ</p> <p>{selectedDriver.name}</p>
                 </li>
                 <li className="w-[428px] flex text-primary font-semibold px-3 py-2">
-                  <p className="w-48">Mobile</p> <p>01755555555</p>
+                  <p className="w-48">মোবাইলঃ</p>{" "}
+                  <p>{selectedDriver.contact}</p>
                 </li>
               </ul>
               <ul className="flex border-b border-r border-l border-gray-300">
                 <li className="w-[428px] flex text-primary font-semibold px-3 py-2 border-r border-gray-300">
-                  <p className="w-48">Emergency Contact</p> <p>01755555555</p>
+                  <p className="w-48">জরুরি নাম্বারঃ</p>{" "}
+                  <p>{selectedDriver.emergency_contact}</p>
                 </li>
                 <li className="w-[428px] flex text-primary font-semibold px-3 py-2">
-                  <p className="w-48">Address</p> <p>Niketon</p>
+                  <p className="w-48">ঠিকানাঃ</p>{" "}
+                  <p>{selectedDriver.address}</p>
                 </li>
               </ul>
               <ul className="flex border-b border-r border-l border-gray-300">
                 <li className="w-[428px] flex text-primary font-semibold px-3 py-2 border-r border-gray-300">
-                  <p className="w-48">NID</p> <p>2451365242</p>
+                  <p className="w-48">NID:</p> <p>{selectedDriver.nid}</p>
                 </li>
                 <li className="w-[428px] flex text-primary font-semibold px-3 py-2">
-                  <p className="w-48">Licence No.</p> <p>DH54216584521</p>
+                  <p className="w-48">লাইসেন্সঃ</p>{" "}
+                  <p>{selectedDriver.license}</p>
                 </li>
               </ul>
               <ul className="flex border-b border-r border-l border-gray-300">
                 <li className="w-[428px] flex text-primary font-semibold px-3 py-2 border-r border-gray-300">
-                  <p className="w-48">Licence Expire</p> <p>18-11-2027</p>
+                  <p className="w-48">লাইসেন্স মেয়াদোত্তীর্ণঃ</p>{" "}
+                  <p>{selectedDriver.expire_date}</p>
                 </li>
                 <li className="w-[428px] flex text-primary font-semibold px-3 py-2">
-                  <p className="w-48">Note</p> <p>Gentleman</p>
+                  <p className="w-48">নোটঃ</p>{" "}
+                  <p>{selectedDriver.note || "N/A"}</p>
                 </li>
               </ul>
               <ul className="flex border-b border-r border-l border-gray-300">
                 <li className="w-[428px] flex text-primary font-semibold px-3 py-2 border-r border-gray-300">
-                  <p className="w-48">Status</p> <p>Active</p>
+                  <p className="w-48">স্ট্যাটাসঃ</p>{" "}
+                  <p>{selectedDriver.status}</p>
                 </li>
-                {/* <li className="w-[428px] flex text-primary font-semibold px-3 py-2">
-                  <p className="w-48">Note</p> <p>Gentleman</p>
-                </li> */}
               </ul>
               <div className="flex justify-end mt-10">
-                <button className="text-white bg-primary py-1 px-2 rounded-md">
+                <button
+                  onClick={() => setViewModalOpen(false)}
+                  className="text-white bg-primary py-1 px-2 rounded-md cursor-pointer hover:bg-secondary"
+                >
                   বন্ধ করুন
                 </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </main>
   );
 };

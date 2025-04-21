@@ -261,7 +261,7 @@ const AddCarForm = () => {
           <div className="md:flex justify-between gap-3">
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
-                ট্যাক্স তারিখ
+                ট্যাক্স মেয়াদোত্তীর্ণ তারিখ
               </label>
               <div className="relative">
                 <input
@@ -289,7 +289,7 @@ const AddCarForm = () => {
             </div>
             <div className="mt-2 md:mt-0 w-full">
               <label className="text-primary text-sm font-semibold">
-                ফিটনেস তারিখ
+                ফিটনেসর মেয়াদোত্তীর্ণ তারিখ
               </label>
               <div className="relative">
                 <input

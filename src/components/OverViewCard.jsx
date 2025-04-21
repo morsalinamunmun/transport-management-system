@@ -65,13 +65,13 @@ const OverViewCard = () => {
             <div className="flex items-center gap-3">
               <div className="bg-primary w-[6px] h-[6px] rounded-full" />
               <p className="flex justify-between w-full">
-                <span>গাড়ির নাম্বার</span> - <span>0</span>
+                <span>গাড়ির ধরন</span> - <span>0</span>
               </p>
             </div>
             <div className="flex items-center gap-3">
               <div className="bg-primary w-[6px] h-[6px] rounded-full" />
               <p className="flex justify-between w-full">
-                <span>Pick & drop requisition</span> - <span>0</span>
+                <span>লোড এবং আনলোড পয়েন্ট</span> - <span>0</span>
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -98,13 +98,19 @@ const OverViewCard = () => {
             <div className="flex items-center gap-3">
               <div className="bg-primary w-[6px] h-[6px] rounded-full" />
               <p className="flex justify-between w-full">
-                <span>Legal doc soon expire</span> - <span>0</span>
+                <span>গাড়ির নাম্বার</span> - <span>0</span>
               </p>
             </div>
             <div className="flex items-center gap-3">
               <div className="bg-primary w-[6px] h-[6px] rounded-full" />
               <p className="flex justify-between w-full">
-                <span>Legal doc expired</span> - <span>1014</span>
+                <span>ডকুমেন্টস এর নাম</span> - <span>1014</span>
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="bg-primary w-[6px] h-[6px] rounded-full" />
+              <p className="flex justify-between w-full">
+                <span>মেয়াদোত্তীর্ণ তারিখ</span> - <span>1014</span>
               </p>
             </div>
           </div>

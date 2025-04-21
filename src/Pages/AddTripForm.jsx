@@ -178,7 +178,7 @@ const AddTripForm = () => {
               </div>
               <div className="w-full">
                 <label className="text-primary text-sm font-semibold">
-                  ট্রিপের খরচঃ
+                  ট্রিপের খরচ
                 </label>
                 <input
                   placeholder="ট্রিপের খরচ..."

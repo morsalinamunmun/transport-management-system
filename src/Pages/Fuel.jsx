@@ -11,13 +11,20 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import toast, { Toaster } from "react-hot-toast";
+import { IoMdClose } from "react-icons/io";
 
 const Fuel = () => {
   const [showFilter, setShowFilter] = useState(false);
-  const [taxDate, setTaxDate] = useState(null);
+  const [fuelDate, setFuelDate] = useState(null);
   const dateRef = useRef(null);
   const [fuel, setFuel] = useState([]);
   const [loading, setLoading] = useState(true);
+  // delete modal
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedFuelId, setselectedFuelId] = useState(null);
+  const toggleModal = () => setIsOpen(!isOpen);
+
   useEffect(() => {
     axios
       .get("https://api.dropshep.com/api/fuel")
@@ -33,7 +40,7 @@ const Fuel = () => {
       });
   }, []);
 
-  if (loading) return <p>Loading fuel...</p>;
+  if (loading) return <p className="text-center mt-16">Loading fuel...</p>;
 
   console.log("fuel", fuel);
   // export functionality
@@ -58,7 +65,7 @@ const Fuel = () => {
     price: dt.price,
     total: dt.quantity * dt.price,
   }));
-
+  // export
   const exportExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(csvData);
     const workbook = XLSX.utils.book_new();
@@ -118,7 +125,33 @@ const Fuel = () => {
     WinPrint.print();
     WinPrint.close();
   };
+  // delete by id
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`https://api.dropshep.com/api/fuel/${id}`, {
+        method: "DELETE",
+      });
 
+      if (!response.ok) {
+        throw new Error("Failed to delete trip");
+      }
+      // Remove fuel from local list
+      setFuel((prev) => prev.filter((driver) => driver.id !== id));
+      toast.success("ট্রিপ সফলভাবে ডিলিট হয়েছে", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+
+      setIsOpen(false);
+      setselectedFuelId(null);
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error("ডিলিট করতে সমস্যা হয়েছে!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
+  };
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
       <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-8 border border-gray-200">
@@ -187,8 +220,8 @@ const Fuel = () => {
           <div className="flex gap-5 border border-gray-300 rounded-md p-5 my-5 transition-all duration-300 pb-5">
             <div className="relative w-64">
               <DatePicker
-                selected={taxDate}
-                onChange={(date) => setTaxDate(date)}
+                selected={fuelDate}
+                onChange={(date) => setFuelDate(date)}
                 ref={dateRef}
                 placeholderText="শুরুর তারিখ..."
                 className="mt-1 w-64 text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -203,8 +236,8 @@ const Fuel = () => {
             </div>
             <div className="relative w-64">
               <DatePicker
-                selected={taxDate}
-                onChange={(date) => setTaxDate(date)}
+                selected={fuelDate}
+                onChange={(date) => setFuelDate(date)}
                 ref={dateRef}
                 placeholderText="শেষের তারিখ..."
                 className="mt-1 w-64 text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -266,13 +299,20 @@ const Fuel = () => {
                   <td className="px-4 py-4">{dt.quantity * dt.price}.00</td>
                   <td className="px-4 py-4">
                     <div className="flex gap-2">
-                      <button className="text-primary bg-green-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                      <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
                         <FaPen className="text-[12px]" />
                       </button>
-                      <button className="text-red-900 bg-red-50 border border-red-700 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                      <button
+                        onClick={() => {
+                          setselectedFuelId(dt.id);
+                          setIsOpen(true);
+                        }}
+                        className="text-red-900 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer"
+                      >
                         <FaTrashAlt className="text-[12px]" />
                       </button>
                     </div>
+                    <Toaster />
                   </td>
                 </tr>
               ))}
@@ -280,6 +320,42 @@ const Fuel = () => {
           </table>
         </div>
       </div>
+      {/* Delete modal */}
+      <td className="flex justify-center items-center">
+        {isOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-[#000000ad] z-50">
+            <div className="relative bg-white rounded-lg shadow-lg p-6 w-72 max-w-sm border border-gray-300">
+              <button
+                onClick={toggleModal}
+                className="text-2xl absolute top-2 right-2 text-white bg-red-500 hover:bg-red-700 cursor-pointer rounded-sm"
+              >
+                <IoMdClose />
+              </button>
+
+              <div className="flex justify-center mb-4 text-red-500 text-4xl">
+                <FaTrashAlt />
+              </div>
+              <p className="text-center text-gray-700 font-medium mb-6">
+                আপনি কি ফুয়েলটি ডিলিট করতে চান?
+              </p>
+              <div className="flex justify-center space-x-4">
+                <button
+                  onClick={toggleModal}
+                  className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-primary hover:text-white cursor-pointer"
+                >
+                  না
+                </button>
+                <button
+                  onClick={() => handleDelete(selectedFuelId)}
+                  className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 cursor-pointer"
+                >
+                  হা
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </td>
     </main>
   );
 };

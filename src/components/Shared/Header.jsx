@@ -45,7 +45,7 @@ const Header = () => {
           className="border border-gray-300 rounded-md outline-none w-96 h-9 px-5"
           placeholder="Search..."
         />
-        <div className="absolute top-0 right-0 bg-primary py-2.5 w-10 flex items-center justify-center rounded-r-md text-white hover:bg-primary cursor-pointer">
+        <div className="absolute top-0 right-0 bg-primary py-2.5 w-10 flex items-center justify-center rounded-r-md text-white hover:bg-secondary cursor-pointer">
           <FaMagnifyingGlass />
         </div>
       </div>
@@ -68,8 +68,10 @@ const Header = () => {
         {isAdminOpen && (
           <div className="absolute right-0 top-14 w-52 bg-white drop-shadow p-5 rounded-md shadow-lg z-50">
             <p className="font-semibold text-primary">Admin</p>
-            <span className="text-sm text-gray-600">{user?.user?.email}</span>
-            <p className="text-sm text-gray-600">{user?.user?.phone}</p>
+            <span className="text-sm text-gray-600">
+              {user?.data?.user?.email}
+            </span>
+            <p className="text-sm text-gray-600">{user?.data?.user?.phone}</p>
             <p className="mt-4">
               <button
                 onClick={handleSignout}

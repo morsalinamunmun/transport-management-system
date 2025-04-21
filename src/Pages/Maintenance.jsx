@@ -1,11 +1,17 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { FaTruck, FaPlus, FaFilter, FaPen, FaTrashAlt } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 import { Link } from "react-router-dom";
 const Maintenance = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [maintenance, setMaintenance] = useState([]);
   const [loading, setLoading] = useState(true);
+  // delete modal
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedMaintenanceId, setselectedMaintenanceId] = useState(null);
+  const toggleModal = () => setIsOpen(!isOpen);
   useEffect(() => {
     axios
       .get("https://api.dropshep.com/api/maintenance")
@@ -24,7 +30,36 @@ const Maintenance = () => {
   if (loading) return <p>Loading parts...</p>;
 
   console.log("maintenance", maintenance);
+  // delete by id
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(
+        `https://api.dropshep.com/api/maintenance/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
+      if (!response.ok) {
+        throw new Error("Failed to delete trip");
+      }
+      // Remove fuel from local list
+      setMaintenance((prev) => prev.filter((driver) => driver.id !== id));
+      toast.success("সফলভাবে ডিলিট হয়েছে", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+
+      setIsOpen(false);
+      setselectedMaintenanceId(null);
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error("ডিলিট করতে সমস্যা হয়েছে!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
+  };
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
       <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-8 border border-gray-200">
@@ -106,37 +141,44 @@ const Maintenance = () => {
           <table className="min-w-full text-sm text-left">
             <thead className="bg-[#11375B] text-white uppercase text-sm">
               <tr>
-                <th className="px-2 md:px-4 py-3">#</th>
-                <th className="px-2 md:px-4 py-3">সার্ভিসের ধরন</th>
-                <th className="px-2 md:px-4 py-3">গাড়ির নাম</th>
-                <th className="px-2 md:px-4 py-3">মেইনটেনেন্সের ধরন</th>
-                <th className="px-2 md:px-4 py-3">পার্টস এন্ড স্পায়ারস</th>
-                <th className="px-2 md:px-4 py-3">মেইনটেনেন্সের তারিখ</th>
-                <th className="px-2 md:px-4 py-3">অগ্রাধিকার</th>
-                <th className="px-2 md:px-4 py-3">টোটাল খরচ</th>
-                <th className="px-2 md:px-4 py-3">অ্যাকশন</th>
+                <th className="px-2 py-3">#</th>
+                <th className="px-2 py-3">সার্ভিসের ধরন</th>
+                <th className="px-2 py-3">গাড়ির নাম</th>
+                <th className="px-2 py-3">মেইনটেনেন্সের ধরন</th>
+                <th className="px-2 py-3">পার্টস এন্ড স্পায়ারস</th>
+                <th className="px-2 py-3">মেইনটেনেন্সের তারিখ</th>
+                <th className="px-2 py-3">অগ্রাধিকার</th>
+                <th className="px-2 py-3">টোটাল খরচ</th>
+                <th className="px-2 py-3">অ্যাকশন</th>
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
               {maintenance?.map((dt, index) => (
                 <tr key={index} className="hover:bg-gray-50 transition-all">
-                  <td className="px-2 md:px-4 py-4 font-bold">{index + 1}</td>
-                  <td className="px-2 md:px-4 py-4">{dt.service_type}</td>
-                  <td className="px-2 md:px-4 py-4">{dt.service_type}</td>
-                  <td className="px-2 md:px-4 py-4">{dt.service_for}</td>
-                  <td className="px-2 md:px-4 py-4">{dt.parts_and_spairs}</td>
-                  <td className="px-2 md:px-4 py-4">{dt.time}</td>
-                  <td className="px-2 md:px-4 py-4">{dt.dignifies}</td>
-                  <td className="px-2 md:px-4 py-4">{dt.total_cost}</td>
+                  <td className="px-2 py-4 font-bold">{index + 1}</td>
+                  <td className="px-2 py-4">{dt.service_type}</td>
+                  <td className="px-2 py-4">{dt.service_type}</td>
+                  <td className="px-2 py-4">{dt.service_for}</td>
+                  <td className="px-2 py-4">{dt.parts_and_spairs}</td>
+                  <td className="px-2 py-4">{dt.time}</td>
+                  <td className="px-2 py-4">{dt.dignifies}</td>
+                  <td className="px-2 py-4">{dt.total_cost}</td>
                   <td>
                     <div className="flex gap-2">
-                      <button className="text-primary bg-green-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                      <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
                         <FaPen className="text-[12px]" />
                       </button>
-                      <button className="text-red-900 bg-red-50 border border-red-700 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                        <FaTrashAlt className="text-[12px]" />
+                      <button className="text-red-900 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                        <FaTrashAlt
+                          onClick={() => {
+                            setselectedMaintenanceId(dt.id);
+                            setIsOpen(true);
+                          }}
+                          className="text-[12px]"
+                        />
                       </button>
                     </div>
+                    <Toaster />
                   </td>
                 </tr>
               ))}
@@ -144,6 +186,42 @@ const Maintenance = () => {
           </table>
         </div>
       </div>
+      {/* Delete modal */}
+      <td className="flex justify-center items-center">
+        {isOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-[#000000ad] z-50">
+            <div className="relative bg-white rounded-lg shadow-lg p-6 w-72 max-w-sm border border-gray-300">
+              <button
+                onClick={toggleModal}
+                className="text-2xl absolute top-2 right-2 text-white bg-red-500 hover:bg-red-700 cursor-pointer rounded-sm"
+              >
+                <IoMdClose />
+              </button>
+
+              <div className="flex justify-center mb-4 text-red-500 text-4xl">
+                <FaTrashAlt />
+              </div>
+              <p className="text-center text-gray-700 font-medium mb-6">
+                আপনি কি ডিলিট করতে চান?
+              </p>
+              <div className="flex justify-center space-x-4">
+                <button
+                  onClick={toggleModal}
+                  className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-primary hover:text-white cursor-pointer"
+                >
+                  না
+                </button>
+                <button
+                  onClick={() => handleDelete(selectedMaintenanceId)}
+                  className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 cursor-pointer"
+                >
+                  হা
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </td>
     </main>
   );
 };

@@ -1,17 +1,19 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import {
-  FaTruck,
-  FaPlus,
-  FaFilter,
-  FaPen,
-  FaEye,
-  FaTrashAlt,
-} from "react-icons/fa";
+import toast, { Toaster } from "react-hot-toast";
+import { FaTruck, FaPlus, FaPen, FaEye, FaTrashAlt } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 import { Link } from "react-router-dom";
 const CarList = () => {
   const [vehicles, setVehicle] = useState([]);
   const [loading, setLoading] = useState(true);
+  // get single car info by id
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [selectedCar, setselectedCar] = useState(null);
+  // delete modal
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedDriverId, setSelectedDriverId] = useState(null);
+  const toggleModal = () => setIsOpen(!isOpen);
   useEffect(() => {
     axios
       .get("https://api.dropshep.com/api/vehicle")
@@ -26,11 +28,56 @@ const CarList = () => {
         setLoading(false);
       });
   }, []);
+  // delete by id
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(
+        `https://api.dropshep.com/api/vehicle/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
+      if (!response.ok) {
+        throw new Error("Failed to delete driver");
+      }
+      // Remove car from local list
+      setVehicle((prev) => prev.filter((driver) => driver.id !== id));
+      toast.success("গাড়িটি সফলভাবে ডিলিট হয়েছে", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+
+      setIsOpen(false);
+      setSelectedDriverId(null);
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error("ডিলিট করতে সমস্যা হয়েছে!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
+  };
   if (loading) return <p className="text-center mt-16">Loading vehicle...</p>;
 
   console.log(vehicles);
-
+  // view car by id
+  const handleViewCar = async (id) => {
+    try {
+      const response = await axios.get(
+        `https://api.dropshep.com/api/vehicle/${id}`
+      );
+      if (response.data.status === "success") {
+        setselectedCar(response.data.data);
+        setViewModalOpen(true);
+      } else {
+        toast.error("ড্রাইভারের তথ্য লোড করা যায়নি");
+      }
+    } catch (error) {
+      console.error("View error:", error);
+      toast.error("ড্রাইভারের তথ্য আনতে সমস্যা হয়েছে");
+    }
+  };
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-4">
       <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-6 border border-gray-200">
@@ -81,12 +128,13 @@ const CarList = () => {
               <tr>
                 <th className="px-2 py-3">#</th>
                 <th className="px-2 py-3">নাম</th>
-                <th className="px-2 py-3">মোবাইল</th>
-                <th className="px-2 py-3">ধরন</th>
-                <th className="px-2 py-3">এলাকা</th>
                 <th className="px-2 py-3">গাড়ি</th>
+                <th className="px-2 py-3">ধরন</th>
+                <th className="px-2 py-3">গাড়ির সাইজ</th>
+                <th className="px-2 py-3">এলাকা</th>
+
                 <th className="px-2 py-3">ট্রিপ</th>
-                <th className="px-2 py-3">যোগদানের তারিখ</th>
+                <th className="px-2 py-3">রেজিস্ট্রেশন নাম্বার</th>
                 <th className="px-2 py-3">স্ট্যাটাস</th>
                 <th className="px-2 py-3">অ্যাকশন</th>
               </tr>
@@ -96,29 +144,40 @@ const CarList = () => {
                 <tr key={index} className="hover:bg-gray-50 transition-all">
                   <td className="px-2 py-4 font-bold">{index + 1}</td>
                   <td className="px-2 py-4">{vehicle.driver_name}</td>
-                  <td className="px-2 py-4">{vehicle.driver_name}</td>
-                  <td className="px-2 py-4">{vehicle.category}</td>
-                  <td className="px-2 py-4">{vehicle.registration_zone}</td>
                   <td className="px-2 py-4">{vehicle.vehicle_name}</td>
-                  <td className="px-2 py-4">{vehicle.driver_name}</td>
-                  <td className="px-2 py-4">{vehicle.driver_name}</td>
+                  <td className="px-2 py-4">{vehicle.category}</td>
+                  <td className="px-2 py-4">{vehicle.size}</td>
+                  <td className="px-2 py-4">{vehicle.registration_zone}</td>
+
+                  <td className="px-2 py-4">0</td>
+                  <td className="px-2 py-4">{vehicle.registration_number}</td>
                   <td className="px-2 py-4">
                     <span className="text-white bg-green-700 px-3 py-1 rounded-md text-xs font-semibold">
                       Active
                     </span>
                   </td>
                   <td className="px-2 py-4">
-                    <div className="flex gap-2">
-                      <button className="text-primary bg-green-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                    <div className="flex gap-1">
+                      <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
                         <FaPen className="text-[12px]" />
                       </button>
-                      <button className="text-primary bg-blue-50 border border-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                      <button
+                        onClick={() => handleViewCar(vehicle.id)}
+                        className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer"
+                      >
                         <FaEye className="text-[12px]" />
                       </button>
-                      <button className="text-red-900 bg-red-50 border border-red-700 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                      <button
+                        onClick={() => {
+                          setSelectedDriverId(vehicle.id);
+                          setIsOpen(true);
+                        }}
+                        className="text-red-900 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer"
+                      >
                         <FaTrashAlt className="text-[12px]" />
                       </button>
                     </div>
+                    <Toaster />
                   </td>
                 </tr>
               ))}
@@ -126,6 +185,114 @@ const CarList = () => {
           </table>
         </div>
       </div>
+      {/* Delete modal */}
+      <td className="flex justify-center items-center">
+        {isOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-[#000000ad] z-50">
+            <div className="relative bg-white rounded-lg shadow-lg p-6 w-72 max-w-sm border border-gray-300">
+              <button
+                onClick={toggleModal}
+                className="text-2xl absolute top-2 right-2 text-white bg-red-500 hover:bg-red-700 cursor-pointer rounded-sm"
+              >
+                <IoMdClose />
+              </button>
+              <div className="flex justify-center mb-4 text-red-500 text-4xl">
+                <FaTrashAlt />
+              </div>
+              <p className="text-center text-gray-700 font-medium mb-6">
+                আপনি কি গাড়িটি ডিলিট করতে চান?
+              </p>
+              <div className="flex justify-center space-x-4">
+                <button
+                  onClick={toggleModal}
+                  className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-primary hover:text-white cursor-pointer"
+                >
+                  না
+                </button>
+                <button
+                  onClick={() => handleDelete(selectedDriverId)}
+                  className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 cursor-pointer"
+                >
+                  হা
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </td>
+      {/* get car information by id */}
+      {viewModalOpen && selectedCar && (
+        <div className="fixed inset-0 w-full h-full flex items-center justify-center bg-[#000000ad] z-50">
+          <div className="w-4xl p-5 bg-gray-100 rounded-xl mt-10">
+            <h3 className="text-primary font-semibold">গাড়ির নাম</h3>
+            <div className="mt-5">
+              <ul className="flex border border-gray-300">
+                <li className="w-[428px] flex text-primary font-semibold text-sm px-3 py-2 border-r border-gray-300">
+                  <p className="w-48">ড্রাইভারের নাম</p>{" "}
+                  <p>{selectedCar.driver_name}</p>
+                </li>
+                <li className="w-[428px] flex text-primary font-semibold text-sm px-3 py-2">
+                  <p className="w-48">গাড়ির নাম</p>{" "}
+                  <p>{selectedCar.vehicle_name}</p>
+                </li>
+              </ul>
+              <ul className="flex border-b border-r border-l border-gray-300">
+                <li className="w-[428px] flex text-primary font-semibold text-sm px-3 py-2 border-r border-gray-300">
+                  <p className="w-48">গাড়ির ধরন</p>{" "}
+                  <p>{selectedCar.category}</p>
+                </li>
+                <li className="w-[428px] flex text-primary font-semibold text-sm px-3 py-2">
+                  <p className="w-48">গাড়ির সাইজ</p> <p>{selectedCar.size}</p>
+                </li>
+              </ul>
+              <ul className="flex border-b border-r border-l border-gray-300">
+                <li className="w-[428px] flex text-primary font-semibold text-sm px-3 py-2 border-r border-gray-300">
+                  <p className="w-48">রেজিস্ট্রেশন নাম্বার</p>{" "}
+                  <p>{selectedCar.registration_number}</p>
+                </li>
+                <li className="w-[428px] flex text-primary font-semibold text-sm px-3 py-2">
+                  <p className="w-48">রেজিস্ট্রেশন সিরিয়াল</p>{" "}
+                  <p>{selectedCar.registration_serial}</p>
+                </li>
+              </ul>
+              <ul className="flex border-b border-r border-l border-gray-300">
+                <li className="w-[428px] flex text-primary font-semibold text-sm px-3 py-2 border-r border-gray-300">
+                  <p className="w-48">রেজিস্ট্রেশন এলাকা</p>{" "}
+                  <p>{selectedCar.registration_zone}</p>
+                </li>
+                <li className="w-[428px] flex text-primary font-semibold text-sm px-3 py-2">
+                  <p className="w-48">রেজিস্ট্রেশন তারিখ</p>{" "}
+                  <p>{selectedCar.registration_date}</p>
+                </li>
+              </ul>
+              <ul className="flex border-b border-r border-l border-gray-300">
+                <li className="w-[428px] flex text-primary font-semibold text-sm px-3 py-2 border-r border-gray-300">
+                  <p className="w-48">ট্যাক্স মেয়াদোত্তীর্ণ তারিখ</p>{" "}
+                  <p>{selectedCar.text_date || "N/A"}</p>
+                </li>
+                <li className="w-[428px] flex text-primary font-semibold text-sm px-3 py-2">
+                  <p className="w-48">রোড পারমিট তারিখ</p>{" "}
+                  <p>{selectedCar.road_permit_date}</p>
+                </li>
+              </ul>
+              <ul className="flex border-b border-r border-l border-gray-300">
+                <li className="w-[428px] flex text-primary font-semibold text-sm px-3 py-2 border-r border-gray-300">
+                  <p className="w-48">ফিটনেসর মেয়াদোত্তীর্ণ তারিখ</p>{" "}
+                  <p>{selectedCar.fitness_date}</p>
+                </li>
+              </ul>
+              <div className="flex justify-end mt-10">
+                <button
+                  onClick={() => setViewModalOpen(false)}
+                  className="text-white bg-primary py-1 px-2 rounded-md cursor-pointer hover:bg-secondary"
+                >
+                  বন্ধ করুন
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 };
