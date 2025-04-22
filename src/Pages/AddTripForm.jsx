@@ -1,12 +1,41 @@
-import React from "react";
-import ReusableForm from "../components/Form/ReusableForm";
+import axios from "axios";
+import React, { useRef } from "react";
 import "react-datepicker/dist/react-datepicker.css";
+import { useForm } from "react-hook-form";
+import toast, { Toaster } from "react-hot-toast";
+import { FiCalendar } from "react-icons/fi";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 
 const AddTripForm = () => {
-  // const dateRef = useRef(null);
-  const handleSubmit = (data) => {
-    console.log("Form data:", data);
+  const { register, handleSubmit, reset } = useForm();
+  const tripDateRef = useRef(null);
+  const onSubmit = async (data) => {
+    console.log("add car data", data);
+    try {
+      const formData = new FormData();
+      for (const key in data) {
+        formData.append(key, data[key]);
+      }
+      const response = await axios.post(
+        "https://api.dropshep.com/api/trip",
+        formData
+      );
+      const resData = response.data;
+      console.log("resData", resData);
+      if (resData.status === "success") {
+        toast.success("ট্রিপ সফলভাবে সংরক্ষণ হয়েছে!", {
+          position: "top-right",
+        });
+        reset();
+      } else {
+        toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
+      }
+    } catch (error) {
+      console.error(error);
+      const errorMessage =
+        error.response?.data?.message || error.message || "Unknown error";
+      toast.error("সার্ভার ত্রুটি: " + errorMessage);
+    }
   };
 
   return (
@@ -15,7 +44,8 @@ const AddTripForm = () => {
         ট্রিপ যোগ করুন
       </h3>
       <div className="mx-auto p-6 bg-gray-100 rounded-md shadow">
-        <ReusableForm onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Toaster position="top-center" reverseOrder={false} />
           {/*  */}
           <div className="border border-gray-300 p-3 md:p-5 rounded-md">
             <h5 className="text-primary font-semibold text-center md:pb-5">
@@ -28,19 +58,30 @@ const AddTripForm = () => {
                 <label className="text-primary text-sm font-semibold">
                   তারিখ *
                 </label>
-                <input
-                  name="tripDate"
-                  type="text"
-                  placeholder="ট্রিপের তারিখ..."
-                  className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-                />
+                <div className="relative">
+                  <input
+                    type="date"
+                    {...register("trip_date")}
+                    ref={(e) => {
+                      register("trip_date").ref(e);
+                      tripDateRef.current = e;
+                    }}
+                    className="remove-date-icon mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none pr-10"
+                  />
+                  <span className="py-[11px] absolute right-0 px-3 top-[22px] transform -translate-y-1/2 bg-primary rounded-r">
+                    <FiCalendar
+                      className="text-white cursor-pointer"
+                      onClick={() => tripDateRef.current?.showPicker?.()}
+                    />
+                  </span>
+                </div>
               </div>
               <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   ট্রিপের সময়
                 </label>
                 <input
-                  name="tripTime"
+                  {...register("trip_time", { required: true })}
                   type="text"
                   placeholder="ট্রিপের সময়..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -54,7 +95,7 @@ const AddTripForm = () => {
                   লোড পয়েন্ট
                 </label>
                 <input
-                  name="loadPoint"
+                  {...register("load_point", { required: true })}
                   type="text"
                   placeholder="লোড পয়েন্ট..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -65,7 +106,7 @@ const AddTripForm = () => {
                   আনলোড পয়েন্ট
                 </label>
                 <input
-                  name="uloadPoint"
+                  {...register("unload_point", { required: true })}
                   type="text"
                   placeholder="আনলোড পয়েন্ট..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -86,7 +127,7 @@ const AddTripForm = () => {
                   ড্রাইভারের নাম
                 </label>
                 <select
-                  name="driverName"
+                  {...register("driver_name", { required: true })}
                   className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
                   // defaultValue=""
                 >
@@ -101,7 +142,7 @@ const AddTripForm = () => {
                   ড্রাইভারের মোবাইল
                 </label>
                 <input
-                  name="driverMobile"
+                  {...register("driver_contact", { required: true })}
                   type="text"
                   placeholder="ড্রাইভারের মোবাইল..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -112,7 +153,7 @@ const AddTripForm = () => {
                   ড্রাইভারের কমিশন
                 </label>
                 <input
-                  name="commision"
+                  {...register("driver_percentage", { required: true })}
                   type="text"
                   placeholder="ড্রাইভারের কমিশন..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -131,7 +172,7 @@ const AddTripForm = () => {
                   তেলের মূল্য
                 </label>
                 <input
-                  name="fuelRate"
+                  {...register("fuel_price", { required: true })}
                   type="text"
                   placeholder="তেলের মূল্য..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -142,7 +183,7 @@ const AddTripForm = () => {
                   গ্যাসের মূল্য
                 </label>
                 <input
-                  name="gasRate"
+                  {...register("gas_price", { required: true })}
                   type="text"
                   placeholder="গ্যাসের মূল্য..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -153,9 +194,8 @@ const AddTripForm = () => {
                   গাড়ির নম্বর
                 </label>
                 <select
-                  name="carNo"
+                  {...register("vehicle_number", { required: true })}
                   className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
-                  // defaultValue=""
                 >
                   <option value="">গাড়ির নম্বর</option>
                   <option value="Dhaka">Dhama metro-1</option>
@@ -170,7 +210,7 @@ const AddTripForm = () => {
                   অন্যান্য খরচ
                 </label>
                 <input
-                  name="othersCost"
+                  {...register("other_expenses", { required: true })}
                   type="text"
                   placeholder="অন্যান্য খরচ..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -181,24 +221,35 @@ const AddTripForm = () => {
                   ট্রিপের খরচ
                 </label>
                 <input
+                  {...register("trip_price", { required: true })}
                   placeholder="ট্রিপের খরচ..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
               <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
+                  {/* todo show here অন্যান্য খরচ + ট্রিপের খরচ */}
                   ট্রিপের ভাড়া
                 </label>
                 <input
-                  name="tripRent"
+                  readOnly
                   type="text"
                   placeholder="ট্রিপের ভাড়া..."
-                  className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+                  className="cursor-not-allowed mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
             </div>
           </div>
-        </ReusableForm>
+          {/* Submit Button */}
+          <div className="text-left">
+            <button
+              type="submit"
+              className="mt-4 bg-primary text-white px-6 py-2 rounded hover:bg-secondary cursor-pointer"
+            >
+              সাবমিট করুন
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

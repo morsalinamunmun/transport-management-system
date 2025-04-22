@@ -73,11 +73,6 @@ const AddCarForm = () => {
               <option value="Solaiman Ali">Solaiman Ali</option>
             </select>
             <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
-            {/* <input
-              {...register("driver_name", { required: true })}
-              placeholder="ড্রাইভারের নাম..."
-              className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-            /> */}
           </div>
         </div>
 
@@ -346,12 +341,12 @@ const AddCarForm = () => {
         </div>
 
         {/* Submit Button */}
-        <div className="text-right">
+        <div className="text-left">
           <button
             type="submit"
-            className="mt-4 bg-primary text-white px-6 py-2 rounded hover:bg-primary-dark"
+            className="mt-4 bg-primary text-white px-6 py-2 rounded hover:bg-secondary cursor-pointer"
           >
-            Save Vehicle
+            সাবমিট করুন
           </button>
         </div>
       </div>

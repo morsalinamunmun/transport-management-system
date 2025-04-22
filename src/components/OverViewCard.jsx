@@ -10,10 +10,10 @@ const OverViewCard = () => {
             <h3 className="font-semibold">আজকের আয়</h3>
           </div>
           <div className="p-3 text-primary font-semibold text-sm space-y-2">
-            <div className="flex items-center gap-3">
+            {/* <div className="flex items-center gap-3">
               <div className="bg-primary w-[6px] h-[6px] rounded-full" />
               <p className="flex justify-between w-full">
-                <span>ফুয়েল খরচ</span> - <span>0</span>
+                <span>ফুয়েল খরচ</span> - <span>1200.00</span>
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -21,10 +21,10 @@ const OverViewCard = () => {
               <p className="flex justify-between w-full">
                 <span>ট্রিপের খরচ</span> - <span>395</span>
               </p>
-            </div>
+            </div> */}
             <div className="flex items-center gap-3">
               <p className="flex justify-between w-full border-t mt-3 pt-3">
-                <span>টোটাল আয়</span> - <span>200</span>
+                <span>টোটাল আয়</span> - <span>1595</span>
               </p>
             </div>
           </div>
@@ -39,18 +39,18 @@ const OverViewCard = () => {
             <div className="flex items-center gap-3">
               <div className="bg-primary w-[6px] h-[6px] rounded-full" />
               <p className="flex justify-between w-full">
-                <span>ফুয়েল খরচ</span> - <span>0</span>
+                <span>ফুয়েল খরচ</span> - <span>1000</span>
               </p>
             </div>
             <div className="flex items-center gap-3">
               <div className="bg-primary w-[6px] h-[6px] rounded-full" />
               <p className="flex justify-between w-full">
-                <span>ট্রিপের খরচ</span> - <span>0</span>
+                <span>ট্রিপের খরচ</span> - <span>3000</span>
               </p>
             </div>
             <div className="flex items-center gap-3">
               <p className="flex justify-between w-full border-t mt-3 pt-3">
-                <span>টোটাল খরচ</span> - <span>200</span>
+                <span>টোটাল খরচ</span> - <span>4000</span>
               </p>
             </div>
           </div>
@@ -65,13 +65,19 @@ const OverViewCard = () => {
             <div className="flex items-center gap-3">
               <div className="bg-primary w-[6px] h-[6px] rounded-full" />
               <p className="flex justify-between w-full">
-                <span>গাড়ির ধরন</span> - <span>0</span>
+                <span>গাড়ির ধরন</span> - <span>Truck</span>
               </p>
             </div>
             <div className="flex items-center gap-3">
               <div className="bg-primary w-[6px] h-[6px] rounded-full" />
               <p className="flex justify-between w-full">
-                <span>লোড এবং আনলোড পয়েন্ট</span> - <span>0</span>
+                <span>লোড পয়েন্ট</span> - <span>Baddha</span>
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="bg-primary w-[6px] h-[6px] rounded-full" />
+              <p className="flex justify-between w-full">
+                <span>আনলোড পয়েন্ট</span> - <span>Gazipur</span>
               </p>
             </div>
           </div>
@@ -86,19 +92,19 @@ const OverViewCard = () => {
             <div className="flex items-center gap-3">
               <div className="bg-primary w-[6px] h-[6px] rounded-full" />
               <p className="flex justify-between w-full">
-                <span>গাড়ির নাম্বার</span> - <span>0</span>
+                <span>গাড়ির নাম্বার</span> - <span>DNN-1025</span>
               </p>
             </div>
             <div className="flex items-center gap-3">
               <div className="bg-primary w-[6px] h-[6px] rounded-full" />
               <p className="flex justify-between w-full">
-                <span>ডকুমেন্টস এর নাম</span> - <span>1014</span>
+                <span>ডকুমেন্টস</span> - <span>Fitness papers</span>
               </p>
             </div>
             <div className="flex items-center gap-3">
               <div className="bg-primary w-[6px] h-[6px] rounded-full" />
               <p className="flex justify-between w-full">
-                <span>মেয়াদোত্তীর্ণ তারিখ</span> - <span>1014</span>
+                <span>মেয়াদোত্তীর্ণ তারিখ</span> - <span>12-10-2025</span>
               </p>
             </div>
           </div>

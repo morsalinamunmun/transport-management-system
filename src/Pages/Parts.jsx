@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaTruck, FaPlus, FaTrashAlt, FaPen } from "react-icons/fa";
-import ReusableForm from "../components/Form/ReusableForm.jsx";
 import { IoMdClose } from "react-icons/io";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import { useForm } from "react-hook-form";
+import { FiCalendar } from "react-icons/fi";
 
 const Parts = () => {
   const [showFilter, setShowFilter] = useState(false);
@@ -13,7 +14,38 @@ const Parts = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFuelId, setselectedFuelId] = useState(null);
   const toggleModal = () => setIsOpen(!isOpen);
-
+  const { register, handleSubmit, reset } = useForm();
+  const partsDateRef = useRef(null);
+  // post parts
+  const onSubmit = async (data) => {
+    console.log("add car data", data);
+    try {
+      const formData = new FormData();
+      for (const key in data) {
+        formData.append(key, data[key]);
+      }
+      const response = await axios.post(
+        "https://api.dropshep.com/api/parts",
+        formData
+      );
+      const resData = response.data;
+      console.log("resData", resData);
+      if (resData.status === "success") {
+        toast.success("পার্টস সফলভাবে সংরক্ষণ হয়েছে!", {
+          position: "top-right",
+        });
+        reset();
+      } else {
+        toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
+      }
+    } catch (error) {
+      console.error(error);
+      const errorMessage =
+        error.response?.data?.message || error.message || "Unknown error";
+      toast.error("সার্ভার ত্রুটি: " + errorMessage);
+    }
+  };
+  // fetch all parts
   useEffect(() => {
     axios
       .get("https://api.dropshep.com/api/parts")
@@ -61,6 +93,7 @@ const Parts = () => {
   };
   return (
     <main className="relative bg-gradient-to-br from-gray-100 to-white md:p-6">
+      <Toaster position="top-right" reverseOrder={false} />
       <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-8 border border-gray-200">
         {/* Header */}
         <div className="md:flex items-center justify-between mb-6">
@@ -125,7 +158,6 @@ const Parts = () => {
                         />
                       </button>
                     </div>
-                    <Toaster />
                   </td>
                 </tr>
               ))}
@@ -134,7 +166,7 @@ const Parts = () => {
         </div>
       </div>
       {/* Delete modal */}
-      <td className="flex justify-center items-center">
+      <div className="flex justify-center items-center">
         {isOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-[#000000ad] z-50">
             <div className="relative bg-white rounded-lg shadow-lg p-6 w-72 max-w-sm border border-gray-300">
@@ -168,9 +200,9 @@ const Parts = () => {
             </div>
           </div>
         )}
-      </td>
+      </div>
 
-      {/* Modal */}
+      {/* Modal Form*/}
       {showFilter && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg relative">
@@ -184,20 +216,14 @@ const Parts = () => {
               পার্টস যোগ করুন
             </h2>
 
-            {/* ReusableForm Integration */}
-            <ReusableForm
-              onSubmit={(data) => {
-                console.log("Form Submitted:", data);
-                setShowFilter(false);
-              }}
-            >
+            <form action="" onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-4">
                 <div className="w-full relative">
                   <label className="text-primary text-sm font-semibold">
                     পার্টসের নাম
                   </label>
                   <input
-                    name="partsName"
+                    {...register("name", { required: true })}
                     type="text"
                     placeholder="পার্টসের নাম..."
                     className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -206,20 +232,39 @@ const Parts = () => {
               </div>
 
               <div className="mb-4">
-                <div className="w-full relative">
+                <div className="w-full">
                   <label className="text-primary text-sm font-semibold">
                     পার্টসের ভ্যালিডিটি
                   </label>
-                  <input
-                    name="partsValidity"
-                    type="text"
-                    data-datepicker
-                    placeholder="তারিখ নির্বাচন করুন..."
-                    className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-                  />
+                  <div className="relative">
+                    <input
+                      type="date"
+                      {...register("date")}
+                      ref={(e) => {
+                        register("date").ref(e);
+                        partsDateRef.current = e;
+                      }}
+                      className="remove-date-icon mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none pr-10"
+                    />
+                    <span className="py-[11px] absolute right-0 px-3 top-[22px] transform -translate-y-1/2 bg-primary rounded-r">
+                      <FiCalendar
+                        className="text-white cursor-pointer"
+                        onClick={() => partsDateRef.current?.showPicker?.()}
+                      />
+                    </span>
+                  </div>
                 </div>
               </div>
-            </ReusableForm>
+              {/* Submit Button */}
+              <div className="text-right">
+                <button
+                  type="submit"
+                  className="mt-4 bg-primary text-white px-6 py-2 rounded hover:bg-secondary cursor-pointer"
+                >
+                  সাবমিট করুন
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

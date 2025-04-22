@@ -7,7 +7,7 @@ import {
   FaBriefcase,
   FaUser,
 } from "react-icons/fa6";
-import logo from "../assets/logo.png";
+import logo from "../assets/tramessy.png";
 import avatar from "../assets/avatar.png";
 import { Link, useLocation } from "react-router-dom";
 
@@ -45,7 +45,7 @@ const Sidebar = ({ mobileSidebarOpen, setMobileSidebarOpen }) => {
         {/* Logo */}
         <div className="flex justify-center border-b border-gray-300">
           <Link to="/">
-            <img src={logo} alt="Logo" className="w-28" />
+            <img src={logo} alt="Logo" className="w-28 py-[15.5px]" />
           </Link>
         </div>
 

@@ -11,22 +11,22 @@ const statisticsData = [
   {
     title: "টোটাল ট্রিপ",
     icon: <FaTruck className="text-white text-3xl" />,
-    value: 50,
+    value: 20,
   },
   {
     title: "টোটাল গাড়ি",
     icon: <FaChartPie className="text-white text-3xl" />,
-    value: 50,
+    value: 7,
   },
   {
     title: "টোটাল গ্রাহক",
     icon: <FaUsers className="text-white text-3xl" />,
-    value: 50,
+    value: 10,
   },
   {
-    title: "কাস্টমার",
+    title: "ড্রাইভার",
     icon: <FaUserPlus className="text-white text-3xl" />,
-    value: 50,
+    value: 7,
   },
 ];
 

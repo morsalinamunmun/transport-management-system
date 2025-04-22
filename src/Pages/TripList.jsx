@@ -27,26 +27,6 @@ const TripList = () => {
   // get single driver info by id
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedTrip, setselectedTrip] = useState(null);
-  // filer
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [selectedDriver, setSelectedDriver] = useState("");
-  const [allTrips, setAllTrips] = useState([]);
-  const [filteredTrips, setFilteredTrips] = useState(null);
-
-  useEffect(() => {
-    const fetchAllTrips = async () => {
-      try {
-        const res = await fetch("https://api.dropshep.com/api/trip");
-        const data = await res.json();
-        setAllTrips(data);
-      } catch (err) {
-        console.error("Failed to load trips:", err);
-      }
-    };
-
-    fetchAllTrips();
-  }, []);
 
   useEffect(() => {
     axios
