@@ -158,9 +158,11 @@ const CarList = () => {
                   </td>
                   <td className="px-2 py-4">
                     <div className="flex gap-1">
-                      <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                        <FaPen className="text-[12px]" />
-                      </button>
+                      <Link to={`/UpdateCarForm/${vehicle.id}`}>
+                        <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                          <FaPen className="text-[12px]" />
+                        </button>
+                      </Link>
                       <button
                         onClick={() => handleViewCar(vehicle.id)}
                         className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer"
@@ -186,7 +188,7 @@ const CarList = () => {
         </div>
       </div>
       {/* Delete modal */}
-      <td className="flex justify-center items-center">
+      <div className="flex justify-center items-center">
         {isOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-[#000000ad] z-50">
             <div className="relative bg-white rounded-lg shadow-lg p-6 w-72 max-w-sm border border-gray-300">
@@ -219,7 +221,7 @@ const CarList = () => {
             </div>
           </div>
         )}
-      </td>
+      </div>
       {/* get car information by id */}
       {viewModalOpen && selectedCar && (
         <div className="fixed inset-0 w-full h-full flex items-center justify-center bg-[#000000ad] z-50">

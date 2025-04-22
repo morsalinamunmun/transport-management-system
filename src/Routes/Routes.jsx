@@ -20,6 +20,7 @@ import AddUserForm from "../Pages/AddUserForm";
 import Login from "../components/Form/Login";
 import ResetPass from "../components/Form/ResetPass";
 import PrivateRoute from "./PrivateRoute";
+import UpdateCarForm from "../Pages/updateForm/UpdateCarForm";
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +46,12 @@ export const router = createBrowserRouter([
       {
         path: "AddCarForm",
         element: <AddCarForm />,
+      },
+      {
+        path: "UpdateCarForm/:id",
+        element: <UpdateCarForm />,
+        loader: ({ params }) =>
+          fetch(`https://api.dropshep.com/api/vehicle/${params.id}`),
       },
       {
         path: "DriverList",
