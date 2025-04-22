@@ -5,33 +5,52 @@ import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { FiCalendar } from "react-icons/fi";
 import { MdOutlineArrowDropDown } from "react-icons/md";
+import { useLoaderData } from "react-router-dom";
 
-const AddTripForm = () => {
-  const { register, handleSubmit, reset, watch } = useForm();
+const UpdateTripForm = () => {
+  const { register, handleSubmit, reset } = useForm();
   const tripDateRef = useRef(null);
-  const fuel = parseFloat(watch("fuel_price") || 0);
-  const gas = parseFloat(watch("gas_price") || 0);
-  const other = parseFloat(watch("other_expenses") || 0);
-  const price = parseFloat(watch("trip_price") || 0);
+  //   update loader data
+  const updateTripLoaderData = useLoaderData();
+  const {
+    id,
+    trip_date,
+    trip_time,
+    load_point,
+    unload_point,
+    driver_name,
+    driver_contact,
+    driver_percentage,
+    fuel_price,
+    gas_price,
+    vehicle_number,
+    other_expenses,
+    trip_price,
+  } = updateTripLoaderData.data;
+  const fuel = parseFloat(fuel_price) || 0;
+  const gas = parseFloat(gas_price) || 0;
+  const other = parseFloat(other_expenses) || 0;
+  const price = parseFloat(trip_price) || 0;
   const total = price - (fuel + gas + other);
-  console.log("total", total);
+  console.log("total trip", total);
+  console.log("updateTripLoaderData", updateTripLoaderData);
   const onSubmit = async (data) => {
-    console.log("add car data", data);
     try {
-      const formData = new FormData();
-      for (const key in data) {
-        formData.append(key, data[key]);
-      }
-      const response = await axios.post(
-        "https://api.dropshep.com/api/trip",
-        formData
+      const response = await axios.put(
+        `https://api.dropshep.com/api/trip/${id}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
+
       const resData = response.data;
       console.log("resData", resData);
+
       if (resData.status === "success") {
-        toast.success("ট্রিপ সফলভাবে সংরক্ষণ হয়েছে!", {
-          position: "top-right",
-        });
+        toast.success("ট্রিপ সফলভাবে আপডেট হয়েছে!", { position: "top-right" });
         reset();
       } else {
         toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
@@ -68,6 +87,7 @@ const AddTripForm = () => {
                   <input
                     type="date"
                     {...register("trip_date")}
+                    defaultValue={trip_date}
                     ref={(e) => {
                       register("trip_date").ref(e);
                       tripDateRef.current = e;
@@ -88,6 +108,7 @@ const AddTripForm = () => {
                 </label>
                 <input
                   {...register("trip_time", { required: true })}
+                  defaultValue={trip_time}
                   type="text"
                   placeholder="ট্রিপের সময়..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -102,6 +123,7 @@ const AddTripForm = () => {
                 </label>
                 <input
                   {...register("load_point", { required: true })}
+                  defaultValue={load_point}
                   type="text"
                   placeholder="লোড পয়েন্ট..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -113,6 +135,7 @@ const AddTripForm = () => {
                 </label>
                 <input
                   {...register("unload_point", { required: true })}
+                  defaultValue={unload_point}
                   type="text"
                   placeholder="আনলোড পয়েন্ট..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -135,9 +158,8 @@ const AddTripForm = () => {
                 <select
                   {...register("driver_name", { required: true })}
                   className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
-                  // defaultValue=""
                 >
-                  <option value="">ড্রাইভারের নাম</option>
+                  <option value="">{driver_name}</option>
                   <option value="Motin">Motin</option>
                   <option value="Korim">Korim</option>
                 </select>
@@ -149,6 +171,7 @@ const AddTripForm = () => {
                 </label>
                 <input
                   {...register("driver_contact", { required: true })}
+                  defaultValue={driver_contact}
                   type="text"
                   placeholder="ড্রাইভারের মোবাইল..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -160,6 +183,7 @@ const AddTripForm = () => {
                 </label>
                 <input
                   {...register("driver_percentage", { required: true })}
+                  defaultValue={driver_percentage}
                   type="text"
                   placeholder="ড্রাইভারের কমিশন..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -179,6 +203,7 @@ const AddTripForm = () => {
                 </label>
                 <input
                   {...register("fuel_price", { required: true })}
+                  defaultValue={fuel_price}
                   type="text"
                   placeholder="তেলের মূল্য..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -190,6 +215,7 @@ const AddTripForm = () => {
                 </label>
                 <input
                   {...register("gas_price", { required: true })}
+                  defaultValue={gas_price}
                   type="text"
                   placeholder="গ্যাসের মূল্য..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -203,7 +229,7 @@ const AddTripForm = () => {
                   {...register("vehicle_number", { required: true })}
                   className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
                 >
-                  <option value="">গাড়ির নম্বর</option>
+                  <option value="">{vehicle_number}</option>
                   <option value="Dhaka">Dhama metro-1</option>
                   <option value="Dhaka">Dhama metro-2</option>
                 </select>
@@ -217,6 +243,7 @@ const AddTripForm = () => {
                 </label>
                 <input
                   {...register("other_expenses", { required: true })}
+                  defaultValue={other_expenses}
                   type="text"
                   placeholder="অন্যান্য খরচ..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -224,11 +251,11 @@ const AddTripForm = () => {
               </div>
               <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
-                  {/* todo show here অন্যান্য খরচ + ট্রিপের খরচ */}
                   ট্রিপের ভাড়া
                 </label>
                 <input
                   {...register("trip_price", { required: true })}
+                  defaultValue={trip_price}
                   type="text"
                   placeholder="ট্রিপের ভাড়া..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -262,4 +289,4 @@ const AddTripForm = () => {
   );
 };
 
-export default AddTripForm;
+export default UpdateTripForm;

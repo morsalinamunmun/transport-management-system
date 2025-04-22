@@ -240,9 +240,12 @@ const TripList = () => {
                     </td>
                     <td className="px-2">
                       <div className="flex gap-1">
-                        <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                          <FaPen className="text-[12px]" />
-                        </button>
+                        <Link to={`/UpdateTripForm/${dt.id}`}>
+                          <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                            <FaPen className="text-[12px]" />
+                          </button>
+                        </Link>
+
                         <button
                           onClick={() => handleView(dt.id)}
                           className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer"
