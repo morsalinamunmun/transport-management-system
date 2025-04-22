@@ -74,18 +74,6 @@ const OverViewCard = () => {
                 <span>লোড এবং আনলোড পয়েন্ট</span> - <span>0</span>
               </p>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="bg-primary w-[6px] h-[6px] rounded-full" />
-              <p className="flex justify-between w-full">
-                <span>Maintenance requisition</span> - <span>0</span>
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="bg-primary w-[6px] h-[6px] rounded-full" />
-              <p className="flex justify-between w-full">
-                <span>Fuel requisition</span> - <span>0</span>
-              </p>
-            </div>
           </div>
         </li>
 

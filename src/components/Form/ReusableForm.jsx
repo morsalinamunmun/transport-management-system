@@ -117,7 +117,7 @@ const ReusableForm = ({ children, onSubmit }) => {
                   />
                   <span
                     onClick={() => dateRef.current?.setOpen(true)}
-                    className="absolute top-1 right-0 text-xl text-white bg-primary px-4 py-[9px] rounded-r-md cursor-pointer"
+                    className="absolute top-1 right-0 text-xl text-white bg-primary px-4 py-[9px] rounded-r-md cursor-pointer hover:bg-secondary transition-all duration-300"
                   >
                     <HiMiniCalendarDateRange />
                   </span>

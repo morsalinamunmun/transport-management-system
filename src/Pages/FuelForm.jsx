@@ -20,12 +20,13 @@ const FuelForm = () => {
           <div className="md:flex justify-between gap-3">
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
-                তারিখ ও সময় *
+                তারিখ
               </label>
               <input
-                name="date"
+                data-datepicker
+                name="taxDate"
                 type="text"
-                placeholder="তারিখ ও সময়..."
+                placeholder="তারিখ..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
             </div>

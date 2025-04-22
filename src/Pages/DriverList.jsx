@@ -184,7 +184,7 @@ const CarList = () => {
         </div>
       </div>
       {/* Delete modal */}
-      <td className="flex justify-center items-center">
+      <div className="flex justify-center items-center">
         {isOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-[#000000ad] z-50">
             <div className="relative bg-white rounded-lg shadow-lg p-6 w-72 max-w-sm border border-gray-300">
@@ -217,7 +217,7 @@ const CarList = () => {
             </div>
           </div>
         )}
-      </td>
+      </div>
       {/* get driver information by id */}
       {viewModalOpen && selectedDriver && (
         <div className="fixed inset-0 w-full h-full flex items-center justify-center bg-[#000000ad] z-50">

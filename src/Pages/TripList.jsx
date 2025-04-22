@@ -27,6 +27,26 @@ const TripList = () => {
   // get single driver info by id
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedTrip, setselectedTrip] = useState(null);
+  // filer
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [selectedDriver, setSelectedDriver] = useState("");
+  const [allTrips, setAllTrips] = useState([]);
+  const [filteredTrips, setFilteredTrips] = useState(null);
+
+  useEffect(() => {
+    const fetchAllTrips = async () => {
+      try {
+        const res = await fetch("https://api.dropshep.com/api/trip");
+        const data = await res.json();
+        setAllTrips(data);
+      } catch (err) {
+        console.error("Failed to load trips:", err);
+      }
+    };
+
+    fetchAllTrips();
+  }, []);
 
   useEffect(() => {
     axios
@@ -269,7 +289,7 @@ const TripList = () => {
         </div>
       </div>
       {/* Delete modal */}
-      <td className="flex justify-center items-center">
+      <div className="flex justify-center items-center">
         {isOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-[#000000ad] z-50">
             <div className="relative bg-white rounded-lg shadow-lg p-6 w-72 max-w-sm border border-gray-300">
@@ -303,7 +323,7 @@ const TripList = () => {
             </div>
           </div>
         )}
-      </td>
+      </div>
       {/* get trip information by id */}
       {viewModalOpen && selectedTrip && (
         <div className="fixed inset-0 w-full h-full flex items-center justify-center bg-[#000000ad] z-50">

@@ -1,7 +1,27 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { FaTruck, FaPen } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 const AllUsers = () => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    axios
+      .get("https://api.dropshep.com/api/user")
+      .then((response) => {
+        if (response.data.status === "success") {
+          setUsers(response.data.data);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching driver data:", error);
+        setLoading(false);
+      });
+  }, []);
+  console.log("users", users);
+  if (loading) return <p className="text-center mt-16">Loading users...</p>;
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
       <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-8 border border-gray-200">
