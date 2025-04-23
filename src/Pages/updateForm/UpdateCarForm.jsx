@@ -45,7 +45,7 @@ const UpdateCarForm = () => {
       console.log("resData", resData);
 
       if (resData.status === "Vehicle updated successfully") {
-        toast.success("গাড়ি সফলভাবে সংরক্ষণ হয়েছে!", { position: "top-right" });
+        toast.success("গাড়ি সফলভাবে আপডেট হয়েছে!", { position: "top-right" });
         reset();
       } else {
         toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));

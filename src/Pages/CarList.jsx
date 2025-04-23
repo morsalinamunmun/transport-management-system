@@ -4,6 +4,12 @@ import toast, { Toaster } from "react-hot-toast";
 import { FaTruck, FaPlus, FaPen, FaEye, FaTrashAlt } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { Link } from "react-router-dom";
+// export
+import { CSVLink } from "react-csv";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 const CarList = () => {
   const [vehicles, setVehicle] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -60,6 +66,90 @@ const CarList = () => {
   };
   if (loading) return <p className="text-center mt-16">Loading vehicle...</p>;
 
+  // export functionality
+  const headers = [
+    { label: "#", key: "index" },
+    { label: "নাম", key: "driver_name" },
+    { label: "গাড়ি", key: "vehicle_name" },
+    { label: "ধরন", key: "category" },
+    { label: "গাড়ির সাইজ", key: "size" },
+    { label: "এলাকা", key: "registration_zone" },
+    { label: "ট্রিপ", key: "0" },
+    { label: "রেজিস্ট্রেশন নাম্বার", key: "registration_number" },
+    // { label: "স্ট্যাটাস", key: "Active" },
+  ];
+
+  const csvData = vehicles.map((dt, index) => ({
+    index: index + 1,
+    driver_name: dt.driver_name,
+    vehicle_name: dt.vehicle_name,
+    category: dt.category,
+    size: dt.size,
+    registration_zone: dt.registration_zone,
+    trip: 0,
+    registration_number: dt.registration_number,
+  }));
+  // export
+  const exportExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(csvData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "vehicles Data");
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(data, "vehicles_data.xlsx");
+  };
+
+  const exportPDF = () => {
+    const doc = new jsPDF();
+
+    const tableColumn = [
+      "#",
+      "নাম",
+      "গাড়ি",
+      "ধরন",
+      "গাড়ির সাইজ",
+      "এলাকা",
+      "ট্রিপ",
+      "রেজিস্ট্রেশন নাম্বার",
+    ];
+
+    const tableRows = vehicles.map((dt, index) => [
+      index + 1,
+      dt.driver_name,
+      dt.driver_name,
+      dt.vehicle_name,
+      dt.date_time,
+      dt.category,
+      dt.size,
+      dt.registration_zone,
+      dt.registration_number,
+    ]);
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+    });
+
+    doc.save("vehicles_data.pdf");
+  };
+
+  const printTable = () => {
+    const printContent = document.querySelector("table").outerHTML;
+    const WinPrint = window.open("", "", "width=900,height=650");
+    WinPrint.document.write(`
+      <html>
+        <head><title>Print</title></head>
+        <body>${printContent}</body>
+      </html>
+    `);
+    WinPrint.document.close();
+    WinPrint.focus();
+    WinPrint.print();
+    WinPrint.close();
+  };
   console.log(vehicles);
   // view car by id
   const handleViewCar = async (id) => {
@@ -97,25 +187,40 @@ const CarList = () => {
         </div>
         {/* export */}
         <div className="md:flex justify-between items-center">
-          <div className="flex bg-gray-200 text-primary font-semibold rounded-md">
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
+          <div className="flex gap-3 text-primary font-semibold rounded-md">
+            <CSVLink
+              data={csvData}
+              headers={headers}
+              filename={"vehicles_data.csv"}
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+            >
               CSV
-            </button>
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
+            </CSVLink>
+            <button
+              onClick={exportExcel}
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+            >
               Excel
             </button>
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
+            <button
+              onClick={exportPDF}
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+            >
               PDF
             </button>
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
+            <button
+              onClick={printTable}
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+            >
               Print
             </button>
           </div>
+
           <div className="mt-3 md:mt-0">
             <span className="text-primary font-semibold pr-3">Search: </span>
             <input
               type="text"
-              placeholder="গাড়ির নাম দিয়ে খুজুন..."
+              placeholder=""
               className="border border-gray-300 rounded-md outline-none text-xs py-2 ps-2 pr-5"
             />
           </div>

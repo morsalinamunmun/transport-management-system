@@ -11,6 +11,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+//
 import toast, { Toaster } from "react-hot-toast";
 import { IoMdClose } from "react-icons/io";
 
@@ -177,30 +178,30 @@ const Fuel = () => {
         </div>
         {/* export */}
         <div className="md:flex justify-between items-center">
-          <div className="flex bg-gray-200 text-primary font-semibold rounded-md">
+          <div className="flex gap-3 text-primary font-semibold rounded-md">
             <CSVLink
               data={csvData}
               headers={headers}
               filename={"fuel_data.csv"}
-              className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
             >
               CSV
             </CSVLink>
             <button
               onClick={exportExcel}
-              className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
             >
               Excel
             </button>
             <button
               onClick={exportPDF}
-              className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
             >
               PDF
             </button>
             <button
               onClick={printTable}
-              className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
             >
               Print
             </button>

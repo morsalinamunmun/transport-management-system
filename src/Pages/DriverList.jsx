@@ -4,6 +4,12 @@ import toast, { Toaster } from "react-hot-toast";
 import { FaTruck, FaPlus, FaPen, FaEye, FaTrashAlt } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { Link } from "react-router-dom";
+// export
+import { CSVLink } from "react-csv";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import { saveAs } from "file-saver";
 const CarList = () => {
   const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -79,6 +85,77 @@ const CarList = () => {
       toast.error("ড্রাইভারের তথ্য আনতে সমস্যা হয়েছে");
     }
   };
+  // export functionality
+  const driverHeaders = [
+    { label: "#", key: "index" },
+    { label: "নাম", key: "name" },
+    { label: "মোবাইল", key: "contact" },
+    { label: "ঠিকানা", key: "address" },
+    { label: "জরুরি যোগাযোগ", key: "emergency_contact" },
+    { label: "লাইসেন্স", key: "license" },
+    { label: "লা.মেয়াদোত্তীর্ণ", key: "expire_date" },
+    { label: "স্ট্যাটাস", key: "status" },
+  ];
+
+  const driverCsvData = drivers?.map((driver, index) => ({
+    index: index + 1,
+    name: driver.name,
+    contact: driver.contact,
+    address: driver.address,
+    emergency_contact: driver.emergency_contact,
+    license: driver.license,
+    expire_date: driver.expire_date,
+    status: driver.status,
+  }));
+  // excel
+  const exportDriversToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(driverCsvData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Drivers");
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(data, "drivers.xlsx");
+  };
+  // pdf
+  const exportDriversToPDF = () => {
+    const doc = new jsPDF();
+    const tableColumn = driverHeaders.map((h) => h.label);
+    const tableRows = driverCsvData.map((row) =>
+      driverHeaders.map((h) => row[h.key])
+    );
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      styles: { font: "helvetica", fontSize: 8 },
+    });
+
+    doc.save("drivers.pdf");
+  };
+  // print
+  const printDriversTable = () => {
+    const printContent = document.querySelector("table").outerHTML;
+    const WinPrint = window.open("", "", "width=900,height=650");
+    WinPrint.document.write(`
+    <html>
+      <head>
+        <title>Print</title>
+        <style>
+          table { width: 100%; border-collapse: collapse; }
+          th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        </style>
+      </head>
+      <body>${printContent}</body>
+    </html>
+  `);
+    WinPrint.document.close();
+    WinPrint.focus();
+    WinPrint.print();
+    WinPrint.close();
+  };
 
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-4">
@@ -98,29 +175,36 @@ const CarList = () => {
           </div>
         </div>
         {/* export */}
-        <div className="md:flex justify-between items-center">
-          <div className="flex bg-gray-200 text-primary font-semibold rounded-md">
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
-              CSV
-            </button>
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
-              Excel
-            </button>
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
-              PDF
-            </button>
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
-              Print
-            </button>
-          </div>
-          <div className="mt-3 md:mt-0">
-            <span className="text-primary font-semibold pr-3">Search: </span>
-            <input
-              type="text"
-              placeholder="ড্রাইভারের নাম দিয়ে খুজুন..."
-              className="border border-gray-300 rounded-md outline-none text-xs py-2 ps-2 pr-5"
-            />
-          </div>
+        <div className="mb-4 flex gap-3 flex-wrap">
+          <CSVLink
+            data={driverCsvData}
+            headers={driverHeaders}
+            filename="drivers.csv"
+            className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all"
+          >
+            CSV
+          </CSVLink>
+
+          <button
+            onClick={exportDriversToExcel}
+            className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
+          >
+            Excel
+          </button>
+
+          <button
+            onClick={exportDriversToPDF}
+            className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
+          >
+            PDF
+          </button>
+
+          <button
+            onClick={printDriversTable}
+            className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
+          >
+            Print
+          </button>
         </div>
 
         {/* Table */}

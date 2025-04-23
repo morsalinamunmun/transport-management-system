@@ -4,6 +4,12 @@ import toast, { Toaster } from "react-hot-toast";
 import { FaTruck, FaPlus, FaFilter, FaPen, FaTrashAlt } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { Link } from "react-router-dom";
+// export
+import { CSVLink } from "react-csv";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 const Maintenance = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [maintenance, setMaintenance] = useState([]);
@@ -60,6 +66,78 @@ const Maintenance = () => {
       });
     }
   };
+  // export
+  const maintenanceHeaders = [
+    { label: "#", key: "index" },
+    { label: "সার্ভিসের ধরন", key: "service_type" },
+    { label: "গাড়ির নাম", key: "vehicle_name" },
+    { label: "মেইনটেনেন্সের ধরন", key: "service_for" },
+    { label: "পার্টস এন্ড স্পায়ারস", key: "parts_and_spairs" },
+    { label: "মেইনটেনেন্সের তারিখ", key: "time" },
+    { label: "অগ্রাধিকার", key: "dignifies" },
+    { label: "টোটাল খরচ", key: "total_cost" },
+  ];
+
+  const maintenanceCsvData = maintenance?.map((dt, index) => ({
+    index: index + 1,
+    service_type: dt.service_type,
+    vehicle_no: dt.vehicle_no,
+    service_for: dt.service_for,
+    parts_and_spairs: dt.parts_and_spairs,
+    time: dt.time,
+    dignifies: dt.dignifies,
+    total_cost: dt.total_cost,
+  }));
+  // excel
+  const exportMaintenanceToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(maintenanceCsvData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Maintenance");
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(data, "maintenance.xlsx");
+  };
+  // pdf
+  const exportMaintenanceToPDF = () => {
+    const doc = new jsPDF();
+    const tableColumn = maintenanceHeaders.map((h) => h.label);
+    const tableRows = maintenanceCsvData.map((row) =>
+      maintenanceHeaders.map((h) => row[h.key])
+    );
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      styles: { font: "helvetica", fontSize: 8 },
+    });
+
+    doc.save("maintenance.pdf");
+  };
+  // print
+  const printMaintenanceTable = () => {
+    const printContent = document.querySelector("table").outerHTML;
+    const WinPrint = window.open("", "", "width=900,height=650");
+    WinPrint.document.write(`
+    <html>
+      <head>
+        <title>Print</title>
+        <style>
+          table { width: 100%; border-collapse: collapse; }
+          th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        </style>
+      </head>
+      <body>${printContent}</body>
+    </html>
+  `);
+    WinPrint.document.close();
+    WinPrint.focus();
+    WinPrint.print();
+    WinPrint.close();
+  };
+
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
       <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-8 border border-gray-200">
@@ -84,29 +162,36 @@ const Maintenance = () => {
           </div>
         </div>
         {/* export */}
-        <div className="md:flex justify-between items-center">
-          <div className="flex bg-gray-200 text-primary font-semibold rounded-md">
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
-              CSV
-            </button>
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
-              Excel
-            </button>
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
-              PDF
-            </button>
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
-              Print
-            </button>
-          </div>
-          <div className="mt-3 md:mt-0">
-            <span className="text-primary font-semibold pr-3">Search: </span>
-            <input
-              type="text"
-              placeholder=""
-              className="border border-gray-300 rounded-md outline-none text-xs py-2 ps-2 pr-5"
-            />
-          </div>
+        <div className="mb-4 flex gap-3 flex-wrap">
+          <CSVLink
+            data={maintenanceCsvData}
+            headers={maintenanceHeaders}
+            filename="maintenance.csv"
+            className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all"
+          >
+            CSV
+          </CSVLink>
+
+          <button
+            onClick={exportMaintenanceToExcel}
+            className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
+          >
+            Excel
+          </button>
+
+          <button
+            onClick={exportMaintenanceToPDF}
+            className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
+          >
+            PDF
+          </button>
+
+          <button
+            onClick={printMaintenanceTable}
+            className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
+          >
+            Print
+          </button>
         </div>
         {/* Conditional Filter Section */}
         {showFilter && (
@@ -143,7 +228,7 @@ const Maintenance = () => {
               <tr>
                 <th className="px-2 py-3">#</th>
                 <th className="px-2 py-3">সার্ভিসের ধরন</th>
-                <th className="px-2 py-3">গাড়ির নাম</th>
+                <th className="px-2 py-3">গাড়ির নাঃ</th>
                 <th className="px-2 py-3">মেইনটেনেন্সের ধরন</th>
                 <th className="px-2 py-3">পার্টস এন্ড স্পায়ারস</th>
                 <th className="px-2 py-3">মেইনটেনেন্সের তারিখ</th>
@@ -157,7 +242,7 @@ const Maintenance = () => {
                 <tr key={index} className="hover:bg-gray-50 transition-all">
                   <td className="px-2 py-4 font-bold">{index + 1}</td>
                   <td className="px-2 py-4">{dt.service_type}</td>
-                  <td className="px-2 py-4">{dt.service_type}</td>
+                  <td className="px-2 py-4">{dt.vehicle_no}</td>
                   <td className="px-2 py-4">{dt.service_for}</td>
                   <td className="px-2 py-4">{dt.parts_and_spairs}</td>
                   <td className="px-2 py-4">{dt.time}</td>

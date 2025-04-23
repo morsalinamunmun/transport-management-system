@@ -14,6 +14,12 @@ import { HiMiniCalendarDateRange } from "react-icons/hi2";
 import { IoMdClose } from "react-icons/io";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { Link } from "react-router-dom";
+// export
+import { CSVLink } from "react-csv";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import { saveAs } from "file-saver";
 const TripList = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [tripDate, settripDate] = useState(null);
@@ -88,6 +94,92 @@ const TripList = () => {
       toast.error("ড্রাইভারের তথ্য আনতে সমস্যা হয়েছে");
     }
   };
+  // export functionality
+  const headers = [
+    { label: "#", key: "index" },
+    { label: "তারিখ", key: "trip_date" },
+    { label: "ড্রাইভার নাম", key: "driver_name" },
+    { label: "মোবাইল", key: "driver_contact" },
+    { label: "কমিশন", key: "driver_percentage" },
+    { label: "লোড পয়েন্ট", key: "load_point" },
+    { label: "আনলোড পয়েন্ট", key: "unload_point" },
+    { label: "ট্রিপের সময়", key: "trip_time" },
+    { label: "ট্রিপ খরচ", key: "totalCost" },
+    { label: "ট্রিপ ভাড়া", key: "trip_price" },
+    { label: "টোটাল আয়", key: "profit" },
+  ];
+
+  const csvData = trip.map((dt, index) => {
+    const fuel = parseFloat(dt.fuel_price ?? "0") || 0;
+    const gas = parseFloat(dt.gas_price ?? "0") || 0;
+    const others = parseFloat(dt.other_expenses ?? "0") || 0;
+    const commission = parseFloat(dt.driver_percentage ?? "0") || 0;
+    const totalCost = (fuel + gas + others + commission).toFixed(2);
+    const profit = (dt.trip_price - totalCost).toFixed(2);
+
+    return {
+      index: index + 1,
+      trip_date: dt.trip_date,
+      driver_name: dt.driver_name,
+      driver_contact: dt.driver_contact,
+      driver_percentage: dt.driver_percentage,
+      load_point: dt.load_point,
+      unload_point: dt.unload_point,
+      trip_time: dt.trip_time,
+      totalCost,
+      trip_price: dt.trip_price,
+      profit,
+    };
+  });
+
+  // export excel
+  const exportExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(csvData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Trip Data");
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(data, "trip_data.xlsx");
+  };
+
+  const exportPDF = () => {
+    const doc = new jsPDF();
+    const tableColumn = headers.map((h) => h.label);
+
+    const tableRows = csvData.map((row) => headers.map((h) => row[h.key]));
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      styles: { font: "helvetica", fontSize: 8 },
+    });
+
+    doc.save("trip_data.pdf");
+  };
+
+  const printTable = () => {
+    const printContent = document.querySelector("table").outerHTML;
+    const WinPrint = window.open("", "", "width=900,height=650");
+    WinPrint.document.write(`
+      <html>
+        <head>
+          <title>Print</title>
+          <style>
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+          </style>
+        </head>
+        <body>${printContent}</body>
+      </html>
+    `);
+    WinPrint.document.close();
+    WinPrint.focus();
+    WinPrint.print();
+    WinPrint.close();
+  };
 
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
@@ -114,20 +206,35 @@ const TripList = () => {
         </div>
         {/* export and search*/}
         <div className="md:flex justify-between items-center">
-          <div className="flex bg-gray-200 text-primary font-semibold rounded-md">
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
+          <div className="flex gap-3 text-primary font-semibold rounded-md">
+            <CSVLink
+              data={csvData}
+              headers={headers}
+              filename={"trip_data.csv"}
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+            >
               CSV
-            </button>
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
+            </CSVLink>
+            <button
+              onClick={exportExcel}
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+            >
               Excel
             </button>
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
+            <button
+              onClick={exportPDF}
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+            >
               PDF
             </button>
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
+            <button
+              onClick={printTable}
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+            >
               Print
             </button>
           </div>
+
           <div className="mt-3 md:mt-0">
             <span className="text-primary font-semibold pr-3">Search: </span>
             <input
@@ -203,17 +310,17 @@ const TripList = () => {
                 <th className="px-2 md:px-4 py-3">ট্রিপ এবং গন্তব্য</th>
                 <th className="px-2 md:px-4 py-3">ট্রিপের খরচ</th>
                 <th className="px-2 md:px-4 py-3">ট্রিপের ভাড়া</th>
-                <th className="px-2 md:px-4 py-3">টোটাল ফলাফল</th>
+                <th className="px-2 md:px-4 py-3">টোটাল আয়</th>
                 <th className="px-2 py-3">অ্যাকশন</th>
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
               {trip?.map((dt, index) => {
-                const fuel = parseFloat(dt.fuel_price ?? "0") || 0;
+                const trip = parseFloat(dt.trip_price ?? "0") || 0;
                 const gas = parseFloat(dt.gas_price ?? "0") || 0;
                 const others = parseFloat(dt.other_expenses ?? "0") || 0;
                 const commision = dt.driver_percentage;
-                const totalCost = (fuel + gas + others + commision).toFixed(2);
+                const totalCost = (trip + gas + others + commision).toFixed(2);
 
                 return (
                   <tr
@@ -350,7 +457,7 @@ const TripList = () => {
                 </li>
                 <li className="w-[428px] flex text-primary font-semibold px-3 py-2">
                   <p className="w-48">তেলের মূল্য</p>{" "}
-                  <p>{selectedTrip.fuel_price}</p>
+                  <p>{selectedTrip.trip_price}</p>
                 </li>
               </ul>
               <ul className="flex border-b border-r border-l border-gray-300">
@@ -372,7 +479,7 @@ const TripList = () => {
                   <p className="w-48">ট্রিপের খরচ</p>{" "}
                   <p>
                     {(
-                      Number(selectedTrip.fuel_price) +
+                      Number(selectedTrip.trip_price) +
                       Number(selectedTrip.gas_price) +
                       Number(selectedTrip.other_expenses) +
                       Number(selectedTrip.driver_percentage)
