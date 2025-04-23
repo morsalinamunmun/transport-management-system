@@ -107,7 +107,7 @@ const UpdateTripForm = () => {
                   ট্রিপের সময়
                 </label>
                 <input
-                  {...register("trip_time", { required: true })}
+                  {...register("trip_time")}
                   defaultValue={trip_time}
                   type="text"
                   placeholder="ট্রিপের সময়..."
@@ -122,7 +122,7 @@ const UpdateTripForm = () => {
                   লোড পয়েন্ট
                 </label>
                 <input
-                  {...register("load_point", { required: true })}
+                  {...register("load_point")}
                   defaultValue={load_point}
                   type="text"
                   placeholder="লোড পয়েন্ট..."
@@ -134,7 +134,7 @@ const UpdateTripForm = () => {
                   আনলোড পয়েন্ট
                 </label>
                 <input
-                  {...register("unload_point", { required: true })}
+                  {...register("unload_point")}
                   defaultValue={unload_point}
                   type="text"
                   placeholder="আনলোড পয়েন্ট..."
@@ -156,10 +156,10 @@ const UpdateTripForm = () => {
                   ড্রাইভারের নাম
                 </label>
                 <select
-                  {...register("driver_name", { required: true })}
+                  {...register("driver_name")}
                   className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
                 >
-                  <option value="">{driver_name}</option>
+                  <option value={driver_name}>{driver_name}</option>
                   <option value="Motin">Motin</option>
                   <option value="Korim">Korim</option>
                 </select>
@@ -170,7 +170,7 @@ const UpdateTripForm = () => {
                   ড্রাইভারের মোবাইল
                 </label>
                 <input
-                  {...register("driver_contact", { required: true })}
+                  {...register("driver_contact")}
                   defaultValue={driver_contact}
                   type="text"
                   placeholder="ড্রাইভারের মোবাইল..."
@@ -182,7 +182,7 @@ const UpdateTripForm = () => {
                   ড্রাইভারের কমিশন
                 </label>
                 <input
-                  {...register("driver_percentage", { required: true })}
+                  {...register("driver_percentage")}
                   defaultValue={driver_percentage}
                   type="text"
                   placeholder="ড্রাইভারের কমিশন..."
@@ -202,7 +202,7 @@ const UpdateTripForm = () => {
                   তেলের মূল্য
                 </label>
                 <input
-                  {...register("fuel_price", { required: true })}
+                  {...register("fuel_price")}
                   defaultValue={fuel_price}
                   type="text"
                   placeholder="তেলের মূল্য..."
@@ -214,7 +214,7 @@ const UpdateTripForm = () => {
                   গ্যাসের মূল্য
                 </label>
                 <input
-                  {...register("gas_price", { required: true })}
+                  {...register("gas_price")}
                   defaultValue={gas_price}
                   type="text"
                   placeholder="গ্যাসের মূল্য..."
@@ -226,12 +226,12 @@ const UpdateTripForm = () => {
                   গাড়ির নম্বর
                 </label>
                 <select
-                  {...register("vehicle_number", { required: true })}
+                  {...register("vehicle_number")}
                   className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
                 >
-                  <option value="">{vehicle_number}</option>
-                  <option value="Dhaka">Dhama metro-1</option>
-                  <option value="Dhaka">Dhama metro-2</option>
+                  <option value={vehicle_number}>{vehicle_number}</option>
+                  <option value="Dhaka metro-1">Dhaka metro-1</option>
+                  <option value="Dhaka metro-2">Dhaka metro-2</option>
                 </select>
                 <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
               </div>
@@ -242,7 +242,7 @@ const UpdateTripForm = () => {
                   অন্যান্য খরচ
                 </label>
                 <input
-                  {...register("other_expenses", { required: true })}
+                  {...register("other_expenses")}
                   defaultValue={other_expenses}
                   type="text"
                   placeholder="অন্যান্য খরচ..."
@@ -254,7 +254,7 @@ const UpdateTripForm = () => {
                   ট্রিপের ভাড়া
                 </label>
                 <input
-                  {...register("trip_price", { required: true })}
+                  {...register("trip_price")}
                   defaultValue={trip_price}
                   type="text"
                   placeholder="ট্রিপের ভাড়া..."

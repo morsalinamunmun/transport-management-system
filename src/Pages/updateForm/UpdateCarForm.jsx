@@ -72,10 +72,9 @@ const UpdateCarForm = () => {
               গাড়ির নাম
             </label>
             <input
-              {...register("vehicle_name", { required: true })}
+              {...register("vehicle_name")}
               defaultValue={vehicle_name}
               type="text"
-              // placeholder="গাড়ির নাম..."
               className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
             />
           </div>
@@ -84,11 +83,11 @@ const UpdateCarForm = () => {
               ড্রাইভারের নাম
             </label>
             <select
-              {...register("driver_name", { required: true })}
+              {...register("driver_name")}
               defaultValue={driver_name}
               className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
             >
-              <option value="">{driver_name}</option>
+              <option value={driver_name}>{driver_name}</option>
               <option value="Motin Ali">Motin Ali</option>
               <option value="Korim Ali">Korim Ali</option>
               <option value="Solaiman Ali">Solaiman Ali</option>
@@ -104,10 +103,10 @@ const UpdateCarForm = () => {
               গাড়ির ধরন
             </label>
             <select
-              {...register("category", { required: true })}
+              {...register("category")}
               className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
             >
-              <option value="">{category}</option>
+              <option value={category}>{category}</option>
               <option value="Truck">ট্রাক</option>
               <option value="Pickup">পিকআপ</option>
               <option value="Covered Van">কভার্ড ভ্যান</option>
@@ -125,7 +124,7 @@ const UpdateCarForm = () => {
               {...register("size")}
               className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
             >
-              <option value="">{size}</option>
+              <option value={size}>{size}</option>
               <option value="7 Feet">7 Feet</option>
               <option value="9 Feet">9 Feet</option>
               <option value="12 Feet">12 Feet</option>
@@ -146,10 +145,10 @@ const UpdateCarForm = () => {
               রেজিস্ট্রেশন নাম্বার
             </label>
             <select
-              {...register("registration_number", { required: true })}
+              {...register("registration_number")}
               className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
             >
-              <option value="">{registration_number}</option>
+              <option value={registration_number}>{registration_number}</option>
               <option value="Dhaka Metro">ঢাকা মেট্রো</option>
               <option value="Chatto Metro">চট্ট মেট্রো</option>
               <option value="Sylhet Metro">সিলেট মেট্রো</option>
@@ -240,7 +239,7 @@ const UpdateCarForm = () => {
               {...register("registration_serial")}
               className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
             >
-              <option value="">{registration_serial}</option>
+              <option value={registration_serial}>{registration_serial}</option>
               <option value="Ta">ট</option>
               <option value="Tha">ঠ</option>
               <option value="Da">ড</option>

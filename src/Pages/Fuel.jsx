@@ -299,9 +299,11 @@ const Fuel = () => {
                   <td className="px-4 py-4">{dt.quantity * dt.price}.00</td>
                   <td className="px-4 py-4">
                     <div className="flex gap-2">
-                      <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                        <FaPen className="text-[12px]" />
-                      </button>
+                      <Link to={`/UpdateFuelForm/${dt.id}`}>
+                        <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                          <FaPen className="text-[12px]" />
+                        </button>
+                      </Link>
                       <button
                         onClick={() => {
                           setselectedFuelId(dt.id);

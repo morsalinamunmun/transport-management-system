@@ -22,6 +22,8 @@ import ResetPass from "../components/Form/ResetPass";
 import PrivateRoute from "./PrivateRoute";
 import UpdateCarForm from "../Pages/updateForm/UpdateCarForm";
 import UpdateTripForm from "../Pages/updateForm/UpdateTripForm";
+import UpdateFuelForm from "../Pages/updateForm/UpdateFuelForm";
+import UpdatePartsForm from "../Pages/updateForm/UpdatePartsForm";
 
 export const router = createBrowserRouter([
   {
@@ -85,8 +87,20 @@ export const router = createBrowserRouter([
         element: <FuelForm />,
       },
       {
+        path: "UpdateFuelForm/:id",
+        element: <UpdateFuelForm />,
+        loader: ({ params }) =>
+          fetch(`https://api.dropshep.com/api/fuel/${params.id}`),
+      },
+      {
         path: "Parts",
         element: <Parts />,
+      },
+      {
+        path: "UpdatePartsForm/:id",
+        element: <UpdatePartsForm />,
+        loader: ({ params }) =>
+          fetch(`https://api.dropshep.com/api/parts/${params.id}`),
       },
       {
         path: "Maintenance",

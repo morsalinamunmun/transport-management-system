@@ -5,6 +5,7 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { FiCalendar } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 const Parts = () => {
   const [showFilter, setShowFilter] = useState(false);
@@ -145,9 +146,11 @@ const Parts = () => {
                   </td>
                   <td className="px-2 md:px-4 py-4">
                     <div className="flex gap-2">
-                      <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                        <FaPen className="text-[12px]" />
-                      </button>
+                      <Link to={`/UpdatePartsForm/${part.id}`}>
+                        <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                          <FaPen className="text-[12px]" />
+                        </button>
+                      </Link>
                       <button className="text-red-900 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer">
                         <FaTrashAlt
                           onClick={() => {
