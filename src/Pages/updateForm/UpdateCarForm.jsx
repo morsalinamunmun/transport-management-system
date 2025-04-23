@@ -144,11 +144,47 @@ const UpdateCarForm = () => {
             <label className="text-primary text-sm font-semibold">
               রেজিস্ট্রেশন নাম্বার
             </label>
-            <select
+            <input
               {...register("registration_number")}
+              defaultValue={registration_number}
+              type="text"
+              placeholder=" রেজিস্ট্রেশন নাম্বার..."
+              className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+            />
+          </div>
+          <div className="relative mt-2 md:mt-0 w-full">
+            <label className="text-primary text-sm font-semibold">
+              রেজিস্ট্রেশন সিরিয়াল
+            </label>
+            <select
+              {...register("registration_serial")}
               className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
             >
-              <option value={registration_number}>{registration_number}</option>
+              <option value={registration_serial}>{registration_serial}</option>
+              <option value="Ta">ট</option>
+              <option value="Tha">ঠ</option>
+              <option value="Da">ড</option>
+              <option value="Dha">ঢ</option>
+              <option value="Na">ন</option>
+              <option value="M">ম</option>
+              <option value="Sh">শ</option>
+            </select>
+            <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
+          </div>
+        </div>
+
+        {/* Registration Zone */}
+        <div className="md:flex justify-between gap-3">
+          <div className="relative w-full">
+            <label className="text-primary text-sm font-semibold">
+              রেজিস্ট্রেশন এলাকা
+            </label>
+            <select
+              {...register("registration_zone")}
+              type="text"
+              className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
+            >
+              <option value={registration_zone}>{registration_zone}</option>
               <option value="Dhaka Metro">ঢাকা মেট্রো</option>
               <option value="Chatto Metro">চট্ট মেট্রো</option>
               <option value="Sylhet Metro">সিলেট মেট্রো</option>
@@ -230,41 +266,6 @@ const UpdateCarForm = () => {
               <option value="Sherpur">শেরপুর</option>
             </select>
             <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
-          </div>
-          <div className="relative mt-2 md:mt-0 w-full">
-            <label className="text-primary text-sm font-semibold">
-              রেজিস্ট্রেশন সিরিয়াল
-            </label>
-            <select
-              {...register("registration_serial")}
-              className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
-            >
-              <option value={registration_serial}>{registration_serial}</option>
-              <option value="Ta">ট</option>
-              <option value="Tha">ঠ</option>
-              <option value="Da">ড</option>
-              <option value="Dha">ঢ</option>
-              <option value="Na">ন</option>
-              <option value="M">ম</option>
-              <option value="Sh">শ</option>
-            </select>
-            <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
-          </div>
-        </div>
-
-        {/* Registration Zone */}
-        <div className="md:flex justify-between gap-3">
-          <div className="w-full">
-            <label className="text-primary text-sm font-semibold">
-              রেজিস্ট্রেশন এলাকা
-            </label>
-            <input
-              {...register("registration_zone")}
-              defaultValue={registration_zone}
-              type="text"
-              placeholder="রেজিস্ট্রেশন এলাকা..."
-              className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-            />
           </div>
 
           <div className="relative w-full">
