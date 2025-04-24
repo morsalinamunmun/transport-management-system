@@ -17,7 +17,6 @@ const Main = () => {
           {hideMenu || <SIdeBar />}
         </div>
       )}
-
       {/* Main content (changes via routing) */}
       <div className="flex-1">
         {hideMenu || <Header />}

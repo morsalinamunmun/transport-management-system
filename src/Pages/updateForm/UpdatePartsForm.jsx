@@ -7,7 +7,7 @@ import { IoMdClose } from "react-icons/io";
 import { useLoaderData } from "react-router-dom";
 
 const UpdatePartsForm = () => {
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit } = useForm();
   const partsDateRef = useRef(null);
   const updatePartsLoaderData = useLoaderData();
   const { id, name, date } = updatePartsLoaderData.data;
@@ -29,7 +29,6 @@ const UpdatePartsForm = () => {
 
       if (resData.status === "success") {
         toast.success("পার্টস সফলভাবে আপডেট হয়েছে!", { position: "top-right" });
-        reset();
       } else {
         toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
       }
@@ -46,7 +45,7 @@ const UpdatePartsForm = () => {
       <div className="flex justify-center items-center z-50">
         <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg relative">
           <h2 className="text-xl font-semibold text-[#11375B] mb-4">
-            পার্টস যোগ করুন
+            পার্টস আপডেট করুন
           </h2>
           <form action="" onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-4">

@@ -7,7 +7,7 @@ import { MdOutlineArrowDropDown } from "react-icons/md";
 import { useLoaderData } from "react-router-dom";
 
 const UpdateCarForm = () => {
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit } = useForm();
   const registrationDateRef = useRef(null);
   const taxDateRef = useRef(null);
   const roadPermitRef = useRef(null);
@@ -46,7 +46,6 @@ const UpdateCarForm = () => {
 
       if (resData.status === "Vehicle updated successfully") {
         toast.success("গাড়ি সফলভাবে আপডেট হয়েছে!", { position: "top-right" });
-        reset();
       } else {
         toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
       }
@@ -62,7 +61,7 @@ const UpdateCarForm = () => {
     <form onSubmit={handleSubmit(onSubmit)} className="mt-10">
       <Toaster position="top-center" reverseOrder={false} />
       <h3 className="px-6 py-2 bg-primary text-white font-semibold rounded-t-md">
-        গাড়ির তথ্য যোগ করুন
+        গাড়ির তথ্য আপডেট করুন
       </h3>
       <div className="mx-auto p-6 bg-gray-100 rounded-md shadow space-y-4">
         {/* Vehicle & Driver Name */}

@@ -1,0 +1,173 @@
+import React from "react";
+import { useForm } from "react-hook-form";
+import "react-datepicker/dist/react-datepicker.css";
+import { MdOutlineArrowDropDown } from "react-icons/md";
+import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
+import { useLoaderData } from "react-router-dom";
+
+const UpdateUsersForm = () => {
+  //   update loader data
+  const updateUserLoaderData = useLoaderData();
+  const { id, name, phone, email, password, role, status } =
+    updateUserLoaderData.data;
+  console.log("user loader data", updateUserLoaderData.data);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.put(
+        `https://api.dropshep.com/api/users/${id}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const resData = response.data;
+      console.log("resData", resData);
+
+      if (resData.status === "success") {
+        toast.success("ইউজার সফলভাবে আপডেট হয়েছে!", { position: "top-right" });
+      } else {
+        toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
+      }
+    } catch (error) {
+      console.error(error);
+      const errorMessage =
+        error.response?.data?.message || error.message || "Unknown error";
+      toast.error("সার্ভার ত্রুটি: " + errorMessage);
+    }
+  };
+
+  return (
+    <div className="mt-10">
+      <Toaster />
+      <h3 className="px-6 py-2 bg-primary text-white font-semibold rounded-t-md">
+        ইউজার আপডেট করুন
+      </h3>
+      <div className="mx-auto p-6 bg-gray-100 rounded-md shadow">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Row 1 */}
+          <div className="md:flex justify-between gap-3">
+            <div className="w-full">
+              <label className="text-primary text-sm font-semibold">
+                নাম *
+              </label>
+              <input
+                {...register("name")}
+                defaultValue={name}
+                type="text"
+                placeholder="নাম..."
+                className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+              />
+            </div>
+            <div className="w-full relative">
+              <label className="text-primary text-sm font-semibold">
+                মোবাইল *
+              </label>
+              <input
+                {...register("phone")}
+                defaultValue={phone}
+                type="text"
+                placeholder="মোবাইল..."
+                className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Row 2 */}
+          <div className="md:flex justify-between gap-3">
+            <div className="w-full relative">
+              <label className="text-primary text-sm font-semibold">
+                ইমেইল *
+              </label>
+              <input
+                {...register("email")}
+                defaultValue={email}
+                type="email"
+                placeholder="ইমেইল..."
+                className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+              />
+              {errors.nidNumber && (
+                <p className="text-red-500 text-xs mt-1">ইমেইল আবশ্যক</p>
+              )}
+            </div>
+            <div className="mt-3 md:mt-0 w-full relative">
+              <label className="text-primary text-sm font-semibold">
+                পাসওয়ার্ড
+              </label>
+              <input
+                {...register("password")}
+                defaultValue={password}
+                type="text"
+                placeholder="পাসওয়ার্ড..."
+                className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+              />
+            </div>
+            <div className="mt-3 md:mt-0 w-full relative">
+              <label className="text-primary text-sm font-semibold">
+                কনফার্ম পাসওয়ার্ড
+              </label>
+              <input
+                type="text"
+                placeholder="কনফার্ম পাসওয়ার্ড..."
+                className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Row 3 */}
+          <div className="md:flex justify-between gap-3">
+            <div className="w-full relative">
+              <label className="text-primary text-sm font-semibold">
+                ইউজারের ধরন
+              </label>
+              <select
+                {...register("role")}
+                className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
+              >
+                <option value={role}>{role}</option>
+                <option value="Manager">ম্যানেজার</option>
+                <option value="Supervisor">সুপারভাইজার</option>
+              </select>
+              <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
+            </div>
+            <div className="mt-3 md:mt-0 relative w-full">
+              <label className="text-primary text-sm font-semibold">
+                স্ট্যাটাস
+              </label>
+              <select
+                {...register("status")}
+                className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
+              >
+                <option value={status}>{status}</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+              <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="mt-6">
+            <button
+              type="submit"
+              className="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 text-sm"
+            >
+              সাবমিট করুন
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default UpdateUsersForm;

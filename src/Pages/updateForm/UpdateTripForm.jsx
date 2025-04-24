@@ -8,7 +8,7 @@ import { MdOutlineArrowDropDown } from "react-icons/md";
 import { useLoaderData } from "react-router-dom";
 
 const UpdateTripForm = () => {
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit } = useForm();
   const tripDateRef = useRef(null);
   //   update loader data
   const updateTripLoaderData = useLoaderData();
@@ -51,7 +51,6 @@ const UpdateTripForm = () => {
 
       if (resData.status === "success") {
         toast.success("ট্রিপ সফলভাবে আপডেট হয়েছে!", { position: "top-right" });
-        reset();
       } else {
         toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
       }
@@ -66,7 +65,7 @@ const UpdateTripForm = () => {
   return (
     <div className="mt-10">
       <h3 className="px-6 py-2 bg-primary text-white font-semibold rounded-t-md">
-        ট্রিপ যোগ করুন
+        ট্রিপ আপডেট করুন
       </h3>
       <div className="mx-auto p-6 bg-gray-100 rounded-md shadow">
         <form onSubmit={handleSubmit(onSubmit)}>

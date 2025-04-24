@@ -123,8 +123,8 @@ const OverViewCard = () => {
                 <div key={i} className="flex items-center gap-3">
                   {/* <div className="bg-primary w-[6px] h-[6px] rounded-full" /> */}
                   <p className="w-full">
+                    <p>গাড়ির নং {item.vehicle}</p>
                     <p>ডকুমেন্টের নামঃ {item.document}</p>
-                    <p>রেজি.নাঃ {item.vehicle}</p>
                     <p>মেয়াদোত্তীর্ণ তারিখ: {item.expireDate}</p>
                   </p>
                 </div>

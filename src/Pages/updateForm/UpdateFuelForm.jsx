@@ -9,7 +9,7 @@ import { useLoaderData } from "react-router-dom";
 const UpdateFuelForm = () => {
   const fuelDateRef = useRef(null);
 
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit } = useForm();
   // const quantity = parseFloat(watch("quantity") || 0);
   // const price = parseFloat(watch("price") || 0);
   // const total = quantity * price;
@@ -48,7 +48,6 @@ const UpdateFuelForm = () => {
 
       if (resData.status === "Vehicle updated successfully") {
         toast.success("গাড়ি সফলভাবে সংরক্ষণ হয়েছে!", { position: "top-right" });
-        reset();
       } else {
         toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
       }
@@ -63,7 +62,7 @@ const UpdateFuelForm = () => {
   return (
     <div className="mt-10">
       <h3 className="px-6 py-2 bg-primary text-white font-semibold rounded-t-md">
-        ফুয়েল ফর্ম
+        ফুয়েলের তথ্য আপডেট ফর্ম
       </h3>
       <div className="mx-auto p-6 bg-gray-100 rounded-md shadow">
         <form onSubmit={handleSubmit(onSubmit)}>
