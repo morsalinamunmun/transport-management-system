@@ -1,68 +1,81 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import ReusableForm from "../components/Form/ReusableForm";
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-datepicker";
 import { MdOutlineArrowDropDown } from "react-icons/md";
+import { IoMdClose } from "react-icons/io";
+import { FiCalendar } from "react-icons/fi";
 import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 const AddDriverForm = () => {
-  const { register, handleSubmit, setValue } = useForm();
-  const [selectedDate, setSelectedDate] = useState(null);
+  const { register, handleSubmit, reset } = useForm();
+  const [previewImage, setPreviewImage] = useState(null);
+  const driverDateRef = useRef(null);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onloadend = () => setPreviewImage(reader.result);
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewImage(null);
+    }
+  };
 
   const onSubmit = async (data) => {
-    const formData = new FormData();
-
-    // Format expire_date
-    let formattedExpireDate = "";
-    if (selectedDate) {
-      formattedExpireDate = selectedDate.toISOString().split("T")[0];
-      formData.append("expire_date", formattedExpireDate);
-    }
-
-    // Append other fields
-    for (const key in data) {
-      if (key === "license_image" && data[key]?.[0]) {
-        const file = data[key][0];
-        const allowedTypes = [
-          "image/jpeg",
-          "image/png",
-          "image/jpg",
-          "image/gif",
-          "image/svg+xml",
-        ];
-        if (allowedTypes.includes(file.type)) {
-          formData.append(key, file);
-        } else {
-          console.error("❌ Invalid file type for license image");
-          return;
-        }
-      } else if (key !== "expire_date") {
-        formData.append(key, data[key]);
-      }
-    }
-
     try {
+      const formData = new FormData();
+
+      for (const key in data) {
+        if (data[key] !== undefined && data[key] !== null) {
+          if (key === "license_image") {
+            formData.append("license_image", data.license_image[0]); // append file
+          } else {
+            formData.append(key, data[key]);
+          }
+        }
+      }
+
+      // Optional: Debug log of FormData
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ": ", pair[1]);
+      }
+
       const response = await axios.post(
         "https://api.dropshep.com/api/driver",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        formData
       );
-      console.log("✅ Success:", response.data);
+
+      const resData = response.data;
+      console.log("resData", resData);
+
+      if (resData.status === "success") {
+        toast.success("ড্রাইভার সফলভাবে সংরক্ষণ হয়েছে!", {
+          position: "top-right",
+        });
+        reset();
+        setPreviewImage(null);
+      } else {
+        toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
+      }
     } catch (error) {
-      console.error("❌ Error:", error.response?.data || error);
+      console.error(error);
+      const errorMessage =
+        error.response?.data?.message || error.message || "Unknown error";
+      toast.error("সার্ভার ত্রুটি: " + errorMessage);
     }
   };
 
   return (
     <div className="mt-10">
+      <Toaster />
       <h3 className="px-6 py-2 bg-primary text-white font-semibold rounded-t-md">
         ড্রাইভার তৈরি করুন
       </h3>
       <div className="mx-auto p-6 bg-gray-100 rounded-md shadow">
-        <ReusableForm onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Name & Contact */}
           <div className="md:flex justify-between gap-3">
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
@@ -75,7 +88,7 @@ const AddDriverForm = () => {
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
             </div>
-            <div className="mt-2 md:mt-0 w-full relative">
+            <div className="mt-2 md:mt-0 w-full">
               <label className="text-primary text-sm font-semibold">
                 ড্রাইভারের মোবাইল *
               </label>
@@ -88,19 +101,20 @@ const AddDriverForm = () => {
             </div>
           </div>
 
+          {/* NID & Emergency Contact */}
           <div className="md:flex justify-between gap-3">
-            <div className="w-full relative">
+            <div className="w-full">
               <label className="text-primary text-sm font-semibold">
-                ন.আই.ডি নাম্বার *
+                এন.আই.ডি নাম্বার *
               </label>
               <input
                 {...register("nid")}
                 type="number"
-                placeholder="ন.আই.ডি নাম্বার..."
+                placeholder="এন.আই.ডি নাম্বার..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
             </div>
-            <div className="mt-2 md:mt-0 w-full relative">
+            <div className="mt-2 md:mt-0 w-full">
               <label className="text-primary text-sm font-semibold">
                 জরুরী যোগাযোগ
               </label>
@@ -113,8 +127,9 @@ const AddDriverForm = () => {
             </div>
           </div>
 
+          {/* Address & Note */}
           <div className="md:flex justify-between gap-3">
-            <div className="w-full relative">
+            <div className="w-full">
               <label className="text-primary text-sm font-semibold">
                 ঠিকানা *
               </label>
@@ -125,7 +140,7 @@ const AddDriverForm = () => {
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
             </div>
-            <div className="mt-2 md:mt-0 w-full relative">
+            <div className="mt-2 md:mt-0 w-full">
               <label className="text-primary text-sm font-semibold">
                 বিঃদ্রঃ
               </label>
@@ -138,6 +153,7 @@ const AddDriverForm = () => {
             </div>
           </div>
 
+          {/* License & Expiry */}
           <div className="md:flex justify-between gap-3">
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
@@ -150,26 +166,31 @@ const AddDriverForm = () => {
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
             </div>
-
-            <div className="mt-2 md:mt-0 w-full">
+            <div className="mt-2 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 মেয়াদোত্তীর্ণ তারিখ *
               </label>
-              <DatePicker
-                selected={selectedDate}
-                onChange={(date) => {
-                  setSelectedDate(date);
-                  setValue("expire_date", date?.toISOString().split("T")[0]);
-                }}
-                dateFormat="yyyy-MM-dd"
-                className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-                placeholderText="মেয়াদোত্তীর্ণ তারিখ..."
-              />
-              {/* Hidden field for react-hook-form */}
-              <input type="hidden" {...register("expire_date")} />
+              <div className="relative">
+                <input
+                  type="date"
+                  {...register("expire_date")}
+                  ref={(e) => {
+                    register("expire_date").ref(e);
+                    driverDateRef.current = e;
+                  }}
+                  className="remove-date-icon mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none pr-10"
+                />
+                <span className="py-[11px] absolute right-0 px-3 top-[22px] transform -translate-y-1/2 bg-primary rounded-r">
+                  <FiCalendar
+                    className="text-white cursor-pointer"
+                    onClick={() => driverDateRef.current?.showPicker?.()}
+                  />
+                </span>
+              </div>
             </div>
           </div>
 
+          {/* Status & License Image */}
           <div className="md:flex justify-between gap-3">
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
@@ -191,15 +212,55 @@ const AddDriverForm = () => {
                 লাইসেন্সের ছবি যুক্ত করুন
               </label>
               <div className="relative mt-1">
+                <label
+                  htmlFor="license_image"
+                  className="border p-2 rounded w-full block bg-white text-gray-500 text-sm cursor-pointer"
+                >
+                  {previewImage ? "ছবি নির্বাচিত হয়েছে" : "ছবি বাচাই করুন"}
+                </label>
                 <input
                   {...register("license_image")}
-                  type="text"
-                  className="border p-2 rounded"
+                  id="license_image"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageChange}
                 />
               </div>
             </div>
           </div>
-        </ReusableForm>
+
+          {/* Preview */}
+          {previewImage && (
+            <div className="mt-3 relative flex justify-end">
+              <button
+                type="button"
+                onClick={() => {
+                  setPreviewImage(null);
+                  document.getElementById("license_image").value = "";
+                }}
+                className="absolute top-2 right-2 text-red-600 bg-white shadow rounded-sm hover:text-white hover:bg-secondary transition-all duration-300 cursor-pointer font-bold text-xl p-[2px]"
+                title="Remove image"
+              >
+                <IoMdClose />
+              </button>
+              <img
+                src={previewImage}
+                alt="License Preview"
+                className="max-w-xs h-auto rounded border border-gray-300"
+              />
+            </div>
+          )}
+
+          <div className="mt-6 text-left">
+            <button
+              type="submit"
+              className="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 text-sm"
+            >
+              সাবমিট করুন
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

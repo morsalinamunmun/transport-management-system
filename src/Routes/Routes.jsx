@@ -1,7 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../Layout/Main";
 import Home from "../Pages/Home";
-import AddCustomer from "../Pages/AddCustomer";
 import CarList from "../Pages/CarList";
 import AddCarForm from "../Pages/AddCarForm";
 import DriverList from "../Pages/DriverList";
@@ -25,6 +24,7 @@ import UpdateTripForm from "../Pages/updateForm/UpdateTripForm";
 import UpdateFuelForm from "../Pages/updateForm/UpdateFuelForm";
 import UpdatePartsForm from "../Pages/updateForm/UpdatePartsForm";
 import UpdateUsersForm from "../Pages/updateForm/UpdateUsersForm";
+import UpdateMaintenanceForm from "../Pages/updateForm/UpdateMaintenanceForm";
 
 export const router = createBrowserRouter([
   {
@@ -40,96 +40,182 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "AddCustomer",
-        element: <AddCustomer />,
-      },
-      {
         path: "CarList",
-        element: <CarList />,
+        element: (
+          <PrivateRoute>
+            <CarList />
+          </PrivateRoute>
+        ),
       },
       {
         path: "AddCarForm",
-        element: <AddCarForm />,
+        element: (
+          <PrivateRoute>
+            <AddCarForm />
+          </PrivateRoute>
+        ),
       },
       {
         path: "UpdateCarForm/:id",
-        element: <UpdateCarForm />,
+        element: (
+          <PrivateRoute>
+            <UpdateCarForm />
+          </PrivateRoute>
+        ),
         loader: ({ params }) =>
           fetch(`https://api.dropshep.com/api/vehicle/${params.id}`),
       },
       {
         path: "DriverList",
-        element: <DriverList />,
+        element: (
+          <PrivateRoute>
+            <DriverList />
+          </PrivateRoute>
+        ),
       },
       {
         path: "AddDriverForm",
-        element: <AddDriverForm />,
+        element: (
+          <PrivateRoute>
+            <AddDriverForm />
+          </PrivateRoute>
+        ),
       },
       {
         path: "TripList",
-        element: <TripList />,
+        element: (
+          <PrivateRoute>
+            <TripList />
+          </PrivateRoute>
+        ),
       },
       {
         path: "AddTripForm",
-        element: <AddTripForm />,
+        element: (
+          <PrivateRoute>
+            <AddTripForm />
+          </PrivateRoute>
+        ),
       },
       {
         path: "UpdateTripForm/:id",
-        element: <UpdateTripForm />,
+        element: (
+          <PrivateRoute>
+            <UpdateTripForm />
+          </PrivateRoute>
+        ),
         loader: ({ params }) =>
           fetch(`https://api.dropshep.com/api/trip/${params.id}`),
       },
       {
         path: "Fuel",
-        element: <Fuel />,
+        element: (
+          <PrivateRoute>
+            <Fuel />
+          </PrivateRoute>
+        ),
       },
       {
         path: "FuelForm",
-        element: <FuelForm />,
+        element: (
+          <PrivateRoute>
+            <FuelForm />
+          </PrivateRoute>
+        ),
       },
       {
         path: "UpdateFuelForm/:id",
-        element: <UpdateFuelForm />,
+        element: (
+          <PrivateRoute>
+            <UpdateFuelForm />
+          </PrivateRoute>
+        ),
         loader: ({ params }) =>
           fetch(`https://api.dropshep.com/api/fuel/${params.id}`),
       },
       {
         path: "Parts",
-        element: <Parts />,
+        element: (
+          <PrivateRoute>
+            <Parts />
+          </PrivateRoute>
+        ),
       },
       {
         path: "UpdatePartsForm/:id",
-        element: <UpdatePartsForm />,
+        element: (
+          <PrivateRoute>
+            <UpdatePartsForm />
+          </PrivateRoute>
+        ),
         loader: ({ params }) =>
           fetch(`https://api.dropshep.com/api/parts/${params.id}`),
       },
       {
         path: "Maintenance",
-        element: <Maintenance />,
+        element: (
+          <PrivateRoute>
+            <Maintenance />
+          </PrivateRoute>
+        ),
       },
       {
         path: "MaintenanceForm",
-        element: <MaintenanceForm />,
+        element: (
+          <PrivateRoute>
+            <MaintenanceForm />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "UpdateMaintenanceForm/:id",
+        element: (
+          <PrivateRoute>
+            <UpdateMaintenanceForm />
+          </PrivateRoute>
+        ),
+        loader: ({ params }) =>
+          fetch(`https://api.dropshep.com/api/maintenance/${params.id}`),
       },
       {
         path: "DailyIncome",
-        element: <DailyIncome />,
+        element: (
+          <PrivateRoute>
+            <DailyIncome />
+          </PrivateRoute>
+        ),
       },
       {
         path: "DailyExpense",
-        element: <DailyExpense />,
+        element: (
+          <PrivateRoute>
+            <DailyExpense />
+          </PrivateRoute>
+        ),
       },
       {
         path: "AllUsers",
-        element: <AllUsers />,
+        element: (
+          <PrivateRoute>
+            <AllUsers />
+          </PrivateRoute>
+        ),
       },
       {
         path: "AddUserForm",
-        element: <AddUserForm />,
+        element: (
+          <PrivateRoute>
+            <AddUserForm />
+          </PrivateRoute>
+        ),
       },
       {
         path: "UpdateUsersForm/:id",
-        element: <UpdateUsersForm />,
+        element: (
+          <PrivateRoute>
+            <UpdateUsersForm />
+          </PrivateRoute>
+        ),
         loader: ({ params }) =>
           fetch(`https://api.dropshep.com/api/users/${params.id}`),
       },

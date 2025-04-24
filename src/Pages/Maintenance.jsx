@@ -140,6 +140,7 @@ const Maintenance = () => {
 
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
+      <Toaster />
       <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-8 border border-gray-200">
         {/* Header */}
         <div className="md:flex items-center justify-between mb-6">
@@ -245,14 +246,16 @@ const Maintenance = () => {
                   <td className="px-2 py-4">{dt.vehicle_no}</td>
                   <td className="px-2 py-4">{dt.service_for}</td>
                   <td className="px-2 py-4">{dt.parts_and_spairs}</td>
-                  <td className="px-2 py-4">{dt.time}</td>
+                  <td className="px-2 py-4">{dt.date}</td>
                   <td className="px-2 py-4">{dt.dignifies}</td>
                   <td className="px-2 py-4">{dt.total_cost}</td>
                   <td>
                     <div className="flex gap-2">
-                      <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                        <FaPen className="text-[12px]" />
-                      </button>
+                      <Link to={`/UpdateMaintenanceForm/${dt.id}`}>
+                        <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                          <FaPen className="text-[12px]" />
+                        </button>
+                      </Link>
                       <button className="text-red-900 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer">
                         <FaTrashAlt
                           onClick={() => {
@@ -263,7 +266,6 @@ const Maintenance = () => {
                         />
                       </button>
                     </div>
-                    <Toaster />
                   </td>
                 </tr>
               ))}
@@ -300,7 +302,7 @@ const Maintenance = () => {
                   onClick={() => handleDelete(selectedMaintenanceId)}
                   className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 cursor-pointer"
                 >
-                  হা
+                  হ্যাঁ
                 </button>
               </div>
             </div>

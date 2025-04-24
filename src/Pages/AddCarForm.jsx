@@ -209,7 +209,7 @@ const AddCarForm = () => {
               <option value="Jashore">যশোর</option>
               <option value="Chuadanga">চুয়াডাঙ্গা</option>
               <option value="Satkhira">সাতক্ষীরা</option>
-              <option value="Bagerhat">বাগেরহাট</option>
+              <option value="Bagerhat">বাগেরহ্যাঁট</option>
               <option value="Meherpur">মেহেরপুর</option>
               <option value="Jhenaidah">ঝিনাইদাহ</option>
               <option value="Norail">নড়াইল</option>
@@ -221,13 +221,13 @@ const AddCarForm = () => {
               <option value="Kurigram">কুড়িগ্রাম</option>
               <option value="Dinajpur">দিনাজপুর</option>
               <option value="Nilfamari">নীলফামারী</option>
-              <option value="Lalmonirhat">লালমনিরহাট</option>
+              <option value="Lalmonirhat">লালমনিরহ্যাঁট</option>
               <option value="Gaibandha">গাইবান্দা</option>
 
               <option value="Rajshahi">রাজশাহী</option>
               <option value="Pabna">পাবনা</option>
               <option value="Bagura">বগুড়া</option>
-              <option value="Joypurhat">জয়পুরহাট</option>
+              <option value="Joypurhat">জয়পুরহ্যাঁট</option>
               <option value="Nouga">নওগাঁ</option>
               <option value="Natore">নাটোর</option>
               <option value="Sirajgonj">সিরাজগঞ্জ</option>

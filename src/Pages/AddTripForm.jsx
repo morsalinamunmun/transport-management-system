@@ -222,18 +222,7 @@ const AddTripForm = () => {
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
-              <div className="mt-2 md:mt-0 w-full relative">
-                <label className="text-primary text-sm font-semibold">
-                  {/* todo show here অন্যান্য খরচ + ট্রিপের খরচ */}
-                  ট্রিপের ভাড়া
-                </label>
-                <input
-                  {...register("trip_price", { required: true })}
-                  type="text"
-                  placeholder="ট্রিপের ভাড়া..."
-                  className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-                />
-              </div>
+
               <div className="w-full">
                 <label className="text-primary text-sm font-semibold">
                   ট্রিপের খরচ
@@ -243,6 +232,17 @@ const AddTripForm = () => {
                   value={total}
                   placeholder="ট্রিপের খরচ..."
                   className="cursor-not-allowed mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+                />
+              </div>
+              <div className="mt-2 md:mt-0 w-full relative">
+                <label className="text-primary text-sm font-semibold">
+                  ট্রিপের ভাড়া
+                </label>
+                <input
+                  {...register("trip_price", { required: true })}
+                  type="text"
+                  placeholder="ট্রিপের ভাড়া..."
+                  className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
             </div>

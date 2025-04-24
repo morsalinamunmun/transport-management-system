@@ -6,32 +6,61 @@ import { IoMdClose } from "react-icons/io";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { FiCalendar } from "react-icons/fi";
+import { useLoaderData } from "react-router-dom";
 
-const MaintenanceForm = () => {
+const UpdateMaintenanceForm = () => {
   const { register, handleSubmit, setValue, reset } = useForm();
-  const [previewImage, setPreviewImage] = useState(null);
+
+  const updateMaintenanceLoaderData = useLoaderData();
   const maintenanceDateRef = useRef(null);
 
+  const {
+    id,
+    date,
+    service_type,
+    parts_and_spairs,
+    maintenance_type,
+    cost,
+    vehicle_no,
+    cost_by,
+    total_cost,
+    dignifies,
+    service_for,
+    receipt,
+  } = updateMaintenanceLoaderData.data;
+  const [previewImage, setPreviewImage] = useState(receipt);
+  console.log(
+    "updateMaintenanceLoaderData.data",
+    updateMaintenanceLoaderData.data
+  );
   const onSubmit = async (data) => {
-    console.log("add car data", data);
     try {
       const formData = new FormData();
+
+      // Append fields
       for (const key in data) {
         if (data[key] !== undefined && data[key] !== null) {
           formData.append(key, data[key]);
         }
       }
+
+      // Debug: log all data being sent
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
       const response = await axios.post(
-        "https://api.dropshep.com/api/maintenance",
+        `https://api.dropshep.com/api/maintenance/${id}`,
         formData
       );
+
       const resData = response.data;
-      console.log("resData", resData);
       if (resData.status === "success") {
         toast.success("তথ্য সফলভাবে সংরক্ষণ হয়েছে!", {
           position: "top-right",
         });
         reset();
+        setPreviewImage(null);
       } else {
         toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
       }
@@ -42,7 +71,7 @@ const MaintenanceForm = () => {
       toast.error("সার্ভার ত্রুটি: " + errorMessage);
     }
   };
-  // handle remove image
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -67,7 +96,8 @@ const MaintenanceForm = () => {
               </label>
               <div className="relative">
                 <input
-                  type="date"
+                  type="text"
+                  defaultValue={date}
                   {...register("date")}
                   ref={(e) => {
                     register("date").ref(e);
@@ -89,9 +119,9 @@ const MaintenanceForm = () => {
               </label>
               <select
                 {...register("service_type")}
+                defaultValue={service_type}
                 className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
               >
-                <option value="">সার্ভিসের ধরন</option>
                 <option value="Maintenance">Maintenance</option>
                 <option value="General">General</option>
               </select>
@@ -106,9 +136,9 @@ const MaintenanceForm = () => {
               </label>
               <select
                 {...register("parts_and_spairs")}
+                defaultValue={parts_and_spairs}
                 className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
               >
-                <option value="">পার্টস এন্ড স্পায়ারস</option>
                 <option value="EngineOil">Engine Oil</option>
                 <option value="Pistons">Pistons</option>
                 <option value="ABS_Sensors">ABS Sensors</option>
@@ -122,9 +152,9 @@ const MaintenanceForm = () => {
               </label>
               <select
                 {...register("maintenance_type")}
+                defaultValue={maintenance_type}
                 className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
               >
-                <option value="">মেইনটেনেসের ধরন</option>
                 <option value="EngineOil">Engine Oil</option>
                 <option value="Pistons">Pistons</option>
                 <option value="ABS_Sensors">ABS Sensors</option>
@@ -139,7 +169,7 @@ const MaintenanceForm = () => {
               <label className="text-primary text-sm font-semibold">খরচ</label>
               <input
                 {...register("cost")}
-                // type="text"
+                defaultValue={cost}
                 placeholder="খরচ ..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
@@ -150,6 +180,7 @@ const MaintenanceForm = () => {
               </label>
               <input
                 {...register("vehicle_no")}
+                defaultValue={vehicle_no}
                 type="text"
                 placeholder="গাড়ির নাম্বার..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -158,13 +189,13 @@ const MaintenanceForm = () => {
           </div>
 
           <div className="md:flex justify-between gap-3">
-            <div className="w-full relative">
+            <div className="w-full">
               <label className="text-primary text-sm font-semibold">
                 চার্জ বাই
               </label>
               <input
                 {...register("cost_by")}
-                // type="text"
+                defaultValue={cost_by}
                 placeholder="চার্জ বাই..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
@@ -175,7 +206,7 @@ const MaintenanceForm = () => {
               </label>
               <input
                 {...register("total_cost")}
-                // type="text"
+                defaultValue={total_cost}
                 placeholder="সর্বমোট খরচ..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
@@ -189,9 +220,9 @@ const MaintenanceForm = () => {
               </label>
               <select
                 {...register("dignifies")}
+                defaultValue={dignifies}
                 className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
               >
-                <option value="">মর্যাদা...</option>
                 <option value="High">High</option>
                 <option value="Medium">Medium</option>
                 <option value="Low">Low</option>
@@ -204,9 +235,9 @@ const MaintenanceForm = () => {
               </label>
               <select
                 {...register("service_for")}
+                defaultValue={service_for}
                 className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
               >
-                <option value="">সার্ভিস ফর...</option>
                 <option value="EngineOil">Engine Oil</option>
                 <option value="Pistons">Pistons</option>
                 <option value="ABS_Sensors">ABS Sensors</option>
@@ -226,17 +257,13 @@ const MaintenanceForm = () => {
                   {previewImage ? "ছবি নির্বাচিত হয়েছে" : "ছবি বাচাই করুন"}
                 </label>
                 <input
-                  {...register("receipt")}
                   id="receipt"
                   type="file"
                   accept="image/*"
                   className="hidden"
-                  onChange={(e) => {
-                    handleImageChange(e);
-                  }}
+                  onChange={(e) => handleImageChange(e)}
                 />
               </div>
-              {/* 🖼️ Image preview below file input */}
               {previewImage && (
                 <div className="mt-3 relative flex justify-end">
                   <button
@@ -244,6 +271,7 @@ const MaintenanceForm = () => {
                     onClick={() => {
                       setPreviewImage(null);
                       document.querySelector('input[type="file"]').value = null;
+                      setValue("receipt", null);
                     }}
                     className="absolute top-2 right-2 text-red-600 bg-white shadow rounded-sm hover:text-white hover:bg-secondary transition-all duration-300 cursor-pointer font-bold text-xl p-[2px]"
                     title="Remove image"
@@ -251,8 +279,12 @@ const MaintenanceForm = () => {
                     <IoMdClose />
                   </button>
                   <img
-                    src={previewImage}
-                    alt="License Preview"
+                    src={
+                      previewImage?.startsWith("blob:")
+                        ? previewImage
+                        : `https://api.dropshep.com/public/uploads/maintenance/${previewImage}`
+                    }
+                    alt="Receipt Preview"
                     className="max-w-xs h-auto rounded border border-gray-300"
                   />
                 </div>
@@ -274,4 +306,4 @@ const MaintenanceForm = () => {
   );
 };
 
-export default MaintenanceForm;
+export default UpdateMaintenanceForm;

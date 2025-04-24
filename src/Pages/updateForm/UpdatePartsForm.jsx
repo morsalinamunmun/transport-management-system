@@ -3,7 +3,6 @@ import React, { useRef } from "react";
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { FiCalendar } from "react-icons/fi";
-import { IoMdClose } from "react-icons/io";
 import { useLoaderData } from "react-router-dom";
 
 const UpdatePartsForm = () => {

@@ -1,11 +1,29 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
+import axios from "axios";
 import { FaTruck, FaFilter, FaPen } from "react-icons/fa";
 import { HiMiniCalendarDateRange } from "react-icons/hi2";
+
 const DailyIncome = () => {
   const [taxDate, setTaxDate] = useState(null);
-  const dateRef = useRef(null);
+  const [trips, setTrips] = useState([]);
   const [showFilter, setShowFilter] = useState(false);
+  const dateRef = useRef(null);
+
+  useEffect(() => {
+    const fetchTrips = async () => {
+      try {
+        const res = await axios.get("https://api.dropshep.com/api/trip");
+        const sorted = res.data.sort(
+          (a, b) => new Date(b.trip_date) - new Date(a.trip_date)
+        );
+        setTrips(sorted);
+      } catch (err) {
+        console.error("Error fetching trips:", err);
+      }
+    };
+    fetchTrips();
+  }, []);
 
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
@@ -18,7 +36,7 @@ const DailyIncome = () => {
           </h1>
           <div className="mt-3 md:mt-0 flex gap-2">
             <button
-              onClick={() => setShowFilter((prev) => !prev)} // Toggle filter
+              onClick={() => setShowFilter((prev) => !prev)}
               className="bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 py-1 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer"
             >
               <FaFilter /> ফিল্টার
@@ -68,21 +86,18 @@ const DailyIncome = () => {
             </div>
           </div>
         )}
-        {/* export and search*/}
+
+        {/* Export & Search */}
         <div className="md:flex justify-between items-center">
           <div className="flex bg-gray-200 text-primary font-semibold rounded-md">
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
-              CSV
-            </button>
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
-              Excel
-            </button>
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
-              PDF
-            </button>
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
-              Print
-            </button>
+            {["CSV", "Excel", "PDF", "Print"].map((label) => (
+              <button
+                key={label}
+                className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+              >
+                {label}
+              </button>
+            ))}
           </div>
           <div className="mt-3 md:mt-0">
             <span className="text-primary font-semibold pr-3">Search: </span>
@@ -113,25 +128,32 @@ const DailyIncome = () => {
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
-              <tr className="hover:bg-gray-50 transition-all">
-                <td className="px-4 py-4 font-bold">1</td>
-                <td className="px-4 py-4">16/04/2025</td>
-                <td className="px-4 py-4">Freezer Van</td>
-                <td className="px-4 py-4">Mirpur-01</td>
-                <td className="px-4 py-4">Baddha</td>
-                <td className="px-4 py-4">2</td>
-                <td className="px-4 py-4">0</td>
-                <td className="px-4 py-4">300</td>
-                <td className="px-4 py-4">600</td>
-                <td className="px-4 py-4">500</td>
-                <td>
-                  <div className="flex justify-center">
-                    <button className="text-primary bg-green-50 border border-primary hover:bg-green-900 hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                      <FaPen className="text-[12px]" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
+              {trips.map((trip, index) => (
+                <tr
+                  key={trip.id || index}
+                  className="hover:bg-gray-50 transition-all"
+                >
+                  <td className="px-4 py-4 font-bold">{index + 1}</td>
+                  <td className="px-4 py-4">
+                    {new Date(trip.trip_date).toLocaleDateString("en-GB")}
+                  </td>
+                  <td className="px-4 py-4">{trip.vehicle_name}</td>
+                  <td className="px-4 py-4">{trip.load_point}</td>
+                  <td className="px-4 py-4">{trip.unload_point}</td>
+                  <td className="px-4 py-4">{trip.customer_name}</td>
+                  <td className="px-4 py-4">{trip.rent_cost}</td>
+                  <td className="px-4 py-4">{trip.penalty || 0}</td>
+                  <td className="px-4 py-4">{trip.running_cost || 0}</td>
+                  <td className="px-4 py-4">{trip.profit || 0}</td>
+                  <td>
+                    <div className="flex justify-center">
+                      <button className="text-primary bg-green-50 border border-primary hover:bg-green-900 hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                        <FaPen className="text-[12px]" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

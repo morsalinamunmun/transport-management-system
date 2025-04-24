@@ -7,16 +7,25 @@ import axios from "axios";
 import { useLoaderData } from "react-router-dom";
 
 const UpdateUsersForm = () => {
-  //   update loader data
   const updateUserLoaderData = useLoaderData();
-  const { id, name, phone, email, password, role, status } =
-    updateUserLoaderData.data;
-  console.log("user loader data", updateUserLoaderData.data);
+  const {
+    id,
+    name,
+    phone,
+    email,
+    password: initialPassword,
+    role,
+    status,
+  } = updateUserLoaderData.data;
+
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm();
+
+  const password = watch("password");
 
   const onSubmit = async (data) => {
     try {
@@ -95,31 +104,43 @@ const UpdateUsersForm = () => {
                 placeholder="ইমেইল..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
-              {errors.nidNumber && (
-                <p className="text-red-500 text-xs mt-1">ইমেইল আবশ্যক</p>
-              )}
             </div>
             <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 পাসওয়ার্ড
               </label>
               <input
-                {...register("password")}
-                defaultValue={password}
-                type="text"
+                {...register("password", { required: "পাসওয়ার্ড আবশ্যক" })}
+                defaultValue={initialPassword}
+                type="password"
                 placeholder="পাসওয়ার্ড..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
+              {errors.password && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
             <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 কনফার্ম পাসওয়ার্ড
               </label>
               <input
-                type="text"
+                type="password"
                 placeholder="কনফার্ম পাসওয়ার্ড..."
+                {...register("confirmPassword", {
+                  required: "কনফার্ম পাসওয়ার্ড আবশ্যক",
+                  validate: (value) =>
+                    value === password || "পাসওয়ার্ড মেলেনি",
+                })}
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
             </div>
           </div>
 
