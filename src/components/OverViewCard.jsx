@@ -44,9 +44,9 @@ const OverViewCard = () => {
 
   return (
     <div className="p-5">
-      <ul className="md:flex gap-3 flex-wrap">
+      <ul className="md:flex gap-3">
         {/* Card 1: আয় */}
-        <li className="bg-white rounded-md p-3 w-full md:w-[calc(50%-0.375rem)] lg:w-[calc(25%-0.75rem)] mb-3">
+        <li className="bg-white rounded-md p-3 w-full md:w-full mb-3">
           <div className="text-primary border-b pb-3 border-gray-300">
             <h3 className="font-semibold">আজকের আয়</h3>
           </div>
@@ -60,7 +60,7 @@ const OverViewCard = () => {
         </li>
 
         {/* Card 2: ব্যয় */}
-        <li className="bg-white rounded-md p-3 w-full md:w-[calc(50%-0.375rem)] lg:w-[calc(25%-0.75rem)] mb-3">
+        <li className="bg-white rounded-md p-3 w-full md:w-w-full mb-3">
           <div className="text-primary border-b pb-3 border-gray-300">
             <h3 className="font-semibold">আজকের ব্যয়</h3>
           </div>
@@ -86,7 +86,7 @@ const OverViewCard = () => {
         </li>
 
         {/* Card 3: রিকুইজিশন */}
-        <li className="bg-white rounded-md p-3 w-full md:w-[calc(50%-0.375rem)] lg:w-[calc(25%-0.75rem)] mb-3">
+        {/* <li className="bg-white rounded-md p-3 w-full md:w-w-full  mb-3">
           <div className="text-primary border-b pb-3 border-gray-300">
             <h3 className="font-semibold">রিকুইজিশন</h3>
           </div>
@@ -110,10 +110,10 @@ const OverViewCard = () => {
               </p>
             </div>
           </div>
-        </li>
+        </li> */}
 
         {/* Card 4: রিমাইন্ডার */}
-        <li className="bg-white rounded-md p-3 w-full md:w-[calc(50%-0.375rem)] lg:w-[calc(25%-0.75rem)] mb-3">
+        <li className="bg-white rounded-md p-3 w-full md:w-w-full mb-3">
           <div className="text-primary border-b pb-3 border-gray-300">
             <h3 className="font-semibold">রিমাইন্ডার</h3>
           </div>

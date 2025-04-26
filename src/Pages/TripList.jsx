@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import toast, { Toaster } from "react-hot-toast";
 import {
@@ -24,13 +24,16 @@ import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 const TripList = () => {
   const [trip, setTrip] = useState([]);
   const [showFilter, setShowFilter] = useState(false);
-  const [tripDate, settripDate] = useState(null);
-  const dateRef = useRef(null);
+  // const [tripDate, settripDate] = useState(null);
+  // const dateRef = useRef(null);
   const [loading, setLoading] = useState(true);
   // delete modal
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTripId, setselectedTripId] = useState(null);
   const toggleModal = () => setIsOpen(!isOpen);
+  // filter
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   // get single driver info by id
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedTrip, setselectedTrip] = useState(null);
@@ -184,10 +187,14 @@ const TripList = () => {
     WinPrint.print();
     WinPrint.close();
   };
+  const parseDate = (dateStr) => {
+    const [day, month, year] = dateStr.split("/").map(Number);
+    return new Date(year, month - 1, day);
+  };
   // search
   const filteredTrip = trip.filter((dt) => {
     const term = searchTerm.toLowerCase();
-    return (
+    const matchesSearch =
       dt.trip_date?.toLowerCase().includes(term) ||
       dt.trip_time?.toLowerCase().includes(term) ||
       dt.load_point?.toLowerCase().includes(term) ||
@@ -199,9 +206,17 @@ const TripList = () => {
       dt.gas_price?.toLowerCase().includes(term) ||
       dt.vehicle_number?.toLowerCase().includes(term) ||
       dt.other_expenses?.toLowerCase().includes(term) ||
-      dt.trip_price?.toLowerCase().includes(term)
-    );
+      dt.trip_price?.toLowerCase().includes(term);
+
+    const tripDateObj = dt.trip_date ? parseDate(dt.trip_date) : null;
+
+    const matchesDateFilter =
+      (!startDate || (tripDateObj && tripDateObj >= startDate)) &&
+      (!endDate || (tripDateObj && tripDateObj <= endDate));
+
+    return matchesSearch && matchesDateFilter;
   });
+
   // pagination
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -292,56 +307,34 @@ const TripList = () => {
           <div className="flex gap-5 border border-gray-300 rounded-md p-5 my-5 transition-all duration-300 pb-5">
             <div className="relative w-64">
               <DatePicker
-                selected={tripDate}
-                onChange={(date) => settripDate(date)}
-                ref={dateRef}
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
                 placeholderText="শুরুর তারিখ..."
                 className="mt-1 w-64 text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 dateFormat="dd/MM/yyyy"
               />
-              <span
-                onClick={() => dateRef.current?.setOpen(true)}
-                className="absolute top-1 right-0 text-xl text-white bg-primary px-4 py-[9px] rounded-r-md cursor-pointer"
-              >
-                <HiMiniCalendarDateRange />
-              </span>
             </div>
             <div className="relative w-64">
               <DatePicker
-                selected={tripDate}
-                onChange={(date) => settripDate(date)}
-                ref={dateRef}
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
                 placeholderText="শেষের তারিখ..."
                 className="mt-1 w-64 text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 dateFormat="dd/MM/yyyy"
               />
-              <span
-                onClick={() => dateRef.current?.setOpen(true)}
-                className="absolute top-1 right-0 text-xl text-white bg-primary px-4 py-[9px] rounded-r-md cursor-pointer"
-              >
-                <HiMiniCalendarDateRange />
-              </span>
             </div>
-            <div className="mt-2 md:mt-0 w-full relative">
-              <select
-                name="driverName"
-                className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
-                // defaultValue=""
-              >
-                <option value="">গাড়ির নাম...</option>
-                <option value="Motin Ali">Motin Ali</option>
-                <option value="Korim Ali">Korim Ali</option>
-                <option value="Solaiman Ali">Solaiman Ali</option>
-              </select>
-              <MdOutlineArrowDropDown className="absolute top-3 right-2 pointer-events-none text-xl text-gray-500" />
-            </div>
+
             <div className="flex gap-2">
-              <button className="bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 py-1 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer">
+              <button
+                onClick={() => setCurrentPage(1)} // Reset to page 1 after filtering
+                className="bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 py-1 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer"
+              >
                 <FaFilter /> ফিল্টার
               </button>
             </div>
           </div>
         )}
+
         {/* Table */}
         <div className="mt-5 overflow-x-auto rounded-xl border border-gray-200">
           <table className="min-w-full text-sm text-left">
@@ -359,11 +352,11 @@ const TripList = () => {
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
               {currentTrip?.map((dt, index) => {
-                const trip = parseFloat(dt.trip_price ?? "0") || 0;
+                const fuel = parseFloat(dt.fuel_price ?? "0") || 0;
                 const gas = parseFloat(dt.gas_price ?? "0") || 0;
                 const others = parseFloat(dt.other_expenses ?? "0") || 0;
                 const commision = dt.driver_percentage;
-                const totalCost = (trip + gas + others + commision).toFixed(2);
+                const totalCost = (fuel + gas + others + commision).toFixed(2);
 
                 return (
                   <tr

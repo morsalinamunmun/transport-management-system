@@ -11,9 +11,9 @@ const AddTripForm = () => {
   const tripDateRef = useRef(null);
   const fuel = parseFloat(watch("fuel_price") || 0);
   const gas = parseFloat(watch("gas_price") || 0);
+  const totalDamarage = parseFloat(watch("damarage") || 0);
   const other = parseFloat(watch("other_expenses") || 0);
-  const price = parseFloat(watch("trip_price") || 0);
-  const total = price - (fuel + gas + other);
+  const total = fuel + gas + totalDamarage + other;
   console.log("total", total);
   const onSubmit = async (data) => {
     console.log("add car data", data);
@@ -128,6 +128,20 @@ const AddTripForm = () => {
               </span>
             </h5>
             <div className="md:flex justify-between gap-3">
+              <div className="mt-2 md:mt-0 w-full relative">
+                <label className="text-primary text-sm font-semibold">
+                  গাড়ির নম্বর
+                </label>
+                <select
+                  {...register("vehicle_number", { required: true })}
+                  className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
+                >
+                  <option value="">গাড়ির নম্বর</option>
+                  <option value="Dhama metro-1">Dhama metro-1</option>
+                  <option value="Dhama metro-2">Dhama metro-2</option>
+                </select>
+                <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
+              </div>
               <div className="w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   ড্রাইভারের নাম
@@ -143,6 +157,8 @@ const AddTripForm = () => {
                 </select>
                 <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
               </div>
+            </div>
+            <div className="md:flex justify-between gap-3">
               <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   ড্রাইভারের মোবাইল
@@ -195,20 +211,6 @@ const AddTripForm = () => {
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
-              <div className="mt-2 md:mt-0 w-full relative">
-                <label className="text-primary text-sm font-semibold">
-                  গাড়ির নম্বর
-                </label>
-                <select
-                  {...register("vehicle_number", { required: true })}
-                  className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
-                >
-                  <option value="">গাড়ির নম্বর</option>
-                  <option value="Dhama metro-1">Dhama metro-1</option>
-                  <option value="Dhama metro-2">Dhama metro-2</option>
-                </select>
-                <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
-              </div>
             </div>
             <div className="md:flex justify-between gap-3">
               <div className="mt-2 md:mt-0 w-full relative">
@@ -222,7 +224,17 @@ const AddTripForm = () => {
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
-
+              <div className="mt-2 md:mt-0 w-full relative">
+                <label className="text-primary text-sm font-semibold">
+                  জরিমানা
+                </label>
+                <input
+                  {...register("damarage", { required: true })}
+                  type="text"
+                  placeholder="জরিমানা..."
+                  className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+                />
+              </div>
               <div className="w-full">
                 <label className="text-primary text-sm font-semibold">
                   ট্রিপের খরচ
@@ -232,6 +244,27 @@ const AddTripForm = () => {
                   value={total}
                   placeholder="ট্রিপের খরচ..."
                   className="cursor-not-allowed mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+                />
+              </div>
+            </div>
+          </div>
+          {/*  */}
+          <div className="border border-gray-300 p-5 rounded-md">
+            <h5 className="text-primary font-semibold text-center pb-5">
+              <span className="py-2 border-b-2 border-primary">
+                কাস্টমার এবং পেমেন্ট তথ্য
+              </span>
+            </h5>
+            <div className="md:flex justify-between gap-3">
+              <div className="mt-2 md:mt-0 w-full relative">
+                <label className="text-primary text-sm font-semibold">
+                  কাস্টমারের নাম
+                </label>
+                <input
+                  {...register("customer_name", { required: true })}
+                  type="text"
+                  placeholder="ট্রিপের ভাড়া..."
+                  className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
               <div className="mt-2 md:mt-0 w-full relative">
@@ -245,8 +278,20 @@ const AddTripForm = () => {
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
+              <div className="mt-2 md:mt-0 w-full relative">
+                <label className="text-primary text-sm font-semibold">
+                  অগ্রিম পেমেন্ট
+                </label>
+                <input
+                  {...register("advance_payment", { required: true })}
+                  type="text"
+                  placeholder="অন্যান্য খরচ..."
+                  className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+                />
+              </div>
             </div>
           </div>
+
           {/* Submit Button */}
           <div className="text-left">
             <button

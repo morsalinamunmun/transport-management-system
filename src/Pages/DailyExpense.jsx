@@ -1,11 +1,30 @@
-import React, { useRef, useState } from "react";
+import axios from "axios";
+import React, { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import { FaTruck, FaFilter, FaPen } from "react-icons/fa";
 import { HiMiniCalendarDateRange } from "react-icons/hi2";
 const DailyExpense = () => {
   const [taxDate, setTaxDate] = useState(null);
   const dateRef = useRef(null);
-  const [showFilter, setShowFilter] = useState(false); // State to toggle filter section
+  const [showFilter, setShowFilter] = useState(false);
+  const [trip, setTrip] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    axios
+      .get("https://api.dropshep.com/api/trip")
+      .then((response) => {
+        if (response.data.status === "success") {
+          setTrip(response.data.data);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching driver data:", error);
+        setLoading(false);
+      });
+  }, []);
+  if (loading) return <p className="text-center mt-16">Loading trip...</p>;
+  console.log("trip:", trip);
 
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
@@ -109,22 +128,40 @@ const DailyExpense = () => {
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
-              <tr className="hover:bg-gray-50 transition-all">
-                <td className="px-4 py-4 font-bold">1</td>
-                <td className="px-4 py-4">16/04/2025</td>
-                <td className="px-4 py-4">Dhaka metro 12</td>
-                <td className="px-4 py-4">Korim ali</td>
-                <td className="px-4 py-4">1200</td>
-                <td className="px-4 py-4">200</td>
-                <td className="px-4 py-4">1400</td>
-                <td>
-                  <div className="flex justify-center">
-                    <button className="text-primary bg-green-50 border border-primary hover:bg-green-900 hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                      <FaPen className="text-[12px]" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
+              {trip?.map((item, index) => {
+                const fuel = parseFloat(item.fuel_price ?? "0") || 0;
+                const gas = parseFloat(item.gas_price ?? "0") || 0;
+                const others = parseFloat(item.other_expenses ?? "0") || 0;
+                const commission =
+                  parseFloat(item.driver_percentage ?? "0") || 0;
+                const totalCost = (fuel + gas + others + commission).toFixed(2);
+
+                return (
+                  <tr key={item.id} className="hover:bg-gray-50 transition-all">
+                    <td className="px-4 py-4 font-bold">{index + 1}</td>
+                    <td className="px-4 py-4">{item.trip_date}</td>
+                    <td className="px-4 py-4">{item.vehicle_number}</td>
+                    <td className="px-4 py-4">{item.driver_name}</td>
+                    <td className="px-4 py-4">
+                      {parseFloat(item.trip_price ?? "0").toFixed(2)}
+                    </td>
+                    <td className="px-4 py-4">{totalCost}</td>
+                    <td className="px-4 py-4">
+                      {(
+                        parseFloat(item.trip_price ?? "0") -
+                        parseFloat(totalCost)
+                      ).toFixed(2)}
+                    </td>
+                    <td>
+                      <div className="flex justify-center">
+                        <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                          <FaPen className="text-[12px]" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

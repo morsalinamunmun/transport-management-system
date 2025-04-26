@@ -5,34 +5,65 @@ import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { FiCalendar } from "react-icons/fi";
 import { MdOutlineArrowDropDown } from "react-icons/md";
+import { useLoaderData } from "react-router-dom";
 
 const UpdateDailyIncomeForm = () => {
-  const { register, handleSubmit, reset, watch } = useForm();
+  const { register, handleSubmit } = useForm();
   const tripDateRef = useRef(null);
-  const fuel = parseFloat(watch("fuel_price") || 0);
-  const gas = parseFloat(watch("gas_price") || 0);
-  const other = parseFloat(watch("other_expenses") || 0);
-  const price = parseFloat(watch("trip_price") || 0);
-  const total = price - (fuel + gas + other);
-  console.log("total", total);
+  //   update loader data
+  const updateTripLoaderData = useLoaderData();
+  const {
+    id,
+    trip_date,
+    trip_time,
+    load_point,
+    unload_point,
+    driver_name,
+    driver_contact,
+    driver_percentage,
+    fuel_price,
+    gas_price,
+    vehicle_number,
+    other_expenses,
+    trip_price,
+  } = updateTripLoaderData.data;
+  const fuel = parseFloat(fuel_price) || 0;
+  const gas = parseFloat(gas_price) || 0;
+  const other = parseFloat(other_expenses) || 0;
+  const total = fuel + gas + other;
+  console.log("total trip", total);
   const onSubmit = async (data) => {
-    console.log("add car data", data);
     try {
-      const formData = new FormData();
-      for (const key in data) {
-        formData.append(key, data[key]);
-      }
+      const updatedData = {
+        trip_date: data.trip_date,
+        trip_time: trip_time,
+        load_point: data.load_point,
+        unload_point: data.unload_point,
+        driver_name: driver_name,
+        driver_contact: driver_contact,
+        driver_percentage: driver_percentage,
+        fuel_price: data.fuel_price,
+        gas_price: data.gas_price,
+        vehicle_number: data.vehicle_number,
+        other_expenses: data.other_expenses,
+        trip_price: data.trip_price,
+      };
+
       const response = await axios.post(
-        "https://api.dropshep.com/api/trip",
-        formData
+        `https://api.dropshep.com/api/trip/${id}`,
+        updatedData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
+
       const resData = response.data;
       console.log("resData", resData);
+
       if (resData.status === "success") {
-        toast.success("ট্রিপ সফলভাবে সংরক্ষণ হয়েছে!", {
-          position: "top-right",
-        });
-        reset();
+        toast.success("ট্রিপ সফলভাবে আপডেট হয়েছে!", { position: "top-right" });
       } else {
         toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
       }
@@ -67,6 +98,7 @@ const UpdateDailyIncomeForm = () => {
                 <div className="relative">
                   <input
                     type="date"
+                    defaultValue={trip_date}
                     {...register("trip_date")}
                     ref={(e) => {
                       register("trip_date").ref(e);
@@ -84,14 +116,17 @@ const UpdateDailyIncomeForm = () => {
               </div>
               <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
-                  ট্রিপের সময়
+                  গাড়ির নম্বর
                 </label>
-                <input
-                  {...register("trip_time", { required: true })}
-                  type="text"
-                  placeholder="ট্রিপের সময়..."
-                  className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-                />
+                <select
+                  {...register("vehicle_number")}
+                  className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
+                >
+                  <option value={vehicle_number}>{vehicle_number}</option>
+                  <option value="Dhama metro-1">Dhama metro-1</option>
+                  <option value="Dhama metro-2">Dhama metro-2</option>
+                </select>
+                <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
               </div>
             </div>
             {/*  */}
@@ -101,7 +136,8 @@ const UpdateDailyIncomeForm = () => {
                   লোড পয়েন্ট
                 </label>
                 <input
-                  {...register("load_point", { required: true })}
+                  {...register("load_point")}
+                  defaultValue={load_point}
                   type="text"
                   placeholder="লোড পয়েন্ট..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -112,56 +148,10 @@ const UpdateDailyIncomeForm = () => {
                   আনলোড পয়েন্ট
                 </label>
                 <input
-                  {...register("unload_point", { required: true })}
+                  {...register("unload_point")}
+                  defaultValue={unload_point}
                   type="text"
                   placeholder="আনলোড পয়েন্ট..."
-                  className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-                />
-              </div>
-            </div>
-          </div>
-          {/*  */}
-          <div className="border border-gray-300 p-5 rounded-md">
-            <h5 className="text-primary font-semibold text-center pb-5">
-              <span className="py-2 border-b-2 border-primary">
-                গাড়ি এবং ড্রাইভারের তথ্য
-              </span>
-            </h5>
-            <div className="md:flex justify-between gap-3">
-              <div className="w-full relative">
-                <label className="text-primary text-sm font-semibold">
-                  ড্রাইভারের নাম
-                </label>
-                <select
-                  {...register("driver_name", { required: true })}
-                  className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
-                  // defaultValue=""
-                >
-                  <option value="">ড্রাইভারের নাম</option>
-                  <option value="Motin">Motin</option>
-                  <option value="Korim">Korim</option>
-                </select>
-                <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
-              </div>
-              <div className="mt-2 md:mt-0 w-full relative">
-                <label className="text-primary text-sm font-semibold">
-                  ড্রাইভারের মোবাইল
-                </label>
-                <input
-                  {...register("driver_contact", { required: true })}
-                  type="text"
-                  placeholder="ড্রাইভারের মোবাইল..."
-                  className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-                />
-              </div>
-              <div className="mt-2 md:mt-0 w-full relative">
-                <label className="text-primary text-sm font-semibold">
-                  ড্রাইভারের কমিশন
-                </label>
-                <input
-                  {...register("driver_percentage", { required: true })}
-                  type="text"
-                  placeholder="ড্রাইভারের কমিশন..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
@@ -178,7 +168,8 @@ const UpdateDailyIncomeForm = () => {
                   তেলের মূল্য
                 </label>
                 <input
-                  {...register("fuel_price", { required: true })}
+                  {...register("fuel_price")}
+                  defaultValue={fuel_price}
                   type="text"
                   placeholder="তেলের মূল্য..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -189,25 +180,12 @@ const UpdateDailyIncomeForm = () => {
                   গ্যাসের মূল্য
                 </label>
                 <input
-                  {...register("gas_price", { required: true })}
+                  {...register("gas_price")}
+                  defaultValue={gas_price}
                   type="text"
                   placeholder="গ্যাসের মূল্য..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
-              </div>
-              <div className="mt-2 md:mt-0 w-full relative">
-                <label className="text-primary text-sm font-semibold">
-                  গাড়ির নম্বর
-                </label>
-                <select
-                  {...register("vehicle_number", { required: true })}
-                  className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
-                >
-                  <option value="">গাড়ির নম্বর</option>
-                  <option value="Dhama metro-1">Dhama metro-1</option>
-                  <option value="Dhama metro-2">Dhama metro-2</option>
-                </select>
-                <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
               </div>
             </div>
             <div className="md:flex justify-between gap-3">
@@ -216,7 +194,8 @@ const UpdateDailyIncomeForm = () => {
                   অন্যান্য খরচ
                 </label>
                 <input
-                  {...register("other_expenses", { required: true })}
+                  {...register("other_expenses")}
+                  defaultValue={other_expenses}
                   type="text"
                   placeholder="অন্যান্য খরচ..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -239,7 +218,8 @@ const UpdateDailyIncomeForm = () => {
                   ট্রিপের ভাড়া
                 </label>
                 <input
-                  {...register("trip_price", { required: true })}
+                  {...register("trip_price")}
+                  defaultValue={trip_price}
                   type="text"
                   placeholder="ট্রিপের ভাড়া..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"

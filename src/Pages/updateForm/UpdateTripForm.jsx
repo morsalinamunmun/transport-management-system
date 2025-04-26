@@ -36,7 +36,7 @@ const UpdateTripForm = () => {
   console.log("updateTripLoaderData", updateTripLoaderData);
   const onSubmit = async (data) => {
     try {
-      const response = await axios.put(
+      const response = await axios.post(
         `https://api.dropshep.com/api/trip/${id}`,
         data,
         {

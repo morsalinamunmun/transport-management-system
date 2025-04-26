@@ -4,6 +4,7 @@ import axios from "axios";
 import { FaTruck, FaFilter, FaPen } from "react-icons/fa";
 import { HiMiniCalendarDateRange } from "react-icons/hi2";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
+import { Link } from "react-router-dom";
 
 const DailyIncome = () => {
   const [taxDate, setTaxDate] = useState(null);
@@ -160,9 +161,9 @@ const DailyIncome = () => {
                 <th className="px-4 py-3">গাড়ি</th>
                 <th className="px-4 py-3">লোড</th>
                 <th className="px-4 py-3">আনলোড</th>
-                <th className="px-4 py-3">কাস্টমার</th>
+                {/* <th className="px-4 py-3">কাস্টমার</th> */}
                 <th className="px-4 py-3">ট্রিপের ভাড়া</th>
-                <th className="px-4 py-3">জরিমানা</th>
+                {/* <th className="px-4 py-3">জরিমানা</th> */}
                 <th className="px-4 py-3">চলমানখরচ</th>
                 <th className="px-4 py-3">লাভ</th>
                 <th className="px-4 py-3">অ্যাকশন</th>
@@ -183,9 +184,9 @@ const DailyIncome = () => {
                   <td className="px-4 py-4">{trip.vehicle_number}</td>
                   <td className="px-4 py-4">{trip.load_point}</td>
                   <td className="px-4 py-4">{trip.unload_point}</td>
-                  <td className="px-4 py-4">{trip.customer_name}</td>
+                  {/* <td className="px-4 py-4">{trip.customer_name}</td> */}
                   <td className="px-4 py-4">{trip.trip_price}</td>
-                  <td className="px-4 py-4">{trip.penalty || 0}</td>
+                  {/* <td className="px-4 py-4">{trip.penalty || 0}</td> */}
                   <td className="px-4 py-4">
                     {(
                       Number(trip.other_expenses || 0) +
@@ -206,9 +207,11 @@ const DailyIncome = () => {
                   </td>
                   <td>
                     <div className="flex justify-center">
-                      <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                        <FaPen className="text-[12px]" />
-                      </button>
+                      <Link to={`/UpdateDailyIncomeForm/${trip.id}`}>
+                        <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                          <FaPen className="text-[12px]" />
+                        </button>
+                      </Link>
                     </div>
                   </td>
                 </tr>
