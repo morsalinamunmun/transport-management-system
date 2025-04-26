@@ -159,6 +159,7 @@ const CarList = () => {
 
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-4">
+      <Toaster />
       <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-6 border border-gray-200">
         {/* Header */}
         <div className="md:flex items-center justify-between mb-6">
@@ -240,9 +241,11 @@ const CarList = () => {
                   </td>
                   <td className="px-2">
                     <div className="flex gap-1">
-                      <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                        <FaPen className="text-[12px]" />
-                      </button>
+                      <Link to={`/UpdateDriverForm/${driver.id}`}>
+                        <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                          <FaPen className="text-[12px]" />
+                        </button>
+                      </Link>
                       <button
                         onClick={() => handleView(driver.id)}
                         className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer"
@@ -259,7 +262,6 @@ const CarList = () => {
                         <FaTrashAlt className="text-[12px]" />
                       </button>
                     </div>
-                    <Toaster />
                   </td>
                 </tr>
               ))}

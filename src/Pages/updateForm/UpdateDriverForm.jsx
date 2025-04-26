@@ -6,32 +6,64 @@ import { IoMdClose } from "react-icons/io";
 import { FiCalendar } from "react-icons/fi";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import { useLoaderData } from "react-router-dom";
 
-const AddDriverForm = () => {
+const UpdateDriverForm = () => {
   const { register, handleSubmit, reset, setValue } = useForm();
-  const [previewImage, setPreviewImage] = useState(null);
   const driverDateRef = useRef(null);
+  const updateDriverLoaderData = useLoaderData();
 
+  const {
+    id,
+    name,
+    contact,
+    nid,
+    emergency_contact,
+    address,
+    expire_date,
+    note,
+    license,
+    status,
+    license_image,
+  } = updateDriverLoaderData.data;
+  const [previewImage, setPreviewImage] = useState(license_image);
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPreviewImage(url);
+      setValue("license_image", file);
+    }
+  };
+  console.log("updateDriverLoaderData", updateDriverLoaderData.data);
   const onSubmit = async (data) => {
-    console.log("add car data", data);
     try {
       const formData = new FormData();
+
+      // Append fields
       for (const key in data) {
         if (data[key] !== undefined && data[key] !== null) {
           formData.append(key, data[key]);
         }
       }
+
+      // Debug: log all data being sent
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
       const response = await axios.post(
-        "https://api.dropshep.com/api/driver",
+        `https://api.dropshep.com/api/driver/${id}`,
         formData
       );
+
       const resData = response.data;
-      console.log("resData", resData);
       if (resData.status === "success") {
         toast.success("তথ্য সফলভাবে সংরক্ষণ হয়েছে!", {
           position: "top-right",
         });
         reset();
+        setPreviewImage(null);
       } else {
         toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
       }
@@ -40,15 +72,6 @@ const AddDriverForm = () => {
       const errorMessage =
         error.response?.data?.message || error.message || "Unknown error";
       toast.error("সার্ভার ত্রুটি: " + errorMessage);
-    }
-  };
-  // handle remove image
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreviewImage(url);
-      setValue("license_image", file);
     }
   };
 
@@ -68,6 +91,7 @@ const AddDriverForm = () => {
               </label>
               <input
                 {...register("name")}
+                defaultValue={name}
                 type="text"
                 placeholder="ড্রাইভারের নাম..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -79,6 +103,7 @@ const AddDriverForm = () => {
               </label>
               <input
                 {...register("contact")}
+                defaultValue={contact}
                 type="text"
                 placeholder="ড্রাইভারের মোবাইল..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -94,6 +119,7 @@ const AddDriverForm = () => {
               </label>
               <input
                 {...register("nid")}
+                defaultValue={nid}
                 type="number"
                 placeholder="এন.আই.ডি নাম্বার..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -105,6 +131,7 @@ const AddDriverForm = () => {
               </label>
               <input
                 {...register("emergency_contact")}
+                defaultValue={emergency_contact}
                 type="text"
                 placeholder="জরুরী যোগাযোগ নাম্বার..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -120,6 +147,7 @@ const AddDriverForm = () => {
               </label>
               <input
                 {...register("address")}
+                defaultValue={address}
                 type="text"
                 placeholder="ঠিকানা..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -131,6 +159,7 @@ const AddDriverForm = () => {
               </label>
               <input
                 {...register("note")}
+                defaultValue={note}
                 type="text"
                 placeholder="বিঃদ্রঃ..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -146,6 +175,7 @@ const AddDriverForm = () => {
               </label>
               <input
                 {...register("license")}
+                defaultValue={license}
                 type="text"
                 placeholder="লাইসেন্স না. ..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -157,8 +187,9 @@ const AddDriverForm = () => {
               </label>
               <div className="relative">
                 <input
-                  type="date"
+                  type="text"
                   {...register("expire_date")}
+                  defaultValue={expire_date}
                   ref={(e) => {
                     register("expire_date").ref(e);
                     driverDateRef.current = e;
@@ -185,7 +216,7 @@ const AddDriverForm = () => {
                 {...register("status")}
                 className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
               >
-                <option value="">স্ট্যাটাস নির্বাচন করুন</option>
+                <option value={status}>{status}</option>
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
               </select>
@@ -222,7 +253,8 @@ const AddDriverForm = () => {
                 type="button"
                 onClick={() => {
                   setPreviewImage(null);
-                  document.getElementById("license_image").value = "";
+                  document.querySelector('input[type="file"]').value = null;
+                  setValue("license_image", null);
                 }}
                 className="absolute top-2 right-2 text-red-600 bg-white shadow rounded-sm hover:text-white hover:bg-secondary transition-all duration-300 cursor-pointer font-bold text-xl p-[2px]"
                 title="Remove image"
@@ -230,10 +262,19 @@ const AddDriverForm = () => {
                 <IoMdClose />
               </button>
               <img
-                src={previewImage}
+                src={
+                  previewImage?.startsWith("blob:")
+                    ? previewImage
+                    : `https://api.dropshep.com/public/uploads/driver/${previewImage}`
+                }
                 alt="License Preview"
                 className="max-w-xs h-auto rounded border border-gray-300"
               />
+              {/* <img
+                src={previewImage}
+                alt="License Preview"
+                className="max-w-xs h-auto rounded border border-gray-300"
+              /> */}
             </div>
           )}
 
@@ -251,4 +292,4 @@ const AddDriverForm = () => {
   );
 };
 
-export default AddDriverForm;
+export default UpdateDriverForm;

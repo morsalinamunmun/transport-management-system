@@ -204,8 +204,8 @@ const AddTripForm = () => {
                   className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
                 >
                   <option value="">গাড়ির নম্বর</option>
-                  <option value="Dhaka">Dhama metro-1</option>
-                  <option value="Dhaka">Dhama metro-2</option>
+                  <option value="Dhama metro-1">Dhama metro-1</option>
+                  <option value="Dhama metro-2">Dhama metro-2</option>
                 </select>
                 <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
               </div>

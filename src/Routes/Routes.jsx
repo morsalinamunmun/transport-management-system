@@ -25,6 +25,7 @@ import UpdateFuelForm from "../Pages/updateForm/UpdateFuelForm";
 import UpdatePartsForm from "../Pages/updateForm/UpdatePartsForm";
 import UpdateUsersForm from "../Pages/updateForm/UpdateUsersForm";
 import UpdateMaintenanceForm from "../Pages/updateForm/UpdateMaintenanceForm";
+import UpdateDriverForm from "../Pages/updateForm/UpdateDriverForm";
 
 export const router = createBrowserRouter([
   {
@@ -80,6 +81,16 @@ export const router = createBrowserRouter([
             <AddDriverForm />
           </PrivateRoute>
         ),
+      },
+      {
+        path: "UpdateDriverForm/:id",
+        element: (
+          <PrivateRoute>
+            <UpdateDriverForm />
+          </PrivateRoute>
+        ),
+        loader: ({ params }) =>
+          fetch(`https://api.dropshep.com/api/driver/${params.id}`),
       },
       {
         path: "TripList",
