@@ -10,6 +10,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 const Maintenance = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [maintenance, setMaintenance] = useState([]);
@@ -18,6 +19,8 @@ const Maintenance = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedMaintenanceId, setselectedMaintenanceId] = useState(null);
   const toggleModal = () => setIsOpen(!isOpen);
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
     axios
       .get("https://api.dropshep.com/api/maintenance")
@@ -137,7 +140,29 @@ const Maintenance = () => {
     WinPrint.print();
     WinPrint.close();
   };
+  // pagination
+  const itemsPerPage = 10;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentMaintenance = maintenance.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
+  const totalPages = Math.ceil(maintenance.length / itemsPerPage);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage((currentPage) => currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages)
+      setCurrentPage((currentPage) => currentPage + 1);
+  };
+
+  const handlePageClick = (number) => {
+    setCurrentPage(number);
+  };
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
       <Toaster />
@@ -239,9 +264,11 @@ const Maintenance = () => {
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
-              {maintenance?.map((dt, index) => (
+              {currentMaintenance?.map((dt, index) => (
                 <tr key={index} className="hover:bg-gray-50 transition-all">
-                  <td className="px-2 py-4 font-bold">{index + 1}</td>
+                  <td className="px-2 py-4 font-bold">
+                    {indexOfFirstItem + index + 1}
+                  </td>
                   <td className="px-2 py-4">{dt.service_type}</td>
                   <td className="px-2 py-4">{dt.vehicle_no}</td>
                   <td className="px-2 py-4">{dt.service_for}</td>
@@ -271,6 +298,44 @@ const Maintenance = () => {
               ))}
             </tbody>
           </table>
+        </div>
+        {/* pagination */}
+        <div className="mt-10 flex justify-center">
+          <div className="space-x-2 flex items-center">
+            <button
+              onClick={handlePrevPage}
+              className={`p-2 ${
+                currentPage === 1 ? "bg-gray-300" : "bg-primary text-white"
+              } rounded-sm`}
+              disabled={currentPage === 1}
+            >
+              <GrFormPrevious />
+            </button>
+            {[...Array(totalPages).keys()].map((number) => (
+              <button
+                key={number + 1}
+                onClick={() => handlePageClick(number + 1)}
+                className={`px-3 py-1 rounded-sm ${
+                  currentPage === number + 1
+                    ? "bg-primary text-white hover:bg-gray-200 hover:text-primary transition-all duration-300 cursor-pointer"
+                    : "bg-gray-200 hover:bg-primary hover:text-white transition-all cursor-pointer"
+                }`}
+              >
+                {number + 1}
+              </button>
+            ))}
+            <button
+              onClick={handleNextPage}
+              className={`p-2 ${
+                currentPage === totalPages
+                  ? "bg-gray-300"
+                  : "bg-primary text-white"
+              } rounded-sm`}
+              disabled={currentPage === totalPages}
+            >
+              <GrFormNext />
+            </button>
+          </div>
         </div>
       </div>
       {/* Delete modal */}

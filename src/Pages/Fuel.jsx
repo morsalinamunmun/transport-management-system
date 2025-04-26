@@ -14,6 +14,7 @@ import autoTable from "jspdf-autotable";
 //
 import toast, { Toaster } from "react-hot-toast";
 import { IoMdClose } from "react-icons/io";
+import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 
 const Fuel = () => {
   const [showFilter, setShowFilter] = useState(false);
@@ -25,6 +26,8 @@ const Fuel = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFuelId, setselectedFuelId] = useState(null);
   const toggleModal = () => setIsOpen(!isOpen);
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     axios
@@ -153,8 +156,29 @@ const Fuel = () => {
       });
     }
   };
+  // pagination
+  const itemsPerPage = 10;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentFuel = fuel.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(fuel.length / itemsPerPage);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage((currentPage) => currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages)
+      setCurrentPage((currentPage) => currentPage + 1);
+  };
+
+  const handlePageClick = (number) => {
+    setCurrentPage(number);
+  };
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
+      <Toaster />
       <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-8 border border-gray-200">
         {/* Header */}
         <div className="md:flex items-center justify-between mb-6">
@@ -288,9 +312,11 @@ const Fuel = () => {
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
-              {fuel?.map((dt, index) => (
+              {currentFuel?.map((dt, index) => (
                 <tr key={index} className="hover:bg-gray-50 transition-all">
-                  <td className="px-4 py-4 font-bold">{index + 1}</td>
+                  <td className="px-4 py-4 font-bold">
+                    {indexOfFirstItem + index + 1}
+                  </td>
                   <td className="px-4 py-4">{dt.driver_name}</td>
                   <td className="px-4 py-4">{dt.vehicle_number}</td>
                   <td className="px-4 py-4">{dt.type}</td>
@@ -315,12 +341,49 @@ const Fuel = () => {
                         <FaTrashAlt className="text-[12px]" />
                       </button>
                     </div>
-                    <Toaster />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+        {/* pagination */}
+        <div className="mt-10 flex justify-center">
+          <div className="space-x-2 flex items-center">
+            <button
+              onClick={handlePrevPage}
+              className={`p-2 ${
+                currentPage === 1 ? "bg-gray-300" : "bg-primary text-white"
+              } rounded-sm`}
+              disabled={currentPage === 1}
+            >
+              <GrFormPrevious />
+            </button>
+            {[...Array(totalPages).keys()].map((number) => (
+              <button
+                key={number + 1}
+                onClick={() => handlePageClick(number + 1)}
+                className={`px-3 py-1 rounded-sm ${
+                  currentPage === number + 1
+                    ? "bg-primary text-white hover:bg-gray-200 hover:text-primary transition-all duration-300 cursor-pointer"
+                    : "bg-gray-200 hover:bg-primary hover:text-white transition-all cursor-pointer"
+                }`}
+              >
+                {number + 1}
+              </button>
+            ))}
+            <button
+              onClick={handleNextPage}
+              className={`p-2 ${
+                currentPage === totalPages
+                  ? "bg-gray-300"
+                  : "bg-primary text-white"
+              } rounded-sm`}
+              disabled={currentPage === totalPages}
+            >
+              <GrFormNext />
+            </button>
+          </div>
         </div>
       </div>
       {/* Delete modal */}

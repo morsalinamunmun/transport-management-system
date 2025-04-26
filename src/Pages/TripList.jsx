@@ -20,6 +20,7 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { saveAs } from "file-saver";
+import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 const TripList = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [tripDate, settripDate] = useState(null);
@@ -33,7 +34,8 @@ const TripList = () => {
   // get single driver info by id
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedTrip, setselectedTrip] = useState(null);
-
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
     axios
       .get("https://api.dropshep.com/api/trip")
@@ -181,6 +183,22 @@ const TripList = () => {
     WinPrint.close();
   };
 
+  // pagination
+  const itemsPerPage = 10;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentTrip = trip.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(trip.length / itemsPerPage);
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage((currentPage) => currentPage - 1);
+  };
+  const handleNextPage = () => {
+    if (currentPage < totalPages)
+      setCurrentPage((currentPage) => currentPage + 1);
+  };
+  const handlePageClick = (number) => {
+    setCurrentPage(number);
+  };
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
       <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-8 border border-gray-200">
@@ -315,7 +333,7 @@ const TripList = () => {
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
-              {trip?.map((dt, index) => {
+              {currentTrip?.map((dt, index) => {
                 const trip = parseFloat(dt.trip_price ?? "0") || 0;
                 const gas = parseFloat(dt.gas_price ?? "0") || 0;
                 const others = parseFloat(dt.other_expenses ?? "0") || 0;
@@ -327,7 +345,9 @@ const TripList = () => {
                     key={index}
                     className="hover:bg-gray-50 transition-all border-b border-gray-300"
                   >
-                    <td className="px-4 py-4 font-bold">{index + 1}</td>
+                    <td className="px-4 py-4 font-bold">
+                      {indexOfFirstItem + index + 1}
+                    </td>
                     <td className="px-4 py-4">{dt.trip_date}</td>
                     <td className="px-4 py-4">
                       <p>নামঃ {dt.driver_name}</p>
@@ -376,6 +396,44 @@ const TripList = () => {
               })}
             </tbody>
           </table>
+        </div>
+      </div>
+      {/* pagination */}
+      <div className="mt-10 flex justify-center">
+        <div className="space-x-2 flex items-center">
+          <button
+            onClick={handlePrevPage}
+            className={`p-2 ${
+              currentPage === 1 ? "bg-gray-300" : "bg-primary text-white"
+            } rounded-sm`}
+            disabled={currentPage === 1}
+          >
+            <GrFormPrevious />
+          </button>
+          {[...Array(totalPages).keys()].map((number) => (
+            <button
+              key={number + 1}
+              onClick={() => handlePageClick(number + 1)}
+              className={`px-3 py-1 rounded-sm ${
+                currentPage === number + 1
+                  ? "bg-primary text-white hover:bg-gray-200 hover:text-primary transition-all duration-300 cursor-pointer"
+                  : "bg-gray-200 hover:bg-primary hover:text-white transition-all cursor-pointer"
+              }`}
+            >
+              {number + 1}
+            </button>
+          ))}
+          <button
+            onClick={handleNextPage}
+            className={`p-2 ${
+              currentPage === totalPages
+                ? "bg-gray-300"
+                : "bg-primary text-white"
+            } rounded-sm`}
+            disabled={currentPage === totalPages}
+          >
+            <GrFormNext />
+          </button>
         </div>
       </div>
       {/* Delete modal */}

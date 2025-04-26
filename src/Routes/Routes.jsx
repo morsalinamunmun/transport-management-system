@@ -26,6 +26,7 @@ import UpdatePartsForm from "../Pages/updateForm/UpdatePartsForm";
 import UpdateUsersForm from "../Pages/updateForm/UpdateUsersForm";
 import UpdateMaintenanceForm from "../Pages/updateForm/UpdateMaintenanceForm";
 import UpdateDriverForm from "../Pages/updateForm/UpdateDriverForm";
+import UpdateDailyIncomeForm from "../Pages/updateForm/UpdateDailyIncomeForm";
 
 export const router = createBrowserRouter([
   {
@@ -237,6 +238,16 @@ export const router = createBrowserRouter([
       {
         path: "ResetPass",
         element: <ResetPass />,
+      },
+      {
+        path: "UpdateDailyIncomeForm/:id",
+        element: (
+          <PrivateRoute>
+            <UpdateDailyIncomeForm />
+          </PrivateRoute>
+        ),
+        loader: ({ params }) =>
+          fetch(`https://api.dropshep.com/api/trip/${params.id}`),
       },
     ],
   },

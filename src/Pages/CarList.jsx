@@ -10,6 +10,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 const CarList = () => {
   const [vehicles, setVehicle] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,6 +20,8 @@ const CarList = () => {
   // delete modal
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDriverId, setSelectedDriverId] = useState(null);
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
   const toggleModal = () => setIsOpen(!isOpen);
   useEffect(() => {
     axios
@@ -168,6 +171,28 @@ const CarList = () => {
       toast.error("ড্রাইভারের তথ্য আনতে সমস্যা হয়েছে");
     }
   };
+
+  // pagination
+  const itemsPerPage = 10;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentVehicles = vehicles.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(vehicles.length / itemsPerPage);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage((currentPage) => currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages)
+      setCurrentPage((currentPage) => currentPage + 1);
+  };
+
+  const handlePageClick = (number) => {
+    setCurrentPage(number);
+  };
+
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-4">
       <Toaster />
@@ -246,9 +271,11 @@ const CarList = () => {
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
-              {vehicles?.map((vehicle, index) => (
+              {currentVehicles?.map((vehicle, index) => (
                 <tr key={index} className="hover:bg-gray-50 transition-all">
-                  <td className="px-2 py-4 font-bold">{index + 1}</td>
+                  <td className="px-2 py-4 font-bold">
+                    {indexOfFirstItem + index + 1}
+                  </td>
                   <td className="px-2 py-4">{vehicle.driver_name}</td>
                   <td className="px-2 py-4">{vehicle.vehicle_name}</td>
                   <td className="px-2 py-4">{vehicle.category}</td>
@@ -290,6 +317,44 @@ const CarList = () => {
               ))}
             </tbody>
           </table>
+        </div>
+      </div>
+      {/* pagination */}
+      <div className="mt-10 flex justify-center">
+        <div className="space-x-2 flex items-center">
+          <button
+            onClick={handlePrevPage}
+            className={`p-2 ${
+              currentPage === 1 ? "bg-gray-300" : "bg-primary text-white"
+            } rounded-sm`}
+            disabled={currentPage === 1}
+          >
+            <GrFormPrevious />
+          </button>
+          {[...Array(totalPages).keys()].map((number) => (
+            <button
+              key={number + 1}
+              onClick={() => handlePageClick(number + 1)}
+              className={`px-3 py-1 rounded-sm ${
+                currentPage === number + 1
+                  ? "bg-primary text-white hover:bg-gray-200 hover:text-primary transition-all duration-300 cursor-pointer"
+                  : "bg-gray-200 hover:bg-primary hover:text-white transition-all cursor-pointer"
+              }`}
+            >
+              {number + 1}
+            </button>
+          ))}
+          <button
+            onClick={handleNextPage}
+            className={`p-2 ${
+              currentPage === totalPages
+                ? "bg-gray-300"
+                : "bg-primary text-white"
+            } rounded-sm`}
+            disabled={currentPage === totalPages}
+          >
+            <GrFormNext />
+          </button>
         </div>
       </div>
       {/* Delete modal */}

@@ -6,6 +6,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { FiCalendar } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 
 const Parts = () => {
   const [showFilter, setShowFilter] = useState(false);
@@ -15,6 +16,8 @@ const Parts = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFuelId, setselectedFuelId] = useState(null);
   const toggleModal = () => setIsOpen(!isOpen);
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
   const { register, handleSubmit, reset } = useForm();
   const partsDateRef = useRef(null);
   // post parts
@@ -92,6 +95,26 @@ const Parts = () => {
       });
     }
   };
+  // pagination
+  const itemsPerPage = 10;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentParts = parts.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(parts.length / itemsPerPage);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage((currentPage) => currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages)
+      setCurrentPage((currentPage) => currentPage + 1);
+  };
+
+  const handlePageClick = (number) => {
+    setCurrentPage(number);
+  };
   return (
     <main className="relative bg-gradient-to-br from-gray-100 to-white md:p-6">
       <Toaster position="top-right" reverseOrder={false} />
@@ -133,13 +156,13 @@ const Parts = () => {
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold">
-              {parts?.map((part, index) => (
+              {currentParts?.map((part, index) => (
                 <tr
                   key={index}
                   className="hover:bg-gray-100 border-b border-r border-l border-gray-400 transition-all cursor-pointer"
                 >
                   <td className="md:border-r border-gray-400 px-2 md:px-4 py-4 font-bold">
-                    {index + 1}
+                    {indexOfFirstItem + index + 1}
                   </td>
                   <td className="md:border-r border-gray-400 px-2 md:px-4 py-4">
                     {part.name}
@@ -166,6 +189,44 @@ const Parts = () => {
               ))}
             </tbody>
           </table>
+        </div>
+      </div>
+      {/* pagination */}
+      <div className="mt-10 flex justify-center">
+        <div className="space-x-2 flex items-center">
+          <button
+            onClick={handlePrevPage}
+            className={`p-2 ${
+              currentPage === 1 ? "bg-gray-300" : "bg-primary text-white"
+            } rounded-sm`}
+            disabled={currentPage === 1}
+          >
+            <GrFormPrevious />
+          </button>
+          {[...Array(totalPages).keys()].map((number) => (
+            <button
+              key={number + 1}
+              onClick={() => handlePageClick(number + 1)}
+              className={`px-3 py-1 rounded-sm ${
+                currentPage === number + 1
+                  ? "bg-primary text-white hover:bg-gray-200 hover:text-primary transition-all duration-300 cursor-pointer"
+                  : "bg-gray-200 hover:bg-primary hover:text-white transition-all cursor-pointer"
+              }`}
+            >
+              {number + 1}
+            </button>
+          ))}
+          <button
+            onClick={handleNextPage}
+            className={`p-2 ${
+              currentPage === totalPages
+                ? "bg-gray-300"
+                : "bg-primary text-white"
+            } rounded-sm`}
+            disabled={currentPage === totalPages}
+          >
+            <GrFormNext />
+          </button>
         </div>
       </div>
       {/* Delete modal */}

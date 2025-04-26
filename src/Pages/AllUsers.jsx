@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { FaTruck, FaPen, FaTrashAlt } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
+import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import { IoMdClose } from "react-icons/io";
 import { Link } from "react-router-dom";
 const AllUsers = () => {
@@ -12,6 +13,10 @@ const AllUsers = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const toggleModal = () => setIsOpen(!isOpen);
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  // search
+  const [searchTerm, setSearchTerm] = useState("");
   useEffect(() => {
     axios
       .get("https://api.dropshep.com/api/users")
@@ -58,6 +63,32 @@ const AllUsers = () => {
       });
     }
   };
+  // search
+  const filteredUsers = users.filter(
+    (user) =>
+      user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.phone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.role?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.status?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  // pagination
+  const itemsPerPage = 10;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentUsers = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage((currentPage) => currentPage - 1);
+  };
+  const handleNextPage = () => {
+    if (currentPage < totalPages)
+      setCurrentPage((currentPage) => currentPage + 1);
+  };
+  const handlePageClick = (number) => {
+    setCurrentPage(number);
+  };
+
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
       <Toaster />
@@ -96,12 +127,16 @@ const AllUsers = () => {
             <span className="text-primary font-semibold pr-3">Search: </span>
             <input
               type="text"
-              placeholder=""
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="ইউজার খুঁজুন..."
               className="border border-gray-300 rounded-md outline-none text-xs py-2 ps-2 pr-5"
             />
           </div>
         </div>
-
         {/* Table */}
         <div className="mt-5 overflow-x-auto rounded-xl border border-gray-200">
           <table className="min-w-full text-sm text-left">
@@ -117,9 +152,11 @@ const AllUsers = () => {
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
-              {users?.map((user, index) => (
+              {currentUsers?.map((user, index) => (
                 <tr key={index} className="hover:bg-gray-50 transition-all">
-                  <td className="px-4 py-4 font-bold">{index + 1}</td>
+                  <td className="px-4 py-4 font-bold">
+                    {indexOfFirstItem + index + 1}
+                  </td>
                   <td className="px-4 py-4">{user.name}</td>
                   <td className="px-4 py-4">{user.phone}</td>
                   <td className="px-4 py-4">{user.email}</td>
@@ -147,6 +184,44 @@ const AllUsers = () => {
               ))}
             </tbody>
           </table>
+        </div>
+      </div>
+      {/* pagination */}
+      <div className="mt-10 flex justify-center">
+        <div className="space-x-2 flex items-center">
+          <button
+            onClick={handlePrevPage}
+            className={`p-2 ${
+              currentPage === 1 ? "bg-gray-300" : "bg-primary text-white"
+            } rounded-sm`}
+            disabled={currentPage === 1}
+          >
+            <GrFormPrevious />
+          </button>
+          {[...Array(totalPages).keys()].map((number) => (
+            <button
+              key={number + 1}
+              onClick={() => handlePageClick(number + 1)}
+              className={`px-3 py-1 rounded-sm ${
+                currentPage === number + 1
+                  ? "bg-primary text-white hover:bg-gray-200 hover:text-primary transition-all duration-300 cursor-pointer"
+                  : "bg-gray-200 hover:bg-primary hover:text-white transition-all cursor-pointer"
+              }`}
+            >
+              {number + 1}
+            </button>
+          ))}
+          <button
+            onClick={handleNextPage}
+            className={`p-2 ${
+              currentPage === totalPages
+                ? "bg-gray-300"
+                : "bg-primary text-white"
+            } rounded-sm`}
+            disabled={currentPage === totalPages}
+          >
+            <GrFormNext />
+          </button>
         </div>
       </div>
       {/* Delete modal */}

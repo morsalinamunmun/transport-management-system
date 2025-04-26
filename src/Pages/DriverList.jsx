@@ -10,6 +10,7 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { saveAs } from "file-saver";
+import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 const CarList = () => {
   const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,6 +21,8 @@ const CarList = () => {
   // get single driver info by id
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedDriver, setSelectedDriver] = useState(null);
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
     axios
       .get("https://api.dropshep.com/api/driver")
@@ -157,6 +160,26 @@ const CarList = () => {
     WinPrint.close();
   };
 
+  // pagination
+  const itemsPerPage = 10;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentDrivers = drivers.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(drivers.length / itemsPerPage);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage((currentPage) => currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages)
+      setCurrentPage((currentPage) => currentPage + 1);
+  };
+
+  const handlePageClick = (number) => {
+    setCurrentPage(number);
+  };
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-4">
       <Toaster />
@@ -225,9 +248,11 @@ const CarList = () => {
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
-              {drivers?.map((driver, index) => (
+              {currentDrivers?.map((driver, index) => (
                 <tr key={index} className="hover:bg-gray-50 transition-all">
-                  <td className="px-2 py-4 font-bold">{index + 1}</td>
+                  <td className="px-2 py-4 font-bold">
+                    {indexOfFirstItem + index + 1}
+                  </td>
                   <td className="px-2 py-4">{driver.name}</td>
                   <td className="px-2 py-4">{driver.contact}</td>
                   <td className="px-2 py-4">{driver.address}</td>
@@ -267,6 +292,44 @@ const CarList = () => {
               ))}
             </tbody>
           </table>
+        </div>
+      </div>
+      {/* pagination */}
+      <div className="mt-10 flex justify-center">
+        <div className="space-x-2 flex items-center">
+          <button
+            onClick={handlePrevPage}
+            className={`p-2 ${
+              currentPage === 1 ? "bg-gray-300" : "bg-primary text-white"
+            } rounded-sm`}
+            disabled={currentPage === 1}
+          >
+            <GrFormPrevious />
+          </button>
+          {[...Array(totalPages).keys()].map((number) => (
+            <button
+              key={number + 1}
+              onClick={() => handlePageClick(number + 1)}
+              className={`px-3 py-1 rounded-sm ${
+                currentPage === number + 1
+                  ? "bg-primary text-white hover:bg-gray-200 hover:text-primary transition-all duration-300 cursor-pointer"
+                  : "bg-gray-200 hover:bg-primary hover:text-white transition-all cursor-pointer"
+              }`}
+            >
+              {number + 1}
+            </button>
+          ))}
+          <button
+            onClick={handleNextPage}
+            className={`p-2 ${
+              currentPage === totalPages
+                ? "bg-gray-300"
+                : "bg-primary text-white"
+            } rounded-sm`}
+            disabled={currentPage === totalPages}
+          >
+            <GrFormNext />
+          </button>
         </div>
       </div>
       {/* Delete modal */}
