@@ -9,8 +9,11 @@ const DailyIncome = () => {
   const [taxDate, setTaxDate] = useState(null);
   const [trips, setTrips] = useState([]);
   const [showFilter, setShowFilter] = useState(false);
+  // search
+  const [searchTerm, setSearchTerm] = useState("");
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
   const dateRef = useRef(null);
-
   useEffect(() => {
     const fetchTrips = async () => {
       try {
@@ -26,25 +29,37 @@ const DailyIncome = () => {
     fetchTrips();
   }, []);
   console.log("trips", trips);
+  // search
+  const filteredIncome = trips.filter((dt) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      dt.trip_date?.toLowerCase().includes(term) ||
+      dt.trip_time?.toLowerCase().includes(term) ||
+      dt.load_point?.toLowerCase().includes(term) ||
+      dt.unload_point?.toLowerCase().includes(term) ||
+      dt.driver_name?.toLowerCase().includes(term) ||
+      dt.driver_contact?.toLowerCase().includes(term) ||
+      String(dt.driver_percentage).includes(term) ||
+      dt.fuel_price?.toLowerCase().includes(term) ||
+      dt.gas_price?.toLowerCase().includes(term) ||
+      dt.vehicle_number?.toLowerCase().includes(term) ||
+      dt.other_expenses?.toLowerCase().includes(term) ||
+      dt.trip_price?.toLowerCase().includes(term)
+    );
+  });
   // pagination
-  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentTrips = trips.slice(indexOfFirstItem, indexOfLastItem);
-
+  const currentTrips = filteredIncome.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(trips.length / itemsPerPage);
-
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage((currentPage) => currentPage - 1);
   };
-
   const handleNextPage = () => {
     if (currentPage < totalPages)
       setCurrentPage((currentPage) => currentPage + 1);
   };
-
   const handlePageClick = (number) => {
     setCurrentPage(number);
   };
@@ -125,7 +140,12 @@ const DailyIncome = () => {
             <span className="text-primary font-semibold pr-3">Search: </span>
             <input
               type="text"
-              placeholder=""
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="সার্চ করুন..."
               className="border border-gray-300 rounded-md outline-none text-xs py-2 ps-2 pr-5"
             />
           </div>

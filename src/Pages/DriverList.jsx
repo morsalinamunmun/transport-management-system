@@ -21,6 +21,8 @@ const CarList = () => {
   // get single driver info by id
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedDriver, setSelectedDriver] = useState(null);
+  // search
+  const [searchTerm, setSearchTerm] = useState("");
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
@@ -159,24 +161,37 @@ const CarList = () => {
     WinPrint.print();
     WinPrint.close();
   };
-
+  // search
+  const filteredDriver = drivers.filter((driver) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      driver.name?.toLowerCase().includes(term) ||
+      driver.contact?.toLowerCase().includes(term) ||
+      driver.nid?.toLowerCase().includes(term) ||
+      driver.emergency_contact?.toLowerCase().includes(term) ||
+      driver.address?.toLowerCase().includes(term) ||
+      driver.expire_date?.toLowerCase().includes(term) ||
+      driver.note?.toLowerCase().includes(term) ||
+      driver.license?.toLowerCase().includes(term) ||
+      driver.status?.toLowerCase().includes(term)
+    );
+  });
   // pagination
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentDrivers = drivers.slice(indexOfFirstItem, indexOfLastItem);
-
+  const currentDrivers = filteredDriver.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
   const totalPages = Math.ceil(drivers.length / itemsPerPage);
-
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage((currentPage) => currentPage - 1);
   };
-
   const handleNextPage = () => {
     if (currentPage < totalPages)
       setCurrentPage((currentPage) => currentPage + 1);
   };
-
   const handlePageClick = (number) => {
     setCurrentPage(number);
   };
@@ -199,36 +214,51 @@ const CarList = () => {
           </div>
         </div>
         {/* export */}
-        <div className="mb-4 flex gap-3 flex-wrap">
-          <CSVLink
-            data={driverCsvData}
-            headers={driverHeaders}
-            filename="drivers.csv"
-            className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all"
-          >
-            CSV
-          </CSVLink>
+        <div className="flex justify-between mb-4">
+          <div className="flex gap-3 flex-wrap">
+            <CSVLink
+              data={driverCsvData}
+              headers={driverHeaders}
+              filename="drivers.csv"
+              className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all"
+            >
+              CSV
+            </CSVLink>
 
-          <button
-            onClick={exportDriversToExcel}
-            className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
-          >
-            Excel
-          </button>
+            <button
+              onClick={exportDriversToExcel}
+              className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
+            >
+              Excel
+            </button>
 
-          <button
-            onClick={exportDriversToPDF}
-            className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
-          >
-            PDF
-          </button>
+            <button
+              onClick={exportDriversToPDF}
+              className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
+            >
+              PDF
+            </button>
 
-          <button
-            onClick={printDriversTable}
-            className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
-          >
-            Print
-          </button>
+            <button
+              onClick={printDriversTable}
+              className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
+            >
+              Print
+            </button>
+          </div>
+          <div className="mt-3 md:mt-0">
+            <span className="text-primary font-semibold pr-3">Search: </span>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="সার্চ করুন..."
+              className="border border-gray-300 rounded-md outline-none text-xs py-2 ps-2 pr-5"
+            />
+          </div>
         </div>
 
         {/* Table */}

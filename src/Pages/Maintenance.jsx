@@ -19,6 +19,8 @@ const Maintenance = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedMaintenanceId, setselectedMaintenanceId] = useState(null);
   const toggleModal = () => setIsOpen(!isOpen);
+  // search
+  const [searchTerm, setSearchTerm] = useState("");
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
@@ -35,9 +37,7 @@ const Maintenance = () => {
         setLoading(false);
       });
   }, []);
-
   if (loading) return <p>Loading parts...</p>;
-
   console.log("maintenance", maintenance);
   // delete by id
   const handleDelete = async (id) => {
@@ -80,7 +80,6 @@ const Maintenance = () => {
     { label: "অগ্রাধিকার", key: "dignifies" },
     { label: "টোটাল খরচ", key: "total_cost" },
   ];
-
   const maintenanceCsvData = maintenance?.map((dt, index) => ({
     index: index + 1,
     service_type: dt.service_type,
@@ -110,7 +109,6 @@ const Maintenance = () => {
     const tableRows = maintenanceCsvData.map((row) =>
       maintenanceHeaders.map((h) => row[h.key])
     );
-
     autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
@@ -140,26 +138,40 @@ const Maintenance = () => {
     WinPrint.print();
     WinPrint.close();
   };
+  // search
+  const filteredMaintenance = maintenance.filter((dt) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      dt.date?.toLowerCase().includes(term) ||
+      dt.service_type?.toLowerCase().includes(term) ||
+      dt.parts_and_spairs?.toLowerCase().includes(term) ||
+      dt.maintenance_type?.toLowerCase().includes(term) ||
+      dt.cost?.toLowerCase().includes(term) ||
+      dt.vehicle_no?.toLowerCase().includes(term) ||
+      dt.cost_by?.toLowerCase().includes(term) ||
+      dt.total_cost?.toLowerCase().includes(term) ||
+      dt.dignifies?.toLowerCase().includes(term) ||
+      dt.service_for?.toLowerCase().includes(term) ||
+      dt.receipt?.toLowerCase().includes(term)
+    );
+  });
+
   // pagination
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentMaintenance = maintenance.slice(
+  const currentMaintenance = filteredMaintenance.slice(
     indexOfFirstItem,
     indexOfLastItem
   );
-
   const totalPages = Math.ceil(maintenance.length / itemsPerPage);
-
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage((currentPage) => currentPage - 1);
   };
-
   const handleNextPage = () => {
     if (currentPage < totalPages)
       setCurrentPage((currentPage) => currentPage + 1);
   };
-
   const handlePageClick = (number) => {
     setCurrentPage(number);
   };
@@ -188,37 +200,50 @@ const Maintenance = () => {
           </div>
         </div>
         {/* export */}
-        <div className="mb-4 flex gap-3 flex-wrap">
-          <CSVLink
-            data={maintenanceCsvData}
-            headers={maintenanceHeaders}
-            filename="maintenance.csv"
-            className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all"
-          >
-            CSV
-          </CSVLink>
-
-          <button
-            onClick={exportMaintenanceToExcel}
-            className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
-          >
-            Excel
-          </button>
-
-          <button
-            onClick={exportMaintenanceToPDF}
-            className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
-          >
-            PDF
-          </button>
-
-          <button
-            onClick={printMaintenanceTable}
-            className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
-          >
-            Print
-          </button>
+        <div className="flex justify-between mb-4">
+          <div className="flex gap-3 flex-wrap">
+            <CSVLink
+              data={maintenanceCsvData}
+              headers={maintenanceHeaders}
+              filename="maintenance.csv"
+              className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all"
+            >
+              CSV
+            </CSVLink>
+            <button
+              onClick={exportMaintenanceToExcel}
+              className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
+            >
+              Excel
+            </button>
+            <button
+              onClick={exportMaintenanceToPDF}
+              className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
+            >
+              PDF
+            </button>
+            <button
+              onClick={printMaintenanceTable}
+              className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
+            >
+              Print
+            </button>
+          </div>
+          <div className="mt-3 md:mt-0">
+            <span className="text-primary font-semibold pr-3">Search: </span>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="সার্চ করুন..."
+              className="border border-gray-300 rounded-md outline-none text-xs py-2 ps-2 pr-5"
+            />
+          </div>
         </div>
+
         {/* Conditional Filter Section */}
         {showFilter && (
           <div className="mt-5 space-y-5 transition-all duration-300 pb-5">

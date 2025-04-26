@@ -22,6 +22,8 @@ const CarList = () => {
   const [selectedDriverId, setSelectedDriverId] = useState(null);
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
+  // search
+  const [searchTerm, setSearchTerm] = useState("");
   const toggleModal = () => setIsOpen(!isOpen);
   useEffect(() => {
     axios
@@ -171,12 +173,31 @@ const CarList = () => {
       toast.error("ড্রাইভারের তথ্য আনতে সমস্যা হয়েছে");
     }
   };
-
+  // search
+  const filteredCarList = vehicles.filter((vehicle) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      vehicle.vehicle_name?.toLowerCase().includes(term) ||
+      vehicle.driver_name?.toLowerCase().includes(term) ||
+      vehicle.category?.toLowerCase().includes(term) ||
+      vehicle.size?.toLowerCase().includes(term) ||
+      vehicle.registration_number?.toLowerCase().includes(term) ||
+      vehicle.registration_serial?.toLowerCase().includes(term) ||
+      vehicle.registration_zone?.toLowerCase().includes(term) ||
+      vehicle.registration_date?.toLowerCase().includes(term) ||
+      vehicle.text_date?.toLowerCase().includes(term) ||
+      vehicle.road_permit_date?.toLowerCase().includes(term) ||
+      vehicle.fitness_date?.toLowerCase().includes(term)
+    );
+  });
   // pagination
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentVehicles = vehicles.slice(indexOfFirstItem, indexOfLastItem);
+  const currentVehicles = filteredCarList.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   const totalPages = Math.ceil(vehicles.length / itemsPerPage);
 
@@ -241,12 +262,17 @@ const CarList = () => {
               Print
             </button>
           </div>
-
+          {/* search */}
           <div className="mt-3 md:mt-0">
             <span className="text-primary font-semibold pr-3">Search: </span>
             <input
               type="text"
-              placeholder=""
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="গাড়ি খুঁজুন..."
               className="border border-gray-300 rounded-md outline-none text-xs py-2 ps-2 pr-5"
             />
           </div>

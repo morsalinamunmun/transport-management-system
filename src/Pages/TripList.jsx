@@ -22,10 +22,10 @@ import autoTable from "jspdf-autotable";
 import { saveAs } from "file-saver";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 const TripList = () => {
+  const [trip, setTrip] = useState([]);
   const [showFilter, setShowFilter] = useState(false);
   const [tripDate, settripDate] = useState(null);
   const dateRef = useRef(null);
-  const [trip, setTrip] = useState([]);
   const [loading, setLoading] = useState(true);
   // delete modal
   const [isOpen, setIsOpen] = useState(false);
@@ -34,6 +34,8 @@ const TripList = () => {
   // get single driver info by id
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedTrip, setselectedTrip] = useState(null);
+  // search
+  const [searchTerm, setSearchTerm] = useState("");
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
@@ -182,12 +184,29 @@ const TripList = () => {
     WinPrint.print();
     WinPrint.close();
   };
-
+  // search
+  const filteredTrip = trip.filter((dt) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      dt.trip_date?.toLowerCase().includes(term) ||
+      dt.trip_time?.toLowerCase().includes(term) ||
+      dt.load_point?.toLowerCase().includes(term) ||
+      dt.unload_point?.toLowerCase().includes(term) ||
+      dt.driver_name?.toLowerCase().includes(term) ||
+      dt.driver_contact?.toLowerCase().includes(term) ||
+      String(dt.driver_percentage).includes(term) ||
+      dt.fuel_price?.toLowerCase().includes(term) ||
+      dt.gas_price?.toLowerCase().includes(term) ||
+      dt.vehicle_number?.toLowerCase().includes(term) ||
+      dt.other_expenses?.toLowerCase().includes(term) ||
+      dt.trip_price?.toLowerCase().includes(term)
+    );
+  });
   // pagination
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentTrip = trip.slice(indexOfFirstItem, indexOfLastItem);
+  const currentTrip = filteredTrip.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(trip.length / itemsPerPage);
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage((currentPage) => currentPage - 1);
@@ -201,6 +220,7 @@ const TripList = () => {
   };
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
+      <Toaster />
       <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-8 border border-gray-200">
         {/* Header */}
         <div className="md:flex items-center justify-between mb-6">
@@ -257,7 +277,12 @@ const TripList = () => {
             <span className="text-primary font-semibold pr-3">Search: </span>
             <input
               type="text"
-              placeholder=""
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="সার্চ করুন..."
               className="border border-gray-300 rounded-md outline-none text-xs py-2 ps-2 pr-5"
             />
           </div>
@@ -389,7 +414,6 @@ const TripList = () => {
                           <FaTrashAlt className="text-[12px]" />
                         </button>
                       </div>
-                      <Toaster />
                     </td>
                   </tr>
                 );

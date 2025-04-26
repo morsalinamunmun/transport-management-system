@@ -17,10 +17,10 @@ import { IoMdClose } from "react-icons/io";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 
 const Fuel = () => {
+  const [fuel, setFuel] = useState([]);
   const [showFilter, setShowFilter] = useState(false);
   const [fuelDate, setFuelDate] = useState(null);
   const dateRef = useRef(null);
-  const [fuel, setFuel] = useState([]);
   const [loading, setLoading] = useState(true);
   // delete modal
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +28,8 @@ const Fuel = () => {
   const toggleModal = () => setIsOpen(!isOpen);
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
-
+  // search
+  const [searchTerm, setSearchTerm] = useState("");
   useEffect(() => {
     axios
       .get("https://api.dropshep.com/api/fuel")
@@ -156,18 +157,31 @@ const Fuel = () => {
       });
     }
   };
+  // search
+  const filteredFuel = fuel.filter((dt) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      dt.date_time?.toLowerCase().includes(term) ||
+      dt.vehicle_number?.toLowerCase().includes(term) ||
+      dt.driver_name?.toLowerCase().includes(term) ||
+      dt.trip_id_invoice_no?.toLowerCase().includes(term) ||
+      dt.pump_name_address?.toLowerCase().includes(term) ||
+      String(dt.capacity).includes(term) ||
+      dt.type?.toLowerCase().includes(term) ||
+      String(dt.quantity).includes(term) ||
+      dt.price?.toLowerCase().includes(term) ||
+      dt.total_price?.toLowerCase().includes(term)
+    );
+  });
   // pagination
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentFuel = fuel.slice(indexOfFirstItem, indexOfLastItem);
-
+  const currentFuel = filteredFuel.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(fuel.length / itemsPerPage);
-
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage((currentPage) => currentPage - 1);
   };
-
   const handleNextPage = () => {
     if (currentPage < totalPages)
       setCurrentPage((currentPage) => currentPage + 1);
@@ -230,12 +244,17 @@ const Fuel = () => {
               Print
             </button>
           </div>
-
+          {/*  */}
           <div className="mt-3 md:mt-0">
             <span className="text-primary font-semibold pr-3">Search: </span>
             <input
               type="text"
-              placeholder=""
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="সার্চ করুন..."
               className="border border-gray-300 rounded-md outline-none text-xs py-2 ps-2 pr-5"
             />
           </div>

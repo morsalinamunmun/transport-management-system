@@ -16,6 +16,8 @@ const Parts = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFuelId, setselectedFuelId] = useState(null);
   const toggleModal = () => setIsOpen(!isOpen);
+  // search
+  const [searchTerm, setSearchTerm] = useState("");
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const { register, handleSubmit, reset } = useForm();
@@ -95,23 +97,27 @@ const Parts = () => {
       });
     }
   };
+  // search
+  const filteredParts = parts.filter((part) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      part.name?.toLowerCase().includes(term) ||
+      part.date?.toLowerCase().includes(term)
+    );
+  });
   // pagination
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentParts = parts.slice(indexOfFirstItem, indexOfLastItem);
-
+  const currentParts = filteredParts.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(parts.length / itemsPerPage);
-
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage((currentPage) => currentPage - 1);
   };
-
   const handleNextPage = () => {
     if (currentPage < totalPages)
       setCurrentPage((currentPage) => currentPage + 1);
   };
-
   const handlePageClick = (number) => {
     setCurrentPage(number);
   };
@@ -140,7 +146,12 @@ const Parts = () => {
             <span className="text-primary font-semibold pr-3">Search: </span>
             <input
               type="text"
-              placeholder=""
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="সার্চ করুন..."
               className="border border-gray-300 rounded-md outline-none text-xs py-2 ps-2 pr-5"
             />
           </div>
