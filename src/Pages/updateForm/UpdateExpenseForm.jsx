@@ -7,7 +7,7 @@ import { FiCalendar } from "react-icons/fi";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { useLoaderData } from "react-router-dom";
 
-const UpdateDailyIncomeForm = () => {
+const UpdateExpenseForm = () => {
   const { register, handleSubmit } = useForm();
   const tripDateRef = useRef(null);
   //   update loader data
@@ -37,8 +37,8 @@ const UpdateDailyIncomeForm = () => {
       const updatedData = {
         trip_date: data.trip_date,
         trip_time: trip_time,
-        load_point: data.load_point,
-        unload_point: data.unload_point,
+        load_point: load_point,
+        unload_point: unload_point,
         driver_name: driver_name,
         driver_contact: driver_contact,
         driver_percentage: driver_percentage,
@@ -63,7 +63,9 @@ const UpdateDailyIncomeForm = () => {
       console.log("resData", resData);
 
       if (resData.status === "success") {
-        toast.success("ট্রিপ সফলভাবে আপডেট হয়েছে!", { position: "top-right" });
+        toast.success("দৈনিক ব্যয় সফলভাবে আপডেট হয়েছে!", {
+          position: "top-right",
+        });
       } else {
         toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
       }
@@ -78,7 +80,7 @@ const UpdateDailyIncomeForm = () => {
   return (
     <div className="mt-10">
       <h3 className="px-6 py-2 bg-primary text-white font-semibold rounded-t-md">
-        দৈনিক আয় আপডেট করুন
+        দৈনিক ব্যয় আপডেট করুন
       </h3>
       <div className="mx-auto p-6 bg-gray-100 rounded-md shadow">
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -127,33 +129,6 @@ const UpdateDailyIncomeForm = () => {
                   <option value="Dhama metro-2">Dhama metro-2</option>
                 </select>
                 <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
-              </div>
-            </div>
-            {/*  */}
-            <div className="md:flex justify-between gap-3">
-              <div className="mt-2 md:mt-0 w-full relative">
-                <label className="text-primary text-sm font-semibold">
-                  লোড পয়েন্ট
-                </label>
-                <input
-                  {...register("load_point")}
-                  defaultValue={load_point}
-                  type="text"
-                  placeholder="লোড পয়েন্ট..."
-                  className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-                />
-              </div>
-              <div className="mt-2 md:mt-0 w-full relative">
-                <label className="text-primary text-sm font-semibold">
-                  আনলোড পয়েন্ট
-                </label>
-                <input
-                  {...register("unload_point")}
-                  defaultValue={unload_point}
-                  type="text"
-                  placeholder="আনলোড পয়েন্ট..."
-                  className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-                />
               </div>
             </div>
           </div>
@@ -242,4 +217,4 @@ const UpdateDailyIncomeForm = () => {
   );
 };
 
-export default UpdateDailyIncomeForm;
+export default UpdateExpenseForm;

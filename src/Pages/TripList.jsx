@@ -390,7 +390,6 @@ const TripList = () => {
                             <FaPen className="text-[12px]" />
                           </button>
                         </Link>
-
                         <button
                           onClick={() => handleView(dt.id)}
                           className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer"

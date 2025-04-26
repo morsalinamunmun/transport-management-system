@@ -2,13 +2,19 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import { FaTruck, FaFilter, FaPen } from "react-icons/fa";
+import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import { HiMiniCalendarDateRange } from "react-icons/hi2";
+import { Link } from "react-router-dom";
 const DailyExpense = () => {
   const [taxDate, setTaxDate] = useState(null);
   const dateRef = useRef(null);
   const [showFilter, setShowFilter] = useState(false);
   const [trip, setTrip] = useState([]);
   const [loading, setLoading] = useState(true);
+  // search
+  const [searchTerm, setSearchTerm] = useState("");
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
     axios
       .get("https://api.dropshep.com/api/trip")
@@ -19,13 +25,46 @@ const DailyExpense = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching driver data:", error);
+        console.error("Error fetching trip data:", error);
         setLoading(false);
       });
   }, []);
   if (loading) return <p className="text-center mt-16">Loading trip...</p>;
   console.log("trip:", trip);
-
+  // search
+  const filteredDriver = trip.filter((dt) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      dt.trip_date?.toLowerCase().includes(term) ||
+      dt.trip_time?.toLowerCase().includes(term) ||
+      dt.load_point?.toLowerCase().includes(term) ||
+      dt.unload_point?.toLowerCase().includes(term) ||
+      dt.driver_name?.toLowerCase().includes(term) ||
+      dt.driver_contact?.toLowerCase().includes(term) ||
+      String(dt.driver_percentage).includes(term) ||
+      dt.fuel_price?.toLowerCase().includes(term) ||
+      dt.gas_price?.toLowerCase().includes(term) ||
+      dt.vehicle_number?.toLowerCase().includes(term) ||
+      dt.other_expenses?.toLowerCase().includes(term) ||
+      dt.trip_price?.toLowerCase().includes(term)
+    );
+  });
+  // pagination
+  const itemsPerPage = 10;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentTrip = filteredDriver.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(trip.length / itemsPerPage);
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage((currentPage) => currentPage - 1);
+  };
+  const handleNextPage = () => {
+    if (currentPage < totalPages)
+      setCurrentPage((currentPage) => currentPage + 1);
+  };
+  const handlePageClick = (number) => {
+    setCurrentPage(number);
+  };
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
       <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-8 border border-gray-200">
@@ -106,7 +145,12 @@ const DailyExpense = () => {
             <span className="text-primary font-semibold pr-3">Search: </span>
             <input
               type="text"
-              placeholder=""
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="সার্চ করুন..."
               className="border border-gray-300 rounded-md outline-none text-xs py-2 ps-2 pr-5"
             />
           </div>
@@ -128,7 +172,7 @@ const DailyExpense = () => {
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
-              {trip?.map((item, index) => {
+              {currentTrip?.map((item, index) => {
                 const fuel = parseFloat(item.fuel_price ?? "0") || 0;
                 const gas = parseFloat(item.gas_price ?? "0") || 0;
                 const others = parseFloat(item.other_expenses ?? "0") || 0;
@@ -138,7 +182,9 @@ const DailyExpense = () => {
 
                 return (
                   <tr key={item.id} className="hover:bg-gray-50 transition-all">
-                    <td className="px-4 py-4 font-bold">{index + 1}</td>
+                    <td className="px-4 py-4 font-bold">
+                      {indexOfFirstItem + index + 1}
+                    </td>
                     <td className="px-4 py-4">{item.trip_date}</td>
                     <td className="px-4 py-4">{item.vehicle_number}</td>
                     <td className="px-4 py-4">{item.driver_name}</td>
@@ -148,15 +194,17 @@ const DailyExpense = () => {
                     <td className="px-4 py-4">{totalCost}</td>
                     <td className="px-4 py-4">
                       {(
-                        parseFloat(item.trip_price ?? "0") -
+                        parseFloat(item.trip_price ?? "0") +
                         parseFloat(totalCost)
                       ).toFixed(2)}
                     </td>
                     <td>
                       <div className="flex justify-center">
-                        <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                          <FaPen className="text-[12px]" />
-                        </button>
+                        <Link to={`/UpdateExpenseForm/${item.id}`}>
+                          <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+                            <FaPen className="text-[12px]" />
+                          </button>
+                        </Link>
                       </div>
                     </td>
                   </tr>
@@ -164,6 +212,44 @@ const DailyExpense = () => {
               })}
             </tbody>
           </table>
+        </div>
+        {/* pagination */}
+        <div className="mt-10 flex justify-center">
+          <div className="space-x-2 flex items-center">
+            <button
+              onClick={handlePrevPage}
+              className={`p-2 ${
+                currentPage === 1 ? "bg-gray-300" : "bg-primary text-white"
+              } rounded-sm`}
+              disabled={currentPage === 1}
+            >
+              <GrFormPrevious />
+            </button>
+            {[...Array(totalPages).keys()].map((number) => (
+              <button
+                key={number + 1}
+                onClick={() => handlePageClick(number + 1)}
+                className={`px-3 py-1 rounded-sm ${
+                  currentPage === number + 1
+                    ? "bg-primary text-white hover:bg-gray-200 hover:text-primary transition-all duration-300 cursor-pointer"
+                    : "bg-gray-200 hover:bg-primary hover:text-white transition-all cursor-pointer"
+                }`}
+              >
+                {number + 1}
+              </button>
+            ))}
+            <button
+              onClick={handleNextPage}
+              className={`p-2 ${
+                currentPage === totalPages
+                  ? "bg-gray-300"
+                  : "bg-primary text-white"
+              } rounded-sm`}
+              disabled={currentPage === totalPages}
+            >
+              <GrFormNext />
+            </button>
+          </div>
         </div>
       </div>
     </main>
