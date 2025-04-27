@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
 import toast, { Toaster } from "react-hot-toast";
 import {
   FaTruck,
@@ -12,7 +11,6 @@ import {
 } from "react-icons/fa";
 import { HiMiniCalendarDateRange } from "react-icons/hi2";
 import { IoMdClose } from "react-icons/io";
-import { MdOutlineArrowDropDown } from "react-icons/md";
 import { Link } from "react-router-dom";
 // export
 import { CSVLink } from "react-csv";
@@ -24,16 +22,16 @@ import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 const TripList = () => {
   const [trip, setTrip] = useState([]);
   const [showFilter, setShowFilter] = useState(false);
-  // const [tripDate, settripDate] = useState(null);
   // const dateRef = useRef(null);
   const [loading, setLoading] = useState(true);
+  // Date filter state
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   // delete modal
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTripId, setselectedTripId] = useState(null);
   const toggleModal = () => setIsOpen(!isOpen);
-  // filter
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+
   // get single driver info by id
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedTrip, setselectedTrip] = useState(null);
@@ -41,6 +39,7 @@ const TripList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
+  // Fetch trips data
   useEffect(() => {
     axios
       .get("https://api.dropshep.com/api/trip")
@@ -187,13 +186,12 @@ const TripList = () => {
     WinPrint.print();
     WinPrint.close();
   };
-  const parseDate = (dateStr) => {
-    const [day, month, year] = dateStr.split("/").map(Number);
-    return new Date(year, month - 1, day);
-  };
-  // search
+  // filter
+
+  // Filter trips by search term and date range
   const filteredTrip = trip.filter((dt) => {
     const term = searchTerm.toLowerCase();
+    const tripDate = dt.trip_date;
     const matchesSearch =
       dt.trip_date?.toLowerCase().includes(term) ||
       dt.trip_time?.toLowerCase().includes(term) ||
@@ -207,14 +205,11 @@ const TripList = () => {
       dt.vehicle_number?.toLowerCase().includes(term) ||
       dt.other_expenses?.toLowerCase().includes(term) ||
       dt.trip_price?.toLowerCase().includes(term);
+    const matchesDateRange =
+      (!startDate || new Date(tripDate) >= new Date(startDate)) &&
+      (!endDate || new Date(tripDate) <= new Date(endDate));
 
-    const tripDateObj = dt.trip_date ? parseDate(dt.trip_date) : null;
-
-    const matchesDateFilter =
-      (!startDate || (tripDateObj && tripDateObj >= startDate)) &&
-      (!endDate || (tripDateObj && tripDateObj <= endDate));
-
-    return matchesSearch && matchesDateFilter;
+    return matchesSearch && matchesDateRange;
   });
 
   // pagination
@@ -306,27 +301,28 @@ const TripList = () => {
         {showFilter && (
           <div className="flex gap-5 border border-gray-300 rounded-md p-5 my-5 transition-all duration-300 pb-5">
             <div className="relative w-64">
-              <DatePicker
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                placeholderText="শুরুর তারিখ..."
-                className="mt-1 w-64 text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-                dateFormat="dd/MM/yyyy"
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                placeholder="Start date"
+                className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
             </div>
+
             <div className="relative w-64">
-              <DatePicker
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-                placeholderText="শেষের তারিখ..."
-                className="mt-1 w-64 text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-                dateFormat="dd/MM/yyyy"
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                placeholder="End date"
+                className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
             </div>
 
             <div className="flex gap-2">
               <button
-                onClick={() => setCurrentPage(1)} // Reset to page 1 after filtering
+                onClick={() => setCurrentPage(1)}
                 className="bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 py-1 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer"
               >
                 <FaFilter /> ফিল্টার
@@ -340,13 +336,13 @@ const TripList = () => {
           <table className="min-w-full text-sm text-left">
             <thead className="bg-[#11375B] text-white uppercase text-sm">
               <tr>
-                <th className="px-2 md:px-4 py-3">#</th>
-                <th className="px-2 md:px-4 py-3">তারিখ</th>
-                <th className="px-2 md:px-4 py-3">ড্রাইভার ইনফো</th>
-                <th className="px-2 md:px-4 py-3">ট্রিপ এবং গন্তব্য</th>
-                <th className="px-2 md:px-4 py-3">ট্রিপের খরচ</th>
-                <th className="px-2 md:px-4 py-3">ট্রিপের ভাড়া</th>
-                <th className="px-2 md:px-4 py-3">টোটাল আয়</th>
+                <th className="px-2 py-3">#</th>
+                <th className="px-2 py-3">তারিখ</th>
+                <th className="px-2 py-3">ড্রাইভার ইনফো</th>
+                <th className="px-2 py-3">ট্রিপ এবং গন্তব্য</th>
+                <th className="px-2 py-3">ট্রিপের খরচ</th>
+                <th className="px-2 py-3">ট্রিপের ভাড়া</th>
+                <th className="px-2 py-3">টোটাল আয়</th>
                 <th className="px-2 py-3">অ্যাকশন</th>
               </tr>
             </thead>
@@ -363,24 +359,24 @@ const TripList = () => {
                     key={index}
                     className="hover:bg-gray-50 transition-all border-b border-gray-300"
                   >
-                    <td className="px-4 py-4 font-bold">
+                    <td className="px-2 py-3 font-bold">
                       {indexOfFirstItem + index + 1}
                     </td>
-                    <td className="px-4 py-4">{dt.trip_date}</td>
-                    <td className="px-4 py-4">
+                    <td className="px-2 py-3">{dt.trip_date}</td>
+                    <td className="px-2 py-3">
                       <p>নামঃ {dt.driver_name}</p>
                       <p>মোবাইলঃ {dt.driver_contact}</p>
                       <p>কমিশনঃ {dt.driver_percentage}</p>
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="px-2 py-4">
                       <p>তারিখঃ {dt.trip_date}</p>
                       <p>লোড পয়েন্টঃ {dt.load_point}</p>
                       <p>আনলোড পয়েন্টঃ {dt.unload_point}</p>
                       <p>ট্রিপের সময়ঃ {dt.trip_time}</p>
                     </td>
-                    <td className="px-4 py-4">{totalCost}</td>
-                    <td className="px-4 py-4">{dt.trip_price}</td>
-                    <td className="px-4 py-4">
+                    <td className="px-2 py-3">{totalCost}</td>
+                    <td className="px-2 py-3">{dt.trip_price}</td>
+                    <td className="px-2 py-3">
                       {dt.trip_price - totalCost}.00
                     </td>
                     <td className="px-2">

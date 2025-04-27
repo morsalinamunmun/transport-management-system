@@ -155,8 +155,8 @@ const UpdateUsersForm = () => {
                 className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
               >
                 <option value={role}>{role}</option>
-                <option value="Manager">ম্যানেজার</option>
-                <option value="Supervisor">সুপারভাইজার</option>
+                <option value="User">User</option>
+                <option value="Admin">Admin</option>
               </select>
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>

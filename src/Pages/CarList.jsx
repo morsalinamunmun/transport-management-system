@@ -198,18 +198,14 @@ const CarList = () => {
     indexOfFirstItem,
     indexOfLastItem
   );
-
   const totalPages = Math.ceil(vehicles.length / itemsPerPage);
-
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage((currentPage) => currentPage - 1);
   };
-
   const handleNextPage = () => {
     if (currentPage < totalPages)
       setCurrentPage((currentPage) => currentPage + 1);
   };
-
   const handlePageClick = (number) => {
     setCurrentPage(number);
   };

@@ -37,7 +37,8 @@ const Maintenance = () => {
         setLoading(false);
       });
   }, []);
-  if (loading) return <p>Loading parts...</p>;
+  if (loading)
+    return <p className="text-center mt-16">Loading maintenance...</p>;
   console.log("maintenance", maintenance);
   // delete by id
   const handleDelete = async (id) => {
