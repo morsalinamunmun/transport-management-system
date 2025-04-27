@@ -1,17 +1,21 @@
-import React, { useRef } from "react";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { FiCalendar } from "react-icons/fi";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { useLoaderData } from "react-router-dom";
+import Select from "react-select";
+import BtnSubmit from "../../components/Button/BtnSubmit";
 
 const UpdateCarForm = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, control } = useForm();
   const registrationDateRef = useRef(null);
   const taxDateRef = useRef(null);
   const roadPermitRef = useRef(null);
   const fitnessDateRef = useRef(null);
+  // select driver
+  const [drivers, setDrivers] = useState([]);
   //   update loader data
   const updateCarLoaderData = useLoaderData();
   const {
@@ -29,6 +33,18 @@ const UpdateCarForm = () => {
     fitness_date,
   } = updateCarLoaderData.data;
   console.log("updateCarLoaderData", updateCarLoaderData.data.vehicle_name);
+  useEffect(() => {
+    fetch("https://api.dropshep.com/api/driver")
+      .then((response) => response.json())
+      .then((data) => setDrivers(data.data))
+      .catch((error) => console.error("Error fetching driver data:", error));
+  }, []);
+
+  const driverOptions = drivers.map((driver) => ({
+    value: driver.name,
+    label: driver.name,
+  }));
+
   const onSubmit = async (data) => {
     try {
       const response = await axios.put(
@@ -81,17 +97,22 @@ const UpdateCarForm = () => {
             <label className="text-primary text-sm font-semibold">
               ড্রাইভারের নাম
             </label>
-            <select
-              {...register("driver_name")}
+            <Controller
+              name="driver_name"
+              control={control}
+              rules={{ required: true }}
               defaultValue={driver_name}
-              className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
-            >
-              <option value={driver_name}>{driver_name}</option>
-              <option value="Motin Ali">Motin Ali</option>
-              <option value="Korim Ali">Korim Ali</option>
-              <option value="Solaiman Ali">Solaiman Ali</option>
-            </select>
-            <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={driverOptions}
+                  placeholder={driver_name}
+                  className="mt-1 text-sm"
+                  classNamePrefix="react-select"
+                  isClearable
+                />
+              )}
+            />
           </div>
         </div>
 
@@ -367,12 +388,7 @@ const UpdateCarForm = () => {
 
         {/* Submit Button */}
         <div className="text-left">
-          <button
-            type="submit"
-            className="mt-4 bg-primary text-white px-6 py-2 rounded hover:bg-secondary cursor-pointer"
-          >
-            সাবমিট করুন
-          </button>
+          <BtnSubmit>সাবমিট করুন</BtnSubmit>
         </div>
       </div>
     </form>

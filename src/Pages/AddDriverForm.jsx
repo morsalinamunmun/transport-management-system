@@ -6,6 +6,7 @@ import { IoMdClose } from "react-icons/io";
 import { FiCalendar } from "react-icons/fi";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import BtnSubmit from "../components/Button/BtnSubmit";
 
 const AddDriverForm = () => {
   const {
@@ -262,12 +263,7 @@ const AddDriverForm = () => {
           )}
 
           <div className="mt-6 text-left">
-            <button
-              type="submit"
-              className="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 text-sm"
-            >
-              সাবমিট করুন
-            </button>
+            <BtnSubmit>সাবমিট করুন</BtnSubmit>
           </div>
         </form>
       </div>

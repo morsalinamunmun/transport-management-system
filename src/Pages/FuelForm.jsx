@@ -5,6 +5,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { FiCalendar } from "react-icons/fi";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import Select from "react-select";
+import BtnSubmit from "../components/Button/BtnSubmit";
 const FuelForm = () => {
   const fuelDateRef = useRef(null);
   const {
@@ -268,12 +269,7 @@ const FuelForm = () => {
           </div>
           {/* Submit Button */}
           <div className="text-left">
-            <button
-              type="submit"
-              className="mt-4 bg-primary text-white px-6 py-2 rounded hover:bg-secondary cursor-pointer"
-            >
-              সাবমিট করুন
-            </button>
+            <BtnSubmit>সাবমিট করুন</BtnSubmit>
           </div>
         </form>
       </div>

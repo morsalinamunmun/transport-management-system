@@ -6,6 +6,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { FiCalendar } from "react-icons/fi";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import Select from "react-select";
+import BtnSubmit from "../components/Button/BtnSubmit";
 const AddTripForm = () => {
   const {
     register,
@@ -85,7 +86,7 @@ const AddTripForm = () => {
         ট্রিপ যোগ করুন
       </h3>
       <div className="mx-auto p-6 bg-gray-100 rounded-md shadow">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
           <Toaster position="top-center" reverseOrder={false} />
           {/*  */}
           <div className="border border-gray-300 p-3 md:p-5 rounded-md">
@@ -94,7 +95,7 @@ const AddTripForm = () => {
                 ট্রিপ এবং গন্তব্য সেকশন
               </span>
             </h5>
-            <div className="mt-5 md:mt-0 md:flex justify-between gap-3">
+            <div className="mt-5 md:mt-1 md:flex justify-between gap-3">
               <div className="w-full">
                 <label className="text-primary text-sm font-semibold">
                   তারিখ *
@@ -137,7 +138,7 @@ const AddTripForm = () => {
             </div>
             {/*  */}
             <div className="md:flex justify-between gap-3">
-              <div className="mt-2 md:mt-0 w-full relative">
+              <div className="mt-2 md:mt-1 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   লোড পয়েন্ট
                 </label>
@@ -151,7 +152,7 @@ const AddTripForm = () => {
                   <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
                 )}
               </div>
-              <div className="mt-2 md:mt-0 w-full relative">
+              <div className="mt-2 md:mt-1 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   আনলোড পয়েন্ট
                 </label>
@@ -175,7 +176,7 @@ const AddTripForm = () => {
               </span>
             </h5>
             <div className="md:flex justify-between gap-3">
-              <div className="mt-2 md:mt-0 w-full relative">
+              <div className="mt-2 md:mt-1 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   গাড়ির নম্বর
                 </label>
@@ -225,7 +226,7 @@ const AddTripForm = () => {
               </div>
             </div>
             <div className="md:flex justify-between gap-3">
-              <div className="mt-2 md:mt-0 w-full relative">
+              <div className="mt-2 md:mt-1 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   ড্রাইভারের মোবাইল
                 </label>
@@ -239,7 +240,7 @@ const AddTripForm = () => {
                   <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
                 )}
               </div>
-              <div className="mt-2 md:mt-0 w-full relative">
+              <div className="mt-2 md:mt-1 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   ড্রাইভারের কমিশন
                 </label>
@@ -269,7 +270,7 @@ const AddTripForm = () => {
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
-              <div className="mt-2 md:mt-0 w-full relative">
+              <div className="mt-2 md:mt-1 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   গ্যাসের মূল্য
                 </label>
@@ -282,7 +283,7 @@ const AddTripForm = () => {
               </div>
             </div>
             <div className="md:flex justify-between gap-3">
-              <div className="mt-2 md:mt-0 w-full relative">
+              <div className="mt-2 md:mt-1 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   অন্যান্য খরচ
                 </label>
@@ -293,7 +294,7 @@ const AddTripForm = () => {
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
-              <div className="mt-2 md:mt-0 w-full relative">
+              <div className="mt-2 md:mt-1 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   জরিমানা
                 </label>
@@ -325,7 +326,7 @@ const AddTripForm = () => {
               </span>
             </h5>
             <div className="md:flex justify-between gap-3">
-              <div className="mt-2 md:mt-0 w-full relative">
+              <div className="mt-2 md:mt-1 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   কাস্টমারের নাম
                 </label>
@@ -339,7 +340,7 @@ const AddTripForm = () => {
                   <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
                 )}
               </div>
-              <div className="mt-2 md:mt-0 w-full relative">
+              <div className="mt-2 md:mt-1 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   ট্রিপের ভাড়া
                 </label>
@@ -353,7 +354,7 @@ const AddTripForm = () => {
                   <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
                 )}
               </div>
-              <div className="mt-2 md:mt-0 w-full relative">
+              <div className="mt-2 md:mt-1 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   অগ্রিম পেমেন্ট
                 </label>
@@ -369,12 +370,7 @@ const AddTripForm = () => {
 
           {/* Submit Button */}
           <div className="text-left">
-            <button
-              type="submit"
-              className="mt-4 bg-primary text-white px-6 py-2 rounded hover:bg-secondary cursor-pointer"
-            >
-              সাবমিট করুন
-            </button>
+            <BtnSubmit>সাবমিট করুন</BtnSubmit>
           </div>
         </form>
       </div>

@@ -7,6 +7,7 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { FiCalendar } from "react-icons/fi";
 import Select from "react-select";
+import BtnSubmit from "../components/Button/BtnSubmit";
 const MaintenanceForm = () => {
   const {
     register,
@@ -308,12 +309,7 @@ const MaintenanceForm = () => {
           </div>
 
           <div className="mt-6">
-            <button
-              type="submit"
-              className="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 text-sm"
-            >
-              সাবমিট করুন
-            </button>
+            <BtnSubmit>সাবমিট করুন</BtnSubmit>
           </div>
         </form>
       </div>

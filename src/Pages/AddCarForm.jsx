@@ -5,6 +5,7 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import Select from "react-select";
+import BtnSubmit from "../components/Button/BtnSubmit";
 const AddCarForm = () => {
   const {
     register,
@@ -17,8 +18,8 @@ const AddCarForm = () => {
   const taxDateRef = useRef(null);
   const roadPermitRef = useRef(null);
   const fitnessDateRef = useRef(null);
+  // select driver
   const [drivers, setDrivers] = useState([]);
-
   useEffect(() => {
     fetch("https://api.dropshep.com/api/driver")
       .then((response) => response.json())
@@ -399,12 +400,7 @@ const AddCarForm = () => {
 
         {/* Submit Button */}
         <div className="text-left">
-          <button
-            type="submit"
-            className="mt-4 bg-primary text-white px-6 py-2 rounded hover:bg-secondary cursor-pointer"
-          >
-            সাবমিট করুন
-          </button>
+          <BtnSubmit>সাবমিট করুন</BtnSubmit>
         </div>
       </div>
     </form>

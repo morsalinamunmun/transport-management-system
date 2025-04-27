@@ -7,6 +7,7 @@ import { FiCalendar } from "react-icons/fi";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { useLoaderData } from "react-router-dom";
+import BtnSubmit from "../../components/Button/BtnSubmit";
 
 const UpdateDriverForm = () => {
   const { register, handleSubmit, reset, setValue } = useForm();
@@ -87,7 +88,7 @@ const UpdateDriverForm = () => {
           <div className="md:flex justify-between gap-3">
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
-                ড্রাইভারের নাম *
+                ড্রাইভারের নাম
               </label>
               <input
                 {...register("name")}
@@ -99,12 +100,12 @@ const UpdateDriverForm = () => {
             </div>
             <div className="mt-2 md:mt-0 w-full">
               <label className="text-primary text-sm font-semibold">
-                ড্রাইভারের মোবাইল *
+                ড্রাইভারের মোবাইল
               </label>
               <input
                 {...register("contact")}
                 defaultValue={contact}
-                type="text"
+                type="number"
                 placeholder="ড্রাইভারের মোবাইল..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
@@ -115,7 +116,7 @@ const UpdateDriverForm = () => {
           <div className="md:flex justify-between gap-3">
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
-                এন.আই.ডি নাম্বার *
+                এন.আই.ডি নাম্বার
               </label>
               <input
                 {...register("nid")}
@@ -132,7 +133,7 @@ const UpdateDriverForm = () => {
               <input
                 {...register("emergency_contact")}
                 defaultValue={emergency_contact}
-                type="text"
+                type="number"
                 placeholder="জরুরী যোগাযোগ নাম্বার..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
@@ -143,7 +144,7 @@ const UpdateDriverForm = () => {
           <div className="md:flex justify-between gap-3">
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
-                ঠিকানা *
+                ঠিকানা
               </label>
               <input
                 {...register("address")}
@@ -171,7 +172,7 @@ const UpdateDriverForm = () => {
           <div className="md:flex justify-between gap-3">
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
-                লাইসেন্স না. *
+                লাইসেন্স না.
               </label>
               <input
                 {...register("license")}
@@ -183,7 +184,7 @@ const UpdateDriverForm = () => {
             </div>
             <div className="mt-2 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
-                মেয়াদোত্তীর্ণ তারিখ *
+                মেয়াদোত্তীর্ণ তারিখ
               </label>
               <div className="relative">
                 <input
@@ -210,7 +211,7 @@ const UpdateDriverForm = () => {
           <div className="md:flex justify-between gap-3">
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
-                স্ট্যাটাস *
+                স্ট্যাটাস
               </label>
               <select
                 {...register("status")}
@@ -279,12 +280,7 @@ const UpdateDriverForm = () => {
           )}
 
           <div className="mt-6 text-left">
-            <button
-              type="submit"
-              className="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 text-sm"
-            >
-              সাবমিট করুন
-            </button>
+            <BtnSubmit>সাবমিট করুন</BtnSubmit>
           </div>
         </form>
       </div>

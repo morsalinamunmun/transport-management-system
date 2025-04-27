@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import "react-datepicker/dist/react-datepicker.css";
 import { IoMdClose } from "react-icons/io";
@@ -7,9 +7,11 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { FiCalendar } from "react-icons/fi";
 import { useLoaderData } from "react-router-dom";
+import Select from "react-select";
+import BtnSubmit from "../../components/Button/BtnSubmit";
 
 const UpdateMaintenanceForm = () => {
-  const { register, handleSubmit, setValue, reset } = useForm();
+  const { register, handleSubmit, setValue, reset, control } = useForm();
 
   const updateMaintenanceLoaderData = useLoaderData();
   const maintenanceDateRef = useRef(null);
@@ -18,10 +20,10 @@ const UpdateMaintenanceForm = () => {
     id,
     date,
     service_type,
+    vehicle_no,
     parts_and_spairs,
     maintenance_type,
     cost,
-    vehicle_no,
     cost_by,
     total_cost,
     dignifies,
@@ -33,6 +35,19 @@ const UpdateMaintenanceForm = () => {
     "updateMaintenanceLoaderData.data",
     updateMaintenanceLoaderData.data
   );
+  // car name / registration number
+  const [vehicles, setVehicles] = useState([]);
+  useEffect(() => {
+    fetch("https://api.dropshep.com/api/vehicle")
+      .then((response) => response.json())
+      .then((data) => setVehicles(data.data))
+      .catch((error) => console.error("Error fetching driver data:", error));
+  }, []);
+
+  const vehicleOptions = vehicles.map((vehicle) => ({
+    value: vehicle.registration_number,
+    label: vehicle.registration_number,
+  }));
   const onSubmit = async (data) => {
     try {
       const formData = new FormData();
@@ -169,6 +184,7 @@ const UpdateMaintenanceForm = () => {
               <label className="text-primary text-sm font-semibold">খরচ</label>
               <input
                 {...register("cost")}
+                type="number"
                 defaultValue={cost}
                 placeholder="খরচ ..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -178,12 +194,20 @@ const UpdateMaintenanceForm = () => {
               <label className="text-primary text-sm font-semibold">
                 গাড়ির নাম্বার
               </label>
-              <input
-                {...register("vehicle_no")}
-                defaultValue={vehicle_no}
-                type="text"
-                placeholder="গাড়ির নাম্বার..."
-                className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+              <Controller
+                name="vehicle_no"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={vehicleOptions}
+                    placeholder={vehicle_no}
+                    className="mt-1 text-sm"
+                    classNamePrefix="react-select"
+                    isClearable
+                  />
+                )}
               />
             </div>
           </div>
@@ -293,12 +317,7 @@ const UpdateMaintenanceForm = () => {
           </div>
 
           <div className="mt-6">
-            <button
-              type="submit"
-              className="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 text-sm"
-            >
-              সাবমিট করুন
-            </button>
+            <BtnSubmit>সাবমিট করুন</BtnSubmit>
           </div>
         </form>
       </div>

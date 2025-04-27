@@ -5,6 +5,7 @@ import { MdOutlineArrowDropDown } from "react-icons/md";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { useLoaderData } from "react-router-dom";
+import BtnSubmit from "../../components/Button/BtnSubmit";
 
 const UpdateUsersForm = () => {
   const updateUserLoaderData = useLoaderData();
@@ -178,12 +179,7 @@ const UpdateUsersForm = () => {
 
           {/* Submit Button */}
           <div className="mt-6">
-            <button
-              type="submit"
-              className="bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 text-sm"
-            >
-              সাবমিট করুন
-            </button>
+            <BtnSubmit>সাবমিট করুন</BtnSubmit>
           </div>
         </form>
       </div>
