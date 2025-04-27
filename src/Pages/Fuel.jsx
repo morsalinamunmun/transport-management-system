@@ -1,9 +1,6 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
-import DatePicker from "react-datepicker";
+import React, { useEffect, useState } from "react";
 import { FaTruck, FaPlus, FaFilter, FaPen, FaTrashAlt } from "react-icons/fa";
-import { HiMiniCalendarDateRange } from "react-icons/hi2";
-import { MdOutlineArrowDropDown } from "react-icons/md";
 import { Link } from "react-router-dom";
 // export
 import { CSVLink } from "react-csv";
@@ -19,9 +16,10 @@ import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 const Fuel = () => {
   const [fuel, setFuel] = useState([]);
   const [showFilter, setShowFilter] = useState(false);
-  const [fuelDate, setFuelDate] = useState(null);
-  const dateRef = useRef(null);
   const [loading, setLoading] = useState(true);
+  // Date filter state
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   // delete modal
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFuelId, setselectedFuelId] = useState(null);
@@ -30,6 +28,7 @@ const Fuel = () => {
   const [currentPage, setCurrentPage] = useState(1);
   // search
   const [searchTerm, setSearchTerm] = useState("");
+  // Fetch fuel data
   useEffect(() => {
     axios
       .get("https://api.dropshep.com/api/fuel")
@@ -59,7 +58,6 @@ const Fuel = () => {
     { label: "লিটার প্রতি খরচ", key: "price" },
     { label: "সকল খরচ", key: "total" },
   ];
-
   const csvData = fuel.map((dt, index) => ({
     index: index + 1,
     driver_name: dt.driver_name,
@@ -82,7 +80,6 @@ const Fuel = () => {
     const data = new Blob([excelBuffer], { type: "application/octet-stream" });
     saveAs(data, "fuel_data.xlsx");
   };
-
   const exportPDF = () => {
     const doc = new jsPDF();
 
@@ -115,7 +112,6 @@ const Fuel = () => {
 
     doc.save("fuel_data.pdf");
   };
-
   const printTable = () => {
     const printContent = document.querySelector("table").outerHTML;
     const WinPrint = window.open("", "", "width=900,height=650");
@@ -160,7 +156,8 @@ const Fuel = () => {
   // search
   const filteredFuel = fuel.filter((dt) => {
     const term = searchTerm.toLowerCase();
-    return (
+    const fuelDate = dt.date_time;
+    const matchesSearch =
       dt.date_time?.toLowerCase().includes(term) ||
       dt.vehicle_number?.toLowerCase().includes(term) ||
       dt.driver_name?.toLowerCase().includes(term) ||
@@ -170,8 +167,12 @@ const Fuel = () => {
       dt.type?.toLowerCase().includes(term) ||
       String(dt.quantity).includes(term) ||
       dt.price?.toLowerCase().includes(term) ||
-      dt.total_price?.toLowerCase().includes(term)
-    );
+      dt.total_price?.toLowerCase().includes(term);
+    const matchesDateRange =
+      (!startDate || new Date(fuelDate) >= new Date(startDate)) &&
+      (!endDate || new Date(fuelDate) <= new Date(endDate));
+
+    return matchesSearch && matchesDateRange;
   });
   // pagination
   const itemsPerPage = 10;
@@ -263,52 +264,30 @@ const Fuel = () => {
         {showFilter && (
           <div className="flex gap-5 border border-gray-300 rounded-md p-5 my-5 transition-all duration-300 pb-5">
             <div className="relative w-64">
-              <DatePicker
-                selected={fuelDate}
-                onChange={(date) => setFuelDate(date)}
-                ref={dateRef}
-                placeholderText="শুরুর তারিখ..."
-                className="mt-1 w-64 text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-                dateFormat="dd/MM/yyyy"
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                placeholder="Start date"
+                className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
-              <span
-                onClick={() => dateRef.current?.setOpen(true)}
-                className="absolute top-1 right-0 text-xl text-white bg-primary px-4 py-[9px] rounded-r-md cursor-pointer"
-              >
-                <HiMiniCalendarDateRange />
-              </span>
             </div>
+
             <div className="relative w-64">
-              <DatePicker
-                selected={fuelDate}
-                onChange={(date) => setFuelDate(date)}
-                ref={dateRef}
-                placeholderText="শেষের তারিখ..."
-                className="mt-1 w-64 text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-                dateFormat="dd/MM/yyyy"
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                placeholder="End date"
+                className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
-              <span
-                onClick={() => dateRef.current?.setOpen(true)}
-                className="absolute top-1 right-0 text-xl text-white bg-primary px-4 py-[9px] rounded-r-md cursor-pointer"
-              >
-                <HiMiniCalendarDateRange />
-              </span>
             </div>
-            <div className="mt-2 md:mt-0 w-full relative">
-              <select
-                name="driverName"
-                className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
-                // defaultValue=""
-              >
-                <option value="">গাড়ির নাম...</option>
-                <option value="Motin Ali">Motin Ali</option>
-                <option value="Korim Ali">Korim Ali</option>
-                <option value="Solaiman Ali">Solaiman Ali</option>
-              </select>
-              <MdOutlineArrowDropDown className="absolute top-3 right-2 pointer-events-none text-xl text-gray-500" />
-            </div>
+
             <div className="flex gap-2">
-              <button className="bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 py-1 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer">
+              <button
+                onClick={() => setCurrentPage(1)}
+                className="bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 py-1 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer"
+              >
                 <FaFilter /> ফিল্টার
               </button>
             </div>

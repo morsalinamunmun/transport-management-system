@@ -9,7 +9,6 @@ import {
   FaEye,
   FaTrashAlt,
 } from "react-icons/fa";
-import { HiMiniCalendarDateRange } from "react-icons/hi2";
 import { IoMdClose } from "react-icons/io";
 import { Link } from "react-router-dom";
 // export
@@ -22,7 +21,6 @@ import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 const TripList = () => {
   const [trip, setTrip] = useState([]);
   const [showFilter, setShowFilter] = useState(false);
-  // const dateRef = useRef(null);
   const [loading, setLoading] = useState(true);
   // Date filter state
   const [startDate, setStartDate] = useState("");
@@ -114,7 +112,6 @@ const TripList = () => {
     { label: "ট্রিপ ভাড়া", key: "trip_price" },
     { label: "টোটাল আয়", key: "profit" },
   ];
-
   const csvData = trip.map((dt, index) => {
     const fuel = parseFloat(dt.fuel_price ?? "0") || 0;
     const gas = parseFloat(dt.gas_price ?? "0") || 0;
@@ -137,7 +134,6 @@ const TripList = () => {
       profit,
     };
   });
-
   // export excel
   const exportExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(csvData);
@@ -150,7 +146,6 @@ const TripList = () => {
     const data = new Blob([excelBuffer], { type: "application/octet-stream" });
     saveAs(data, "trip_data.xlsx");
   };
-
   const exportPDF = () => {
     const doc = new jsPDF();
     const tableColumn = headers.map((h) => h.label);
@@ -165,7 +160,6 @@ const TripList = () => {
 
     doc.save("trip_data.pdf");
   };
-
   const printTable = () => {
     const printContent = document.querySelector("table").outerHTML;
     const WinPrint = window.open("", "", "width=900,height=650");
@@ -186,8 +180,6 @@ const TripList = () => {
     WinPrint.print();
     WinPrint.close();
   };
-  // filter
-
   // Filter trips by search term and date range
   const filteredTrip = trip.filter((dt) => {
     const term = searchTerm.toLowerCase();
@@ -208,7 +200,6 @@ const TripList = () => {
     const matchesDateRange =
       (!startDate || new Date(tripDate) >= new Date(startDate)) &&
       (!endDate || new Date(tripDate) <= new Date(endDate));
-
     return matchesSearch && matchesDateRange;
   });
 
