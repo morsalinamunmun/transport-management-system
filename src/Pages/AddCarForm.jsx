@@ -1,22 +1,37 @@
-import React, { useRef } from "react";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { FiCalendar } from "react-icons/fi";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { MdOutlineArrowDropDown } from "react-icons/md";
-
+import Select from "react-select";
 const AddCarForm = () => {
   const {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm();
   const registrationDateRef = useRef(null);
   const taxDateRef = useRef(null);
   const roadPermitRef = useRef(null);
   const fitnessDateRef = useRef(null);
-  //
+  const [drivers, setDrivers] = useState([]);
+
+  useEffect(() => {
+    fetch("https://api.dropshep.com/api/driver")
+      .then((response) => response.json())
+      .then((data) => setDrivers(data.data))
+      .catch((error) => console.error("Error fetching driver data:", error));
+  }, []);
+
+  const driverOptions = drivers.map((driver) => ({
+    value: driver.name,
+    label: driver.name,
+  }));
+
+  // post vehicle
   const onSubmit = async (data) => {
     console.log("add car data", data);
     try {
@@ -71,16 +86,21 @@ const AddCarForm = () => {
             <label className="text-primary text-sm font-semibold">
               ড্রাইভারের নাম
             </label>
-            <select
-              {...register("driver_name", { required: true })}
-              className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
-            >
-              <option value="">ড্রাইভারের নাম...</option>
-              <option value="Motin Ali">Motin Ali</option>
-              <option value="Korim Ali">Korim Ali</option>
-              <option value="Solaiman Ali">Solaiman Ali</option>
-            </select>
-            <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
+            <Controller
+              name="driver_name"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={driverOptions}
+                  placeholder="ড্রাইভারের নাম নির্বাচন করুন..."
+                  className="mt-1 text-sm"
+                  classNamePrefix="react-select"
+                  isClearable
+                />
+              )}
+            />
             {errors.driver_name && (
               <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
             )}

@@ -1,17 +1,18 @@
 import axios from "axios";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { FiCalendar } from "react-icons/fi";
 import { MdOutlineArrowDropDown } from "react-icons/md";
-
+import Select from "react-select";
 const AddTripForm = () => {
   const {
     register,
     handleSubmit,
     reset,
     watch,
+    control,
     formState: { errors },
   } = useForm();
   const tripDateRef = useRef(null);
@@ -21,6 +22,34 @@ const AddTripForm = () => {
   const other = parseFloat(watch("other_expenses") || 0);
   const total = fuel + gas + totalDamarage + other;
   console.log("total", total);
+  // driver name
+  const [drivers, setDrivers] = useState([]);
+  // car name / registration number
+  const [vehicles, setVehicles] = useState([]);
+  useEffect(() => {
+    fetch("https://api.dropshep.com/api/vehicle")
+      .then((response) => response.json())
+      .then((data) => setVehicles(data.data))
+      .catch((error) => console.error("Error fetching driver data:", error));
+  }, []);
+
+  const vehicleOptions = vehicles.map((vehicle) => ({
+    value: vehicle.registration_number,
+    label: vehicle.registration_number,
+  }));
+  // driver name
+  useEffect(() => {
+    fetch("https://api.dropshep.com/api/driver")
+      .then((response) => response.json())
+      .then((data) => setDrivers(data.data))
+      .catch((error) => console.error("Error fetching driver data:", error));
+  }, []);
+
+  const driverOptions = drivers.map((driver) => ({
+    value: driver.name,
+    label: driver.name,
+  }));
+  // post data on server
   const onSubmit = async (data) => {
     console.log("add car data", data);
     try {
@@ -150,14 +179,21 @@ const AddTripForm = () => {
                 <label className="text-primary text-sm font-semibold">
                   গাড়ির নম্বর
                 </label>
-                <select
-                  {...register("vehicle_number", { required: true })}
-                  className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
-                >
-                  <option value="">গাড়ির নম্বর</option>
-                  <option value="Dhama metro-1">Dhama metro-1</option>
-                  <option value="Dhama metro-2">Dhama metro-2</option>
-                </select>
+                <Controller
+                  name="vehicle_number"
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={vehicleOptions}
+                      placeholder="গাড়ির নম্বর নির্বাচন করুন..."
+                      className="mt-1 text-sm"
+                      classNamePrefix="react-select"
+                      isClearable
+                    />
+                  )}
+                />
                 {errors.vehicle_number && (
                   <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
                 )}
@@ -167,14 +203,21 @@ const AddTripForm = () => {
                 <label className="text-primary text-sm font-semibold">
                   ড্রাইভারের নাম
                 </label>
-                <select
-                  {...register("driver_name", { required: true })}
-                  className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
-                >
-                  <option value="">ড্রাইভারের নাম</option>
-                  <option value="Motin">Motin</option>
-                  <option value="Korim">Korim</option>
-                </select>
+                <Controller
+                  name="driver_name"
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={driverOptions}
+                      placeholder="ড্রাইভারের নাম নির্বাচন করুন..."
+                      className="mt-1 text-sm"
+                      classNamePrefix="react-select"
+                      isClearable
+                    />
+                  )}
+                />
                 {errors.driver_name && (
                   <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
                 )}

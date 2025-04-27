@@ -1,10 +1,10 @@
 import axios from "axios";
-import React, { useRef } from "react";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useRef, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { FiCalendar } from "react-icons/fi";
 import { MdOutlineArrowDropDown } from "react-icons/md";
-
+import Select from "react-select";
 const FuelForm = () => {
   const fuelDateRef = useRef(null);
   const {
@@ -12,11 +12,39 @@ const FuelForm = () => {
     handleSubmit,
     reset,
     watch,
+    control,
     formState: { errors },
   } = useForm();
   const quantity = parseFloat(watch("quantity") || 0);
   const price = parseFloat(watch("price") || 0);
   const total = quantity * price;
+  // driver name
+  const [drivers, setDrivers] = useState([]);
+  // car name / registration number
+  const [vehicles, setVehicles] = useState([]);
+  useEffect(() => {
+    fetch("https://api.dropshep.com/api/vehicle")
+      .then((response) => response.json())
+      .then((data) => setVehicles(data.data))
+      .catch((error) => console.error("Error fetching driver data:", error));
+  }, []);
+
+  const vehicleOptions = vehicles.map((vehicle) => ({
+    value: vehicle.registration_number,
+    label: vehicle.registration_number,
+  }));
+  // driver name
+  useEffect(() => {
+    fetch("https://api.dropshep.com/api/driver")
+      .then((response) => response.json())
+      .then((data) => setDrivers(data.data))
+      .catch((error) => console.error("Error fetching driver data:", error));
+  }, []);
+
+  const driverOptions = drivers.map((driver) => ({
+    value: driver.name,
+    label: driver.name,
+  }));
   const onSubmit = async (data) => {
     console.log("add fuel data", data);
     try {
@@ -85,39 +113,50 @@ const FuelForm = () => {
               <label className="text-primary text-sm font-semibold">
                 গাড়ির নাম্বার
               </label>
-              <select
-                {...register("vehicle_number", { required: true })}
-                className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
-              >
-                <option value="">গাড়ির নাম্বার</option>
-                <option value="Dhaka metro">Dhaka metro</option>
-                <option value="Dhaka metro">Dhaka metro</option>
-              </select>
+              <Controller
+                name="vehicle_number"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={vehicleOptions}
+                    placeholder="গাড়ির নম্বর নির্বাচন করুন..."
+                    className="mt-1 text-sm"
+                    classNamePrefix="react-select"
+                    isClearable
+                  />
+                )}
+              />
               {errors.vehicle_number && (
                 <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
               )}
-              <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>
           </div>
           {/*  */}
-          <div className="md:flex justify-between gap-3">
+          <div className="mt-1 md:flex justify-between gap-3">
             <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 ড্রাইভারের নাম
               </label>
-              <select
-                {...register("driver_name", { required: true })}
+              <Controller
                 name="driver_name"
-                className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
-              >
-                <option value="">ড্রাইভারের নাম</option>
-                <option value="Korim">Korim</option>
-                <option value="Korim">Korim</option>
-              </select>
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={driverOptions}
+                    placeholder="ড্রাইভারের নাম নির্বাচন করুন..."
+                    className="mt-1 text-sm"
+                    classNamePrefix="react-select"
+                    isClearable
+                  />
+                )}
+              />
               {errors.driver_name && (
                 <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
               )}
-              <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>
             <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
@@ -132,7 +171,7 @@ const FuelForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="md:flex justify-between gap-3">
+          <div className="mt-1 md:flex justify-between gap-3">
             <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 পাম্পের নাম ও ঠিকানা
@@ -160,7 +199,7 @@ const FuelForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="md:flex justify-between gap-3">
+          <div className="mt-1 md:flex justify-between gap-3">
             <div className="relative mt-3 md:mt-0 w-full">
               <label className="text-primary text-sm font-semibold">
                 তেলের ধরন
@@ -198,7 +237,7 @@ const FuelForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="md:flex justify-between gap-3">
+          <div className="mt-1 md:flex justify-between gap-3">
             <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
                 প্রতি লিটারের দাম

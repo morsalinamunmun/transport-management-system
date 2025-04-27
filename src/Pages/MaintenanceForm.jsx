@@ -1,23 +1,37 @@
-import React, { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import "react-datepicker/dist/react-datepicker.css";
 import { IoMdClose } from "react-icons/io";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { FiCalendar } from "react-icons/fi";
-
+import Select from "react-select";
 const MaintenanceForm = () => {
   const {
     register,
     handleSubmit,
     setValue,
     reset,
+    control,
     formState: { errors },
   } = useForm();
   const [previewImage, setPreviewImage] = useState(null);
   const maintenanceDateRef = useRef(null);
+  // car name / registration number
+  const [vehicles, setVehicles] = useState([]);
+  useEffect(() => {
+    fetch("https://api.dropshep.com/api/vehicle")
+      .then((response) => response.json())
+      .then((data) => setVehicles(data.data))
+      .catch((error) => console.error("Error fetching driver data:", error));
+  }, []);
 
+  const vehicleOptions = vehicles.map((vehicle) => ({
+    value: vehicle.registration_number,
+    label: vehicle.registration_number,
+  }));
+  // post data on server
   const onSubmit = async (data) => {
     console.log("add car data", data);
     try {
@@ -166,14 +180,24 @@ const MaintenanceForm = () => {
             </div>
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
-                গাড়ির নাম্বার
+                গাড়ির নম্বার
               </label>
-              <input
-                {...register("vehicle_no", { required: true })}
-                type="text"
-                placeholder="গাড়ির নাম্বার..."
-                className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+              <Controller
+                name="vehicle_no"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={vehicleOptions}
+                    placeholder="গাড়ির নম্বর নির্বাচন করুন..."
+                    className="mt-1 text-sm"
+                    classNamePrefix="react-select"
+                    isClearable
+                  />
+                )}
               />
+
               {errors.vehicle_no && (
                 <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
               )}
