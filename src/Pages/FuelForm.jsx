@@ -7,8 +7,13 @@ import { MdOutlineArrowDropDown } from "react-icons/md";
 
 const FuelForm = () => {
   const fuelDateRef = useRef(null);
-
-  const { register, handleSubmit, reset, watch } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm();
   const quantity = parseFloat(watch("quantity") || 0);
   const price = parseFloat(watch("price") || 0);
   const total = quantity * price;
@@ -58,13 +63,16 @@ const FuelForm = () => {
               <div className="relative">
                 <input
                   type="date"
-                  {...register("date_time")}
+                  {...register("date_time", { required: true })}
                   ref={(e) => {
                     register("date_time").ref(e);
                     fuelDateRef.current = e;
                   }}
                   className="remove-date-icon mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none pr-10"
                 />
+                {errors.date_time && (
+                  <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+                )}
                 <span className="py-[11px] absolute right-0 px-3 top-[22px] transform -translate-y-1/2 bg-primary rounded-r">
                   <FiCalendar
                     className="text-white cursor-pointer"
@@ -85,6 +93,9 @@ const FuelForm = () => {
                 <option value="Dhaka metro">Dhaka metro</option>
                 <option value="Dhaka metro">Dhaka metro</option>
               </select>
+              {errors.vehicle_number && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>
           </div>
@@ -103,6 +114,9 @@ const FuelForm = () => {
                 <option value="Korim">Korim</option>
                 <option value="Korim">Korim</option>
               </select>
+              {errors.driver_name && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>
             <div className="mt-3 md:mt-0 w-full relative">
@@ -110,7 +124,7 @@ const FuelForm = () => {
                 ট্রিপ আইডি / ইনভয়েস নাম্বার
               </label>
               <input
-                {...register("trip_id_invoice_no", { required: true })}
+                {...register("trip_id_invoice_no")}
                 type="text"
                 placeholder="ট্রিপ আইডি / ইনভয়েস নাম্বার..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -129,14 +143,17 @@ const FuelForm = () => {
                 placeholder="পাম্পের নাম ও ঠিকানা..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
+              {errors.pump_name_address && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
             </div>
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
                 ফুয়েল ক্যাপাসিটি
               </label>
               <input
-                {...register("capacity", { required: true })}
-                type="text"
+                {...register("capacity")}
+                type="number"
                 placeholder="ফুয়েল ক্যাপাসিটি..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
@@ -144,7 +161,7 @@ const FuelForm = () => {
           </div>
           {/*  */}
           <div className="md:flex justify-between gap-3">
-            <div className="mt-3 md:mt-0 w-full">
+            <div className="relative mt-3 md:mt-0 w-full">
               <label className="text-primary text-sm font-semibold">
                 তেলের ধরন
               </label>
@@ -158,6 +175,9 @@ const FuelForm = () => {
                 <option value="Petroll">Petroll</option>
                 <option value="Diesel">Diesel</option>
               </select>
+              {errors.type && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>
             <div className="w-full">
@@ -167,10 +187,13 @@ const FuelForm = () => {
               <div className="relative">
                 <input
                   {...register("quantity", { required: true })}
-                  type="text"
+                  type="number"
                   placeholder="তেলের পরিমাণ..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
+                {errors.quantity && (
+                  <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+                )}
               </div>
             </div>
           </div>
@@ -182,10 +205,13 @@ const FuelForm = () => {
               </label>
               <input
                 {...register("price", { required: true })}
-                type="text"
+                type="number"
                 placeholder="প্রতি লিটারের দাম..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
+              {errors.price && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
             </div>
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
@@ -194,7 +220,7 @@ const FuelForm = () => {
               <input
                 readOnly
                 {...register("total_price", { required: true })}
-                type="text"
+                type="number"
                 value={total}
                 placeholder="মোট টাকা..."
                 className="cursor-not-allowed mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"

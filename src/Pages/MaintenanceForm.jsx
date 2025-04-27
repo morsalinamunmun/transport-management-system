@@ -8,7 +8,13 @@ import toast, { Toaster } from "react-hot-toast";
 import { FiCalendar } from "react-icons/fi";
 
 const MaintenanceForm = () => {
-  const { register, handleSubmit, setValue, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm();
   const [previewImage, setPreviewImage] = useState(null);
   const maintenanceDateRef = useRef(null);
 
@@ -68,13 +74,16 @@ const MaintenanceForm = () => {
               <div className="relative">
                 <input
                   type="date"
-                  {...register("date")}
+                  {...register("date", { required: true })}
                   ref={(e) => {
                     register("date").ref(e);
                     maintenanceDateRef.current = e;
                   }}
                   className="remove-date-icon mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none pr-10"
                 />
+                {errors.date && (
+                  <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+                )}
                 <span className="py-[11px] absolute right-0 px-3 top-[22px] transform -translate-y-1/2 bg-primary rounded-r">
                   <FiCalendar
                     className="text-white cursor-pointer"
@@ -88,24 +97,26 @@ const MaintenanceForm = () => {
                 সার্ভিসের ধরন
               </label>
               <select
-                {...register("service_type")}
+                {...register("service_type", { required: true })}
                 className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
               >
                 <option value="">সার্ভিসের ধরন</option>
                 <option value="Maintenance">Maintenance</option>
                 <option value="General">General</option>
               </select>
+              {errors.service_type && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>
           </div>
-
           <div className="md:flex justify-between gap-3">
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
                 পার্টস এন্ড স্পায়ারস
               </label>
               <select
-                {...register("parts_and_spairs")}
+                {...register("parts_and_spairs", { require: true })}
                 className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
               >
                 <option value="">পার্টস এন্ড স্পায়ারস</option>
@@ -114,6 +125,9 @@ const MaintenanceForm = () => {
                 <option value="ABS_Sensors">ABS Sensors</option>
                 <option value="BrakeDrum">Brake Drum</option>
               </select>
+              {errors.parts_and_spairs && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>
             <div className="w-full relative">
@@ -121,7 +135,7 @@ const MaintenanceForm = () => {
                 মেইনটেনেসের ধরন
               </label>
               <select
-                {...register("maintenance_type")}
+                {...register("maintenance_type", { required: true })}
                 className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
               >
                 <option value="">মেইনটেনেসের ধরন</option>
@@ -130,6 +144,9 @@ const MaintenanceForm = () => {
                 <option value="ABS_Sensors">ABS Sensors</option>
                 <option value="BrakeDrum">Brake Drum</option>
               </select>
+              {errors.maintenance_type && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>
           </div>
@@ -138,22 +155,28 @@ const MaintenanceForm = () => {
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">খরচ</label>
               <input
-                {...register("cost")}
-                // type="text"
+                {...register("cost", { required: true })}
+                type="number"
                 placeholder="খরচ ..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
+              {errors.cost && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
             </div>
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
                 গাড়ির নাম্বার
               </label>
               <input
-                {...register("vehicle_no")}
+                {...register("vehicle_no", { required: true })}
                 type="text"
                 placeholder="গাড়ির নাম্বার..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
+              {errors.vehicle_no && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
             </div>
           </div>
 
@@ -164,7 +187,7 @@ const MaintenanceForm = () => {
               </label>
               <input
                 {...register("cost_by")}
-                // type="text"
+                type="text"
                 placeholder="চার্জ বাই..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
@@ -175,7 +198,7 @@ const MaintenanceForm = () => {
               </label>
               <input
                 {...register("total_cost")}
-                // type="text"
+                type="number"
                 placeholder="সর্বমোট খরচ..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />

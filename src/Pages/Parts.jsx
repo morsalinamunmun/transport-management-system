@@ -20,7 +20,12 @@ const Parts = () => {
   const [searchTerm, setSearchTerm] = useState("");
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const { register, handleSubmit, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
   const partsDateRef = useRef(null);
   // post parts
   const onSubmit = async (data) => {
@@ -303,6 +308,9 @@ const Parts = () => {
                     placeholder="পার্টসের নাম..."
                     className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                   />
+                  {errors.name && (
+                    <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+                  )}
                 </div>
               </div>
 
@@ -321,6 +329,7 @@ const Parts = () => {
                       }}
                       className="remove-date-icon mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none pr-10"
                     />
+
                     <span className="py-[11px] absolute right-0 px-3 top-[22px] transform -translate-y-1/2 bg-primary rounded-r">
                       <FiCalendar
                         className="text-white cursor-pointer"

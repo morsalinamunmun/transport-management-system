@@ -6,7 +6,12 @@ import toast, { Toaster } from "react-hot-toast";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 
 const AddCarForm = () => {
-  const { register, handleSubmit, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
   const registrationDateRef = useRef(null);
   const taxDateRef = useRef(null);
   const roadPermitRef = useRef(null);
@@ -58,6 +63,9 @@ const AddCarForm = () => {
               placeholder="গাড়ির নাম..."
               className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
             />
+            {errors.vehicle_name && (
+              <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+            )}
           </div>
           <div className="relative mt-2 md:mt-0 w-full">
             <label className="text-primary text-sm font-semibold">
@@ -73,9 +81,11 @@ const AddCarForm = () => {
               <option value="Solaiman Ali">Solaiman Ali</option>
             </select>
             <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
+            {errors.driver_name && (
+              <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+            )}
           </div>
         </div>
-
         {/* Category & Size */}
         <div className="md:flex justify-between gap-3">
           <div className="relative w-full">
@@ -95,13 +105,16 @@ const AddCarForm = () => {
               <option value="Car">কার</option>
             </select>
             <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
+            {errors.category && (
+              <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+            )}
           </div>
           <div className="relative mt-2 md:mt-0 w-full">
             <label className="text-primary text-sm font-semibold">
               গাড়ির সাইজ
             </label>
             <select
-              {...register("size")}
+              {...register("size", { required: true })}
               className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
             >
               <option value="">গাড়ির সাইজ...</option>
@@ -114,6 +127,9 @@ const AddCarForm = () => {
               <option value="20 Feet">20 Feet</option>
               <option value="23 Feet">23 Feet</option>
             </select>
+            {errors.size && (
+              <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+            )}
             <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
           </div>
         </div>
@@ -130,13 +146,16 @@ const AddCarForm = () => {
               placeholder=" রেজিস্ট্রেশন নাম্বার..."
               className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
             />
+            {errors.registration_number && (
+              <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+            )}
           </div>
           <div className="relative mt-2 md:mt-0 w-full">
             <label className="text-primary text-sm font-semibold">
               রেজিস্ট্রেশন সিরিয়াল
             </label>
             <select
-              {...register("registration_serial")}
+              {...register("registration_serial", { required: true })}
               className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
             >
               <option value="">রেজিস্ট্রেশন সিরিয়াল...</option>
@@ -149,6 +168,9 @@ const AddCarForm = () => {
               <option value="Sh">শ</option>
             </select>
             <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
+            {errors.registration_serial && (
+              <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+            )}
           </div>
         </div>
 
@@ -244,6 +266,9 @@ const AddCarForm = () => {
               <option value="Sherpur">শেরপুর</option>
             </select>
             <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
+            {errors.registration_zone && (
+              <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+            )}
           </div>
 
           <div className="relative w-full">
@@ -253,13 +278,16 @@ const AddCarForm = () => {
             <div className="relative">
               <input
                 type="date"
-                {...register("registration_date")}
+                {...register("registration_date", { required: true })}
                 ref={(e) => {
                   register("registration_date").ref(e);
                   registrationDateRef.current = e;
                 }}
                 className="remove-date-icon mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none pr-10"
               />
+              {errors.registration_date && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
               <span className="py-[11px] absolute right-0 px-3 top-[22px] transform -translate-y-1/2 bg-primary rounded-r">
                 <FiCalendar
                   className="text-white cursor-pointer"
@@ -279,13 +307,16 @@ const AddCarForm = () => {
             <div className="relative">
               <input
                 type="date"
-                {...register("text_date")}
+                {...register("text_date", { required: true })}
                 ref={(e) => {
                   register("text_date").ref(e);
                   taxDateRef.current = e;
                 }}
                 className="remove-date-icon mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none pr-10"
               />
+              {errors.text_date && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
               <span className="py-[11px] absolute right-0 px-3 top-[22px] transform -translate-y-1/2 bg-primary rounded-r">
                 <FiCalendar
                   className="text-white cursor-pointer"
@@ -301,13 +332,16 @@ const AddCarForm = () => {
             <div className="relative">
               <input
                 type="date"
-                {...register("road_permit_date")}
+                {...register("road_permit_date", { required: true })}
                 ref={(e) => {
                   register("road_permit_date").ref(e);
                   roadPermitRef.current = e;
                 }}
                 className="remove-date-icon mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none pr-10"
               />
+              {errors.road_permit_date && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
               <span className="py-[11px] absolute right-0 px-3 top-[22px] transform -translate-y-1/2 bg-primary rounded-r">
                 <FiCalendar
                   className="text-white cursor-pointer"
@@ -323,13 +357,16 @@ const AddCarForm = () => {
             <div className="relative">
               <input
                 type="date"
-                {...register("fitness_date")}
+                {...register("fitness_date", { required: true })}
                 ref={(e) => {
                   register("fitness_date").ref(e);
                   fitnessDateRef.current = e;
                 }}
                 className="remove-date-icon mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none pr-10"
               />
+              {errors.fitness_date && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
               <span className="py-[11px] absolute right-0 px-3 top-[22px] transform -translate-y-1/2 bg-primary rounded-r">
                 <FiCalendar
                   className="text-white cursor-pointer"

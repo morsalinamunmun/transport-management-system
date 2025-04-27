@@ -8,7 +8,13 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
 const AddDriverForm = () => {
-  const { register, handleSubmit, reset, setValue } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm();
   const [previewImage, setPreviewImage] = useState(null);
   const driverDateRef = useRef(null);
 
@@ -67,22 +73,28 @@ const AddDriverForm = () => {
                 ড্রাইভারের নাম *
               </label>
               <input
-                {...register("name")}
+                {...register("name", { required: true })}
                 type="text"
                 placeholder="ড্রাইভারের নাম..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
+              {errors.name && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
             </div>
             <div className="mt-2 md:mt-0 w-full">
               <label className="text-primary text-sm font-semibold">
                 ড্রাইভারের মোবাইল *
               </label>
               <input
-                {...register("contact")}
-                type="text"
+                {...register("contact", { required: true })}
+                type="number"
                 placeholder="ড্রাইভারের মোবাইল..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-              />
+              />{" "}
+              {errors.contact && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
             </div>
           </div>
 
@@ -93,11 +105,14 @@ const AddDriverForm = () => {
                 এন.আই.ডি নাম্বার *
               </label>
               <input
-                {...register("nid")}
+                {...register("nid", { required: true })}
                 type="number"
                 placeholder="এন.আই.ডি নাম্বার..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
+              {errors.nid && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
             </div>
             <div className="mt-2 md:mt-0 w-full">
               <label className="text-primary text-sm font-semibold">
@@ -105,7 +120,7 @@ const AddDriverForm = () => {
               </label>
               <input
                 {...register("emergency_contact")}
-                type="text"
+                type="number"
                 placeholder="জরুরী যোগাযোগ নাম্বার..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
@@ -145,11 +160,14 @@ const AddDriverForm = () => {
                 লাইসেন্স না. *
               </label>
               <input
-                {...register("license")}
+                {...register("license", { required: true })}
                 type="text"
                 placeholder="লাইসেন্স না. ..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
+              {errors.license && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
             </div>
             <div className="mt-2 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
@@ -158,13 +176,16 @@ const AddDriverForm = () => {
               <div className="relative">
                 <input
                   type="date"
-                  {...register("expire_date")}
+                  {...register("expire_date", { required: true })}
                   ref={(e) => {
                     register("expire_date").ref(e);
                     driverDateRef.current = e;
                   }}
                   className="remove-date-icon mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none pr-10"
                 />
+                {errors.expire_date && (
+                  <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+                )}
                 <span className="py-[11px] absolute right-0 px-3 top-[22px] transform -translate-y-1/2 bg-primary rounded-r">
                   <FiCalendar
                     className="text-white cursor-pointer"
@@ -182,13 +203,16 @@ const AddDriverForm = () => {
                 স্ট্যাটাস *
               </label>
               <select
-                {...register("status")}
+                {...register("status", { required: true })}
                 className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
               >
                 <option value="">স্ট্যাটাস নির্বাচন করুন</option>
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
               </select>
+              {errors.status && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>
 

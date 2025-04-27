@@ -7,7 +7,13 @@ import { FiCalendar } from "react-icons/fi";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 
 const AddTripForm = () => {
-  const { register, handleSubmit, reset, watch } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm();
   const tripDateRef = useRef(null);
   const fuel = parseFloat(watch("fuel_price") || 0);
   const gas = parseFloat(watch("gas_price") || 0);
@@ -67,13 +73,16 @@ const AddTripForm = () => {
                 <div className="relative">
                   <input
                     type="date"
-                    {...register("trip_date")}
+                    {...register("trip_date", { required: true })}
                     ref={(e) => {
                       register("trip_date").ref(e);
                       tripDateRef.current = e;
                     }}
                     className="remove-date-icon mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none pr-10"
                   />
+                  {errors.trip_date && (
+                    <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+                  )}
                   <span className="py-[11px] absolute right-0 px-3 top-[22px] transform -translate-y-1/2 bg-primary rounded-r">
                     <FiCalendar
                       className="text-white cursor-pointer"
@@ -92,6 +101,9 @@ const AddTripForm = () => {
                   placeholder="ট্রিপের সময়..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
+                {errors.trip_time && (
+                  <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+                )}
               </div>
             </div>
             {/*  */}
@@ -106,6 +118,9 @@ const AddTripForm = () => {
                   placeholder="লোড পয়েন্ট..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
+                {errors.load_point && (
+                  <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+                )}
               </div>
               <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
@@ -117,6 +132,9 @@ const AddTripForm = () => {
                   placeholder="আনলোড পয়েন্ট..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
+                {errors.unload_point && (
+                  <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+                )}
               </div>
             </div>
           </div>
@@ -140,6 +158,9 @@ const AddTripForm = () => {
                   <option value="Dhama metro-1">Dhama metro-1</option>
                   <option value="Dhama metro-2">Dhama metro-2</option>
                 </select>
+                {errors.vehicle_number && (
+                  <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+                )}
                 <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
               </div>
               <div className="w-full relative">
@@ -149,12 +170,14 @@ const AddTripForm = () => {
                 <select
                   {...register("driver_name", { required: true })}
                   className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
-                  // defaultValue=""
                 >
                   <option value="">ড্রাইভারের নাম</option>
                   <option value="Motin">Motin</option>
                   <option value="Korim">Korim</option>
                 </select>
+                {errors.driver_name && (
+                  <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+                )}
                 <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
               </div>
             </div>
@@ -165,18 +188,21 @@ const AddTripForm = () => {
                 </label>
                 <input
                   {...register("driver_contact", { required: true })}
-                  type="text"
+                  type="number"
                   placeholder="ড্রাইভারের মোবাইল..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
+                {errors.driver_contact && (
+                  <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+                )}
               </div>
               <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   ড্রাইভারের কমিশন
                 </label>
                 <input
-                  {...register("driver_percentage", { required: true })}
-                  type="text"
+                  {...register("driver_percentage")}
+                  type="number"
                   placeholder="ড্রাইভারের কমিশন..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
@@ -194,7 +220,7 @@ const AddTripForm = () => {
                   তেলের মূল্য
                 </label>
                 <input
-                  {...register("fuel_price", { required: true })}
+                  {...register("fuel_price")}
                   type="text"
                   placeholder="তেলের মূল্য..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -205,7 +231,7 @@ const AddTripForm = () => {
                   গ্যাসের মূল্য
                 </label>
                 <input
-                  {...register("gas_price", { required: true })}
+                  {...register("gas_price")}
                   type="text"
                   placeholder="গ্যাসের মূল্য..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -218,7 +244,7 @@ const AddTripForm = () => {
                   অন্যান্য খরচ
                 </label>
                 <input
-                  {...register("other_expenses", { required: true })}
+                  {...register("other_expenses")}
                   type="text"
                   placeholder="অন্যান্য খরচ..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
@@ -229,8 +255,8 @@ const AddTripForm = () => {
                   জরিমানা
                 </label>
                 <input
-                  {...register("damarage", { required: true })}
-                  type="text"
+                  {...register("damarage")}
+                  type="number"
                   placeholder="জরিমানা..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
@@ -263,9 +289,12 @@ const AddTripForm = () => {
                 <input
                   {...register("customer_name", { required: true })}
                   type="text"
-                  placeholder="ট্রিপের ভাড়া..."
+                  placeholder="কাস্টমারের নাম..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
+                {errors.customer_name && (
+                  <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+                )}
               </div>
               <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
@@ -277,6 +306,9 @@ const AddTripForm = () => {
                   placeholder="ট্রিপের ভাড়া..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
+                {errors.trip_price && (
+                  <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+                )}
               </div>
               <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">

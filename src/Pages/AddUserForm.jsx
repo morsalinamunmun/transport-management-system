@@ -57,23 +57,28 @@ const AddUserForm = () => {
                 নাম *
               </label>
               <input
-                {...register("name")}
-                defaultValue={name}
+                {...register("name", { required: true })}
                 type="text"
                 placeholder="নাম..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
+              {errors.name && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
             </div>
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
                 মোবাইল *
               </label>
               <input
-                {...register("phone")}
-                type="text"
+                {...register("phone", { required: true })}
+                type="number"
                 placeholder="মোবাইল..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
+              {errors.phone && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
             </div>
           </div>
 
@@ -84,11 +89,14 @@ const AddUserForm = () => {
                 ইমেইল *
               </label>
               <input
-                {...register("email")}
+                {...register("email", { required: true })}
                 type="email"
                 placeholder="ইমেইল..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
+              {errors.email && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
             </div>
             <div className="mt-3 md:mt-0 w-full relative">
               <label className="text-primary text-sm font-semibold">
@@ -101,9 +109,7 @@ const AddUserForm = () => {
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
               {errors.password && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.password.message}
-                </p>
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
               )}
             </div>
             <div className="mt-3 md:mt-0 w-full relative">
@@ -120,10 +126,8 @@ const AddUserForm = () => {
                 })}
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
-              {errors.confirmPassword && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.confirmPassword.message}
-                </p>
+              {errors.password && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
               )}
             </div>
           </div>
@@ -135,13 +139,16 @@ const AddUserForm = () => {
                 ইউজারের ধরন
               </label>
               <select
-                {...register("role")}
+                {...register("role", { required: true })}
                 className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
               >
                 <option value="">ইউজারের ধরন...</option>
                 <option value="User">User</option>
                 <option value="Admin">Admin</option>
               </select>
+              {errors.role && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>
             <div className="mt-3 md:mt-0 relative w-full">
@@ -149,13 +156,16 @@ const AddUserForm = () => {
                 স্ট্যাটাস
               </label>
               <select
-                {...register("status")}
+                {...register("status", { required: true })}
                 className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
               >
                 <option value="">স্ট্যাটাস...</option>
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
               </select>
+              {errors.status && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
               <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
             </div>
           </div>
