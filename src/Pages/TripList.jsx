@@ -273,7 +273,7 @@ const TripList = () => {
               Print
             </button>
           </div>
-
+          {/* search */}
           <div className="mt-3 md:mt-0">
             <span className="text-primary font-semibold pr-3">Search: </span>
             <input

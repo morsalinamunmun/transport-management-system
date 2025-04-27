@@ -3,7 +3,12 @@ import axios from "axios";
 import { FaTruck, FaFilter, FaPen } from "react-icons/fa";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import { Link } from "react-router-dom";
-
+// export
+import { CSVLink } from "react-csv";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import { saveAs } from "file-saver";
 const DailyIncome = () => {
   const [trips, setTrips] = useState([]);
   const [showFilter, setShowFilter] = useState(false);
@@ -52,6 +57,91 @@ const DailyIncome = () => {
       (!endDate || new Date(tripDate) <= new Date(endDate));
     return matchesSearch && matchesDateRange;
   });
+  // ✅ Correct headers matching your table
+  const headers = [
+    { label: "#", key: "index" },
+    { label: "তারিখ", key: "trip_date" },
+    { label: "গাড়ি", key: "vehicle_number" },
+    { label: "লোড", key: "load_point" },
+    { label: "আনলোড", key: "unload_point" },
+    { label: "ট্রিপের ভাড়া", key: "trip_price" },
+    { label: "চলমানখরচ", key: "totalCost" }, // corrected key
+    { label: "লাভ", key: "profit" }, // corrected key
+  ];
+
+  // ✅ Correct CSV data mapping
+  const csvData = trips.map((dt, index) => {
+    const fuel = parseFloat(dt.fuel_price ?? "0") || 0;
+    const gas = parseFloat(dt.gas_price ?? "0") || 0;
+    const others = parseFloat(dt.other_expenses ?? "0") || 0;
+    const commission = parseFloat(dt.driver_percentage ?? "0") || 0;
+    const totalCost = (fuel + gas + others + commission).toFixed(2);
+    const profit = (
+      parseFloat(dt.trip_price ?? "0") - parseFloat(totalCost)
+    ).toFixed(2);
+
+    return {
+      index: index + 1,
+      trip_date: new Date(dt.trip_date).toLocaleDateString("en-GB"), // format date like in table
+      vehicle_number: dt.vehicle_number,
+      load_point: dt.load_point,
+      unload_point: dt.unload_point,
+      trip_price: dt.trip_price,
+      totalCost, // ✅ use calculated total cost
+      profit, // ✅ use calculated profit
+    };
+  });
+
+  // ✅ Export Excel function
+  const exportExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(csvData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Trip Data");
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(data, "dailyincome_data.xlsx");
+  };
+
+  // ✅ Export PDF function
+  const exportPDF = () => {
+    const doc = new jsPDF();
+    const tableColumn = headers.map((h) => h.label);
+    const tableRows = csvData.map((row) => headers.map((h) => row[h.key]));
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      styles: { font: "helvetica", fontSize: 8 },
+    });
+
+    doc.save("dailyincome_data.pdf");
+  };
+
+  // ✅ Print function
+  const printTable = () => {
+    const printContent = document.querySelector("table").outerHTML;
+    const WinPrint = window.open("", "", "width=900,height=650");
+    WinPrint.document.write(`
+    <html>
+      <head>
+        <title>Print</title>
+        <style>
+          table { width: 100%; border-collapse: collapse; }
+          th, td { border: 1px solid #000; padding: 8px; text-align: center; }
+        </style>
+      </head>
+      <body>${printContent}</body>
+    </html>
+  `);
+    WinPrint.document.close();
+    WinPrint.focus();
+    WinPrint.print();
+    WinPrint.close();
+  };
+
   // pagination
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -122,16 +212,35 @@ const DailyIncome = () => {
         )}
         {/* Export & Search */}
         <div className="md:flex justify-between items-center">
-          <div className="flex bg-gray-200 text-primary font-semibold rounded-md">
-            {["CSV", "Excel", "PDF", "Print"].map((label) => (
-              <button
-                key={label}
-                className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer"
-              >
-                {label}
-              </button>
-            ))}
+          <div className="flex gap-3 text-primary font-semibold rounded-md">
+            <CSVLink
+              data={csvData}
+              headers={headers}
+              filename={"dailyincome_data.csv"}
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+            >
+              CSV
+            </CSVLink>
+            <button
+              onClick={exportExcel}
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+            >
+              Excel
+            </button>
+            <button
+              onClick={exportPDF}
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+            >
+              PDF
+            </button>
+            <button
+              onClick={printTable}
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+            >
+              Print
+            </button>
           </div>
+          {/* search */}
           <div className="mt-3 md:mt-0">
             <span className="text-primary font-semibold pr-3">Search: </span>
             <input
@@ -179,9 +288,7 @@ const DailyIncome = () => {
                   <td className="px-4 py-4">{trip.vehicle_number}</td>
                   <td className="px-4 py-4">{trip.load_point}</td>
                   <td className="px-4 py-4">{trip.unload_point}</td>
-                  {/* <td className="px-4 py-4">{trip.customer_name}</td> */}
                   <td className="px-4 py-4">{trip.trip_price}</td>
-                  {/* <td className="px-4 py-4">{trip.penalty || 0}</td> */}
                   <td className="px-4 py-4">
                     {(
                       Number(trip.other_expenses || 0) +
@@ -189,6 +296,7 @@ const DailyIncome = () => {
                       Number(trip.fuel_price || 0) +
                       Number(trip.driver_percentage || 0)
                     ).toFixed(2)}
+                    00
                   </td>
                   <td className="px-4 py-4">
                     {Number(trip.trip_price || 0) -
