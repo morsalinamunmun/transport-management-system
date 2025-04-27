@@ -1,20 +1,20 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
-import DatePicker from "react-datepicker";
+import React, { useEffect, useState } from "react";
 import { FaTruck, FaFilter, FaPen } from "react-icons/fa";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
-import { HiMiniCalendarDateRange } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 const DailyExpense = () => {
-  const [taxDate, setTaxDate] = useState(null);
-  const dateRef = useRef(null);
   const [showFilter, setShowFilter] = useState(false);
+  // Date filter state
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [trip, setTrip] = useState([]);
   const [loading, setLoading] = useState(true);
   // search
   const [searchTerm, setSearchTerm] = useState("");
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
+  // Fetch data
   useEffect(() => {
     axios
       .get("https://api.dropshep.com/api/trip")
@@ -32,9 +32,10 @@ const DailyExpense = () => {
   if (loading) return <p className="text-center mt-16">Loading trip...</p>;
   console.log("trip:", trip);
   // search
-  const filteredDriver = trip.filter((dt) => {
+  const filteredExpense = trip.filter((dt) => {
     const term = searchTerm.toLowerCase();
-    return (
+    const tripDate = dt.trip_date;
+    const matchesSearch =
       dt.trip_date?.toLowerCase().includes(term) ||
       dt.trip_time?.toLowerCase().includes(term) ||
       dt.load_point?.toLowerCase().includes(term) ||
@@ -46,14 +47,17 @@ const DailyExpense = () => {
       dt.gas_price?.toLowerCase().includes(term) ||
       dt.vehicle_number?.toLowerCase().includes(term) ||
       dt.other_expenses?.toLowerCase().includes(term) ||
-      dt.trip_price?.toLowerCase().includes(term)
-    );
+      dt.trip_price?.toLowerCase().includes(term);
+    const matchesDateRange =
+      (!startDate || new Date(tripDate) >= new Date(startDate)) &&
+      (!endDate || new Date(tripDate) <= new Date(endDate));
+    return matchesSearch && matchesDateRange;
   });
   // pagination
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentTrip = filteredDriver.slice(indexOfFirstItem, indexOfLastItem);
+  const currentTrip = filteredExpense.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(trip.length / itemsPerPage);
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage((currentPage) => currentPage - 1);
@@ -87,39 +91,30 @@ const DailyExpense = () => {
         {showFilter && (
           <div className="flex gap-5 border border-gray-300 rounded-md p-5 my-5 transition-all duration-300 pb-5">
             <div className="relative w-64">
-              <DatePicker
-                selected={taxDate}
-                onChange={(date) => setTaxDate(date)}
-                ref={dateRef}
-                placeholderText="ট্যাক্স তারিখ..."
-                className="mt-1 w-64 text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-                dateFormat="dd/MM/yyyy"
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                placeholder="Start date"
+                className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
-              <span
-                onClick={() => dateRef.current?.setOpen(true)}
-                className="absolute top-1 right-0 text-xl text-white bg-primary px-4 py-[9px] rounded-r-md cursor-pointer"
-              >
-                <HiMiniCalendarDateRange />
-              </span>
             </div>
+
             <div className="relative w-64">
-              <DatePicker
-                selected={taxDate}
-                onChange={(date) => setTaxDate(date)}
-                ref={dateRef}
-                placeholderText="ট্যাক্স তারিখ..."
-                className="mt-1 w-64 text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-                dateFormat="dd/MM/yyyy"
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                placeholder="End date"
+                className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
-              <span
-                onClick={() => dateRef.current?.setOpen(true)}
-                className="absolute top-1 right-0 text-xl text-white bg-primary px-4 py-[9px] rounded-r-md cursor-pointer"
-              >
-                <HiMiniCalendarDateRange />
-              </span>
             </div>
+
             <div className="flex gap-2">
-              <button className="bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 py-1 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer">
+              <button
+                onClick={() => setCurrentPage(1)}
+                className="bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 py-1 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer"
+              >
                 <FaFilter /> ফিল্টার
               </button>
             </div>

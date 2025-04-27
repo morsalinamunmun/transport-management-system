@@ -15,6 +15,9 @@ const Maintenance = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [maintenance, setMaintenance] = useState([]);
   const [loading, setLoading] = useState(true);
+  // Date filter state
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   // delete modal
   const [isOpen, setIsOpen] = useState(false);
   const [selectedMaintenanceId, setselectedMaintenanceId] = useState(null);
@@ -23,6 +26,7 @@ const Maintenance = () => {
   const [searchTerm, setSearchTerm] = useState("");
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
+  // Fetch maintenance data
   useEffect(() => {
     axios
       .get("https://api.dropshep.com/api/maintenance")
@@ -142,7 +146,8 @@ const Maintenance = () => {
   // search
   const filteredMaintenance = maintenance.filter((dt) => {
     const term = searchTerm.toLowerCase();
-    return (
+    const maintenanceDate = dt.date;
+    const matchesSearch =
       dt.date?.toLowerCase().includes(term) ||
       dt.service_type?.toLowerCase().includes(term) ||
       dt.parts_and_spairs?.toLowerCase().includes(term) ||
@@ -153,8 +158,12 @@ const Maintenance = () => {
       dt.total_cost?.toLowerCase().includes(term) ||
       dt.dignifies?.toLowerCase().includes(term) ||
       dt.service_for?.toLowerCase().includes(term) ||
-      dt.receipt?.toLowerCase().includes(term)
-    );
+      dt.receipt?.toLowerCase().includes(term);
+    const matchesDateRange =
+      (!startDate || new Date(maintenanceDate) >= new Date(startDate)) &&
+      (!endDate || new Date(maintenanceDate) <= new Date(endDate));
+
+    return matchesSearch && matchesDateRange;
   });
 
   // pagination
@@ -247,29 +256,34 @@ const Maintenance = () => {
 
         {/* Conditional Filter Section */}
         {showFilter && (
-          <div className="mt-5 space-y-5 transition-all duration-300 pb-5">
-            <div>
-              <h3 className="text-[#11375B] font-semibold">Employee type</h3>
-              <select className="border border-[#11375B] border-b-2 mt-2 py-2 px-3 outline-none rounded-md bg-transparent">
-                <option>Please select one</option>
-                <option>External</option>
-                <option>Internal</option>
-              </select>
+          <div className="flex gap-5 border border-gray-300 rounded-md p-5 my-5 transition-all duration-300 pb-5">
+            <div className="relative w-64">
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                placeholder="Start date"
+                className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+              />
             </div>
 
-            <div>
-              <h3 className="text-[#11375B] font-semibold">Blood group</h3>
-              <select className="border border-[#11375B] border-b-2 mt-2 py-2 px-3 outline-none rounded-md bg-transparent">
-                <option>Please select one</option>
-                <option>A+</option>
-                <option>A-</option>
-                <option>B+</option>
-                <option>B-</option>
-                <option>O+</option>
-                <option>O-</option>
-                <option>AB+</option>
-                <option>AB-</option>
-              </select>
+            <div className="relative w-64">
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                placeholder="End date"
+                className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+              />
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => setCurrentPage(1)}
+                className="bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 py-1 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer"
+              >
+                <FaFilter /> ফিল্টার
+              </button>
             </div>
           </div>
         )}
