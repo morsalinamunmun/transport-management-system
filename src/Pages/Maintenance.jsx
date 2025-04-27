@@ -75,7 +75,7 @@ const Maintenance = () => {
     }
   };
   // export
-  const maintenanceHeaders = [
+  const headers = [
     { label: "#", key: "index" },
     { label: "সার্ভিসের ধরন", key: "service_type" },
     { label: "গাড়ির নাম", key: "vehicle_name" },
@@ -85,7 +85,7 @@ const Maintenance = () => {
     { label: "অগ্রাধিকার", key: "dignifies" },
     { label: "টোটাল খরচ", key: "total_cost" },
   ];
-  const maintenanceCsvData = maintenance?.map((dt, index) => ({
+  const csvData = maintenance?.map((dt, index) => ({
     index: index + 1,
     service_type: dt.service_type,
     vehicle_no: dt.vehicle_no,
@@ -96,8 +96,8 @@ const Maintenance = () => {
     total_cost: dt.total_cost,
   }));
   // excel
-  const exportMaintenanceToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(maintenanceCsvData);
+  const exportExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(csvData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Maintenance");
     const excelBuffer = XLSX.write(workbook, {
@@ -108,12 +108,10 @@ const Maintenance = () => {
     saveAs(data, "maintenance.xlsx");
   };
   // pdf
-  const exportMaintenanceToPDF = () => {
+  const exportPDF = () => {
     const doc = new jsPDF();
-    const tableColumn = maintenanceHeaders.map((h) => h.label);
-    const tableRows = maintenanceCsvData.map((row) =>
-      maintenanceHeaders.map((h) => row[h.key])
-    );
+    const tableColumn = headers.map((h) => h.label);
+    const tableRows = csvData.map((row) => headers.map((h) => row[h.key]));
     autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
@@ -123,7 +121,7 @@ const Maintenance = () => {
     doc.save("maintenance.pdf");
   };
   // print
-  const printMaintenanceTable = () => {
+  const printTable = () => {
     const printContent = document.querySelector("table").outerHTML;
     const WinPrint = window.open("", "", "width=900,height=650");
     WinPrint.document.write(`
@@ -213,27 +211,27 @@ const Maintenance = () => {
         <div className="flex justify-between mb-4">
           <div className="flex gap-3 flex-wrap">
             <CSVLink
-              data={maintenanceCsvData}
-              headers={maintenanceHeaders}
+              data={csvData}
+              headers={headers}
               filename="maintenance.csv"
               className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all"
             >
               CSV
             </CSVLink>
             <button
-              onClick={exportMaintenanceToExcel}
+              onClick={exportExcel}
               className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
             >
               Excel
             </button>
             <button
-              onClick={exportMaintenanceToPDF}
+              onClick={exportPDF}
               className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
             >
               PDF
             </button>
             <button
-              onClick={printMaintenanceTable}
+              onClick={printTable}
               className="py-2 px-5 bg-gray-200 text-primary font-semibold rounded-md hover:bg-primary hover:text-white transition-all cursor-pointer"
             >
               Print

@@ -6,6 +6,12 @@ import { FaPlus } from "react-icons/fa6";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import { IoMdClose } from "react-icons/io";
 import { Link } from "react-router-dom";
+// export
+import { CSVLink } from "react-csv";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import { saveAs } from "file-saver";
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -88,7 +94,71 @@ const AllUsers = () => {
   const handlePageClick = (number) => {
     setCurrentPage(number);
   };
+  // Export functionality
+  const headers = [
+    { label: "#", key: "index" },
+    { label: "নাম", key: "name" },
+    { label: "মোবাইল", key: "phone" },
+    { label: "ইমেইল", key: "email" },
+    { label: "ধরন", key: "role" },
+    { label: "স্ট্যাটাস", key: "status" },
+  ];
 
+  const csvData = users.map((user, index) => ({
+    index: index + 1,
+    name: user.name,
+    phone: user.phone,
+    email: user.email,
+    role: user.role,
+    status: user.status,
+  }));
+
+  const exportExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(csvData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "User Data");
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(data, "user_data.xlsx");
+  };
+
+  const exportPDF = () => {
+    const doc = new jsPDF();
+    const tableColumn = headers.map((h) => h.label);
+    const tableRows = csvData.map((row) => headers.map((h) => row[h.key]));
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      styles: { font: "helvetica", fontSize: 8 },
+    });
+
+    doc.save("user_data.pdf");
+  };
+
+  const printTable = () => {
+    const printContent = document.querySelector("table").outerHTML;
+    const WinPrint = window.open("", "", "width=900,height=650");
+    WinPrint.document.write(`
+    <html>
+      <head>
+        <title>Print</title>
+        <style>
+          table { width: 100%; border-collapse: collapse; }
+          th, td { border: 1px solid #000; padding: 8px; text-align: center; }
+        </style>
+      </head>
+      <body>${printContent}</body>
+    </html>
+  `);
+    WinPrint.document.close();
+    WinPrint.focus();
+    WinPrint.print();
+    WinPrint.close();
+  };
   return (
     <main className="bg-gradient-to-br from-gray-100 to-white md:p-6">
       <Toaster />
@@ -109,17 +179,31 @@ const AllUsers = () => {
         </div>
         {/* export */}
         <div className="md:flex justify-between items-center">
-          <div className="flex bg-gray-200 text-primary font-semibold rounded-md">
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
+          <div className="flex gap-3 text-primary font-semibold rounded-md">
+            <CSVLink
+              data={csvData}
+              headers={headers}
+              filename={"user_data.csv"}
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+            >
               CSV
-            </button>
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
+            </CSVLink>
+            <button
+              onClick={exportExcel}
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+            >
               Excel
             </button>
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
+            <button
+              onClick={exportPDF}
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+            >
               PDF
             </button>
-            <button className="py-2 px-5 hover:bg-primary hover:text-white rounded-md transition-all duration-300 cursor-pointer">
+            <button
+              onClick={printTable}
+              className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
+            >
               Print
             </button>
           </div>
