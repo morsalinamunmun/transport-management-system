@@ -140,6 +140,11 @@ const AllUsers = () => {
   };
 
   const printTable = () => {
+    // hide specific column
+    const actionColumns = document.querySelectorAll(".action_column");
+    actionColumns.forEach((col) => {
+      col.style.display = "none";
+    });
     const printContent = document.querySelector("table").outerHTML;
     const WinPrint = window.open("", "", "width=900,height=650");
     WinPrint.document.write(`
@@ -232,7 +237,7 @@ const AllUsers = () => {
                 <th className="px-4 py-3">ইমেইল</th>
                 <th className="px-4 py-3">ধরন</th>
                 <th className="px-4 py-3">স্ট্যাটাস</th>
-                <th className="px-4 py-3">অ্যাকশন</th>
+                <th className="px-4 py-3 action_column">অ্যাকশন</th>
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
@@ -246,7 +251,7 @@ const AllUsers = () => {
                   <td className="px-4 py-4">{user.email}</td>
                   <td className="px-4 py-4">{user.role}</td>
                   <td className="px-4 py-4">{user.status}</td>
-                  <td>
+                  <td className="action_column">
                     <div className="flex gap-1 justify-center">
                       <Link to={`/UpdateUsersForm/${user.id}`}>
                         <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">

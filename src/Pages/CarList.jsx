@@ -142,13 +142,25 @@ const CarList = () => {
   };
 
   const printTable = () => {
+    // hide specific column
+    const actionColumns = document.querySelectorAll(".action_column");
+    actionColumns.forEach((col) => {
+      col.style.display = "none";
+    });
+
     const printContent = document.querySelector("table").outerHTML;
     const WinPrint = window.open("", "", "width=900,height=650");
     WinPrint.document.write(`
       <html>
-        <head><title>Print</title></head>
-        <body>${printContent}</body>
-      </html>
+      <head>
+        <title>Print</title>
+        <style>
+          table { width: 100%; border-collapse: collapse; }
+          th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        </style>
+      </head>
+      <body>${printContent}</body>
+    </html>
     `);
     WinPrint.document.close();
     WinPrint.focus();
@@ -289,7 +301,7 @@ const CarList = () => {
                 <th className="px-2 py-3">ট্রিপ</th>
                 <th className="px-2 py-3">রেজিস্ট্রেশন নাম্বার</th>
                 <th className="px-2 py-3">স্ট্যাটাস</th>
-                <th className="px-2 py-3">অ্যাকশন</th>
+                <th className="px-2 py-3 action_column">অ্যাকশন</th>
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
@@ -311,7 +323,7 @@ const CarList = () => {
                       Active
                     </span>
                   </td>
-                  <td className="px-2 py-4">
+                  <td className="px-2 py-4 action_column">
                     <div className="flex gap-1">
                       <Link to={`/UpdateCarForm/${vehicle.id}`}>
                         <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">

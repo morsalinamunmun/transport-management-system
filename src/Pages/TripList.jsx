@@ -161,6 +161,11 @@ const TripList = () => {
     doc.save("trip_data.pdf");
   };
   const printTable = () => {
+    // hide specific column
+    const actionColumns = document.querySelectorAll(".action_column");
+    actionColumns.forEach((col) => {
+      col.style.display = "none";
+    });
     const printContent = document.querySelector("table").outerHTML;
     const WinPrint = window.open("", "", "width=900,height=650");
     WinPrint.document.write(`
@@ -334,7 +339,7 @@ const TripList = () => {
                 <th className="px-2 py-3">ট্রিপের খরচ</th>
                 <th className="px-2 py-3">ট্রিপের ভাড়া</th>
                 <th className="px-2 py-3">টোটাল আয়</th>
-                <th className="px-2 py-3">অ্যাকশন</th>
+                <th className="px-2 py-3 action_column">অ্যাকশন</th>
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
@@ -377,7 +382,7 @@ const TripList = () => {
                     <td className="px-2 py-3">
                       {dt.trip_price - totalCost}.00
                     </td>
-                    <td className="px-2">
+                    <td className="px-2 action_column">
                       <div className="flex gap-1">
                         <Link to={`/UpdateTripForm/${dt.id}`}>
                           <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">

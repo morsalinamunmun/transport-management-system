@@ -122,6 +122,11 @@ const Maintenance = () => {
   };
   // print
   const printTable = () => {
+    // hide specific column
+    const actionColumns = document.querySelectorAll(".action_column");
+    actionColumns.forEach((col) => {
+      col.style.display = "none";
+    });
     const printContent = document.querySelector("table").outerHTML;
     const WinPrint = window.open("", "", "width=900,height=650");
     WinPrint.document.write(`
@@ -298,7 +303,7 @@ const Maintenance = () => {
                 <th className="px-2 py-3">মেইনটেনেন্সের তারিখ</th>
                 <th className="px-2 py-3">অগ্রাধিকার</th>
                 <th className="px-2 py-3">টোটাল খরচ</th>
-                <th className="px-2 py-3">অ্যাকশন</th>
+                <th className="px-2 py-3 action_column">অ্যাকশন</th>
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
@@ -314,7 +319,7 @@ const Maintenance = () => {
                   <td className="px-2 py-4">{dt.date}</td>
                   <td className="px-2 py-4">{dt.dignifies}</td>
                   <td className="px-2 py-4">{dt.total_cost}</td>
-                  <td>
+                  <td className="action_column">
                     <div className="flex gap-2">
                       <Link to={`/UpdateMaintenanceForm/${dt.id}`}>
                         <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">

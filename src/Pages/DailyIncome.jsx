@@ -122,6 +122,11 @@ const DailyIncome = () => {
 
   // ✅ Print function
   const printTable = () => {
+    // hide specific column
+    const actionColumns = document.querySelectorAll(".action_column");
+    actionColumns.forEach((col) => {
+      col.style.display = "none";
+    });
     const printContent = document.querySelector("table").outerHTML;
     const WinPrint = window.open("", "", "width=900,height=650");
     WinPrint.document.write(`
@@ -270,7 +275,7 @@ const DailyIncome = () => {
                 {/* <th className="px-4 py-3">জরিমানা</th> */}
                 <th className="px-4 py-3">চলমানখরচ</th>
                 <th className="px-4 py-3">লাভ</th>
-                <th className="px-4 py-3">অ্যাকশন</th>
+                <th className="px-4 py-3 action_column">অ্যাকশন</th>
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
@@ -308,7 +313,7 @@ const DailyIncome = () => {
                       ).toFixed(2)}
                     {/* {trip.profit || "00"} */}
                   </td>
-                  <td>
+                  <td className="action_column">
                     <div className="flex justify-center">
                       <Link to={`/UpdateDailyIncomeForm/${trip.id}`}>
                         <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">

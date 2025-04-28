@@ -113,13 +113,24 @@ const Fuel = () => {
     doc.save("fuel_data.pdf");
   };
   const printTable = () => {
+    // hide specific column
+    const actionColumns = document.querySelectorAll(".action_column");
+    actionColumns.forEach((col) => {
+      col.style.display = "none";
+    });
     const printContent = document.querySelector("table").outerHTML;
     const WinPrint = window.open("", "", "width=900,height=650");
     WinPrint.document.write(`
     <html>
-      <head><title>Print</title></head>
-      <body>${printContent}</body>
-    </html>
+        <head>
+          <title>Print</title>
+          <style>
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+          </style>
+        </head>
+        <body>${printContent}</body>
+      </html>
   `);
     WinPrint.document.close();
     WinPrint.focus();
@@ -306,7 +317,7 @@ const Fuel = () => {
                 <th className="px-2 md:px-4 py-3">গ্যালন/লিটার</th>
                 <th className="px-2 md:px-4 py-3">লিটার প্রতি খরচ</th>
                 <th className="px-2 md:px-4 py-3">সকল খরচ</th>
-                <th className="px-2 md:px-4 py-3">অ্যাকশন</th>
+                <th className="px-2 md:px-4 py-3 action_column">অ্যাকশন</th>
               </tr>
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
@@ -322,7 +333,7 @@ const Fuel = () => {
                   <td className="px-4 py-4">{dt.quantity}</td>
                   <td className="px-4 py-4">{dt.price}</td>
                   <td className="px-4 py-4">{dt.quantity * dt.price}.00</td>
-                  <td className="px-4 py-4">
+                  <td className="px-4 py-4 action_column">
                     <div className="flex gap-2">
                       <Link to={`/UpdateFuelForm/${dt.id}`}>
                         <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
