@@ -214,8 +214,8 @@ const CarList = () => {
           </div>
         </div>
         {/* export */}
-        <div className="flex justify-between mb-4">
-          <div className="flex gap-3 flex-wrap">
+        <div className="md:flex justify-between mb-4">
+          <div className="flex gap-1 md:gap-3 flex-wrap">
             <CSVLink
               data={driverCsvData}
               headers={driverHeaders}

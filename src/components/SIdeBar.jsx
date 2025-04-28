@@ -52,11 +52,11 @@ const Sidebar = () => {
         </div>
 
         {/* Navigation */}
-        <div className="mt-3 px-3">
+        <div className="mt-3 px-2">
           <ul className="space-y-6">
             {/* Dashboard */}
             <li
-              className={`py-3 px-3 rounded-sm cursor-pointer ${
+              className={`py-3 px-2 rounded-sm cursor-pointer ${
                 isActive("/")
                   ? "bg-primary text-white"
                   : "text-white bg-primary"
@@ -72,7 +72,7 @@ const Sidebar = () => {
             <li className="text-primary font-medium rounded-sm">
               <div
                 onClick={() => toggleMenu("fleet")}
-                className="flex justify-between items-center py-3 px-3 cursor-pointer hover:bg-primary hover:text-white hover:rounded-sm duration-300"
+                className="flex justify-between items-center py-3 px-2 cursor-pointer hover:bg-primary hover:text-white hover:rounded-sm duration-300"
               >
                 <span className="flex items-center gap-2">
                   <FaCarRear />
@@ -82,11 +82,11 @@ const Sidebar = () => {
               </div>
 
               {openMenu.fleet && (
-                <ul className="space-y-3 px-3 text-sm mt-2">
+                <ul className="space-y-0 px-2 text-sm mt-2">
                   <li>
                     <Link
                       to="/CarList"
-                      className={`flex gap-2 items-center px-3 py-3 rounded-sm font-medium ${
+                      className={`flex gap-2 items-center px-2 py-3 rounded-sm font-medium ${
                         isActive("/CarList")
                           ? "text-white bg-primary"
                           : "text-gray-500 hover:text-primary"
@@ -103,7 +103,7 @@ const Sidebar = () => {
                   <li>
                     <Link
                       to="/DriverList"
-                      className={`flex gap-2 items-center px-3 py-3 rounded-sm font-medium ${
+                      className={`flex gap-2 items-center px-2 py-3 rounded-sm font-medium ${
                         isActive("/DriverList")
                           ? "text-white bg-primary"
                           : "text-gray-500 hover:text-primary"
@@ -120,7 +120,7 @@ const Sidebar = () => {
                   <li>
                     <Link
                       to="/TripList"
-                      className={`flex gap-2 items-center px-3 py-3 rounded-sm font-medium ${
+                      className={`flex gap-2 items-center px-2 py-3 rounded-sm font-medium ${
                         isActive("/TripList")
                           ? "text-white bg-primary"
                           : "text-gray-500 hover:text-primary"
@@ -137,7 +137,7 @@ const Sidebar = () => {
                   <li>
                     <Link
                       to="/Fuel"
-                      className={`flex gap-2 items-center px-3 py-3 rounded-sm font-medium ${
+                      className={`flex gap-2 items-center px-2 py-3 rounded-sm font-medium ${
                         isActive("/Fuel")
                           ? "text-white bg-primary"
                           : "text-gray-500 hover:text-primary"
@@ -154,7 +154,7 @@ const Sidebar = () => {
                   <li>
                     <Link
                       to="/Parts"
-                      className={`flex gap-2 items-center px-3 py-3 rounded-sm font-medium ${
+                      className={`flex gap-2 items-center px-2 py-3 rounded-sm font-medium ${
                         isActive("/Parts")
                           ? "text-white bg-primary"
                           : "text-gray-500 hover:text-primary"
@@ -171,7 +171,7 @@ const Sidebar = () => {
                   <li>
                     <Link
                       to="/Maintenance"
-                      className={`flex gap-2 items-center px-3 py-3 rounded-sm font-medium ${
+                      className={`flex gap-2 items-center px-2 py-3 rounded-sm font-medium ${
                         isActive("/Maintenance")
                           ? "text-white bg-primary"
                           : "text-gray-500 hover:text-primary"
@@ -193,7 +193,7 @@ const Sidebar = () => {
             <li className="text-primary font-medium rounded-sm">
               <div
                 onClick={() => toggleMenu("business")}
-                className="flex justify-between items-center py-3 px-3 cursor-pointer hover:bg-primary hover:text-white hover:rounded-sm duration-300"
+                className="flex justify-between items-center py-3 px-2 cursor-pointer hover:bg-primary hover:text-white hover:rounded-sm duration-300"
               >
                 <span className="flex items-center gap-2">
                   <FaBriefcase />
@@ -203,11 +203,11 @@ const Sidebar = () => {
               </div>
 
               {openMenu.business && (
-                <ul className="space-y-3 px-3 text-sm mt-2">
+                <ul className="space-y-3 px-2 text-sm mt-2">
                   <li>
                     <Link
                       to="/DailyIncome"
-                      className={`flex gap-2 items-center px-3 py-3 rounded-sm font-medium ${
+                      className={`flex gap-2 items-center px-2 py-3 rounded-sm font-medium ${
                         isActive("/DailyIncome")
                           ? "text-white bg-primary"
                           : "text-gray-500 hover:text-primary"
@@ -224,7 +224,7 @@ const Sidebar = () => {
                   <li>
                     <Link
                       to="/DailyExpense"
-                      className={`flex gap-2 items-center px-3 py-3 rounded-sm font-medium ${
+                      className={`flex gap-2 items-center px-2 py-3 rounded-sm font-medium ${
                         isActive("/DailyExpense")
                           ? "text-white bg-primary"
                           : "text-gray-500 hover:text-primary"
@@ -246,7 +246,7 @@ const Sidebar = () => {
             <li className="text-primary font-medium rounded-sm">
               <div
                 onClick={() => toggleMenu("user")}
-                className="flex justify-between items-center py-3 px-3 cursor-pointer hover:bg-primary hover:text-white hover:rounded-sm duration-300"
+                className="flex justify-between items-center py-3 px-2 cursor-pointer hover:bg-primary hover:text-white hover:rounded-sm duration-300"
               >
                 <span className="flex items-center gap-2">
                   <FaUser />
@@ -256,11 +256,11 @@ const Sidebar = () => {
               </div>
 
               {openMenu.user && (
-                <ul className="space-y-3 px-3 text-sm mt-2">
+                <ul className="space-y-3 px-2 text-sm mt-2">
                   <li>
                     <Link
                       to="/AllUsers"
-                      className={`flex gap-2 items-center px-3 py-3 rounded-sm font-medium ${
+                      className={`flex gap-2 items-center px-2 py-3 rounded-sm font-medium ${
                         isActive("/AllUsers")
                           ? "text-white bg-primary"
                           : "text-gray-500 hover:text-primary"

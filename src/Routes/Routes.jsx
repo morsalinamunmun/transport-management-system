@@ -28,8 +28,6 @@ import UpdateMaintenanceForm from "../Pages/updateForm/UpdateMaintenanceForm";
 import UpdateDriverForm from "../Pages/updateForm/UpdateDriverForm";
 import UpdateDailyIncomeForm from "../Pages/updateForm/UpdateDailyIncomeForm";
 import UpdateExpenseForm from "../Pages/updateForm/UpdateExpenseForm";
-import Check from "../Pages/Check";
-
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -260,14 +258,6 @@ export const router = createBrowserRouter([
         ),
         loader: ({ params }) =>
           fetch(`https://api.dropshep.com/api/trip/${params.id}`),
-      },
-      {
-        path: "Check",
-        element: (
-          <PrivateRoute>
-            <Check />
-          </PrivateRoute>
-        ),
       },
     ],
   },

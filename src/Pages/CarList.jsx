@@ -230,7 +230,7 @@ const CarList = () => {
         </div>
         {/* export */}
         <div className="md:flex justify-between items-center">
-          <div className="flex gap-3 text-primary font-semibold rounded-md">
+          <div className="flex gap-1 md:gap-3 text-primary font-semibold rounded-md">
             <CSVLink
               data={csvData}
               headers={headers}

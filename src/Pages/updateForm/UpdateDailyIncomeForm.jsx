@@ -27,6 +27,8 @@ const UpdateDailyIncomeForm = () => {
     vehicle_number,
     other_expenses,
     trip_price,
+    customer: customer,
+    advance: advance,
   } = updateTripLoaderData.data;
   const fuel = parseFloat(fuel_price) || 0;
   const gas = parseFloat(gas_price) || 0;
@@ -48,6 +50,8 @@ const UpdateDailyIncomeForm = () => {
         vehicle_number: data.vehicle_number,
         other_expenses: data.other_expenses,
         trip_price: data.trip_price,
+        customer: customer,
+        advance: advance,
       };
 
       const response = await axios.post(
@@ -64,7 +68,9 @@ const UpdateDailyIncomeForm = () => {
       console.log("resData", resData);
 
       if (resData.status === "success") {
-        toast.success("ট্রিপ সফলভাবে আপডেট হয়েছে!", { position: "top-right" });
+        toast.success("দৈনিক আয় সফলভাবে আপডেট হয়েছে!", {
+          position: "top-right",
+        });
       } else {
         toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
       }
@@ -159,7 +165,7 @@ const UpdateDailyIncomeForm = () => {
             </div>
           </div>
           {/*  */}
-          <div className="border border-gray-300 p-5 rounded-md">
+          <div className="mt-3 border border-gray-300 p-5 rounded-md">
             <h5 className="text-primary font-semibold text-center pb-5">
               <span className="py-2 border-b-2 border-primary">চলমান খরচ</span>
             </h5>

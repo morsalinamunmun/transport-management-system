@@ -217,7 +217,7 @@ const Fuel = () => {
         </div>
         {/* export */}
         <div className="md:flex justify-between items-center">
-          <div className="flex gap-3 text-primary font-semibold rounded-md">
+          <div className="flex gap-1 md:gap-3 text-primary font-semibold rounded-md">
             <CSVLink
               data={csvData}
               headers={headers}
@@ -262,7 +262,7 @@ const Fuel = () => {
         </div>
         {/* Conditional Filter Section */}
         {showFilter && (
-          <div className="flex gap-5 border border-gray-300 rounded-md p-5 my-5 transition-all duration-300 pb-5">
+          <div className="md:flex gap-5 border border-gray-300 rounded-md p-5 my-5 transition-all duration-300 pb-5">
             <div className="relative w-64">
               <input
                 type="date"
@@ -283,7 +283,7 @@ const Fuel = () => {
               />
             </div>
 
-            <div className="flex gap-2">
+            <div className="mt-3 md:mt-0 flex gap-2">
               <button
                 onClick={() => setCurrentPage(1)}
                 className="bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 py-1 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer"
