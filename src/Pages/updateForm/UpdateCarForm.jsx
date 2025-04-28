@@ -9,13 +9,6 @@ import Select from "react-select";
 import BtnSubmit from "../../components/Button/BtnSubmit";
 
 const UpdateCarForm = () => {
-  const { register, handleSubmit, control } = useForm();
-  const registrationDateRef = useRef(null);
-  const taxDateRef = useRef(null);
-  const roadPermitRef = useRef(null);
-  const fitnessDateRef = useRef(null);
-  // select driver
-  const [drivers, setDrivers] = useState([]);
   //   update loader data
   const updateCarLoaderData = useLoaderData();
   const {
@@ -31,7 +24,20 @@ const UpdateCarForm = () => {
     text_date,
     road_permit_date,
     fitness_date,
+    status,
   } = updateCarLoaderData.data;
+  const { register, handleSubmit, control } = useForm({
+    defaultValues: {
+      driver_name: driver_name || "",
+    },
+  });
+  const registrationDateRef = useRef(null);
+  const taxDateRef = useRef(null);
+  const roadPermitRef = useRef(null);
+  const fitnessDateRef = useRef(null);
+  // select driver
+  const [drivers, setDrivers] = useState([]);
+
   console.log("updateCarLoaderData", updateCarLoaderData.data.vehicle_name);
   useEffect(() => {
     fetch("https://api.dropshep.com/api/driver")
@@ -100,13 +106,13 @@ const UpdateCarForm = () => {
             <Controller
               name="driver_name"
               control={control}
-              rules={{ required: true }}
-              defaultValue={driver_name}
-              render={({ field }) => (
+              render={({ field: { onChange, value, ref } }) => (
                 <Select
-                  {...field}
+                  inputRef={ref}
+                  value={driverOptions.find((c) => c.value === value) || null}
+                  onChange={(val) => onChange(val ? val.value : "")}
                   options={driverOptions}
-                  placeholder={driver_name}
+                  placeholder="ড্রাইভারের নাম নির্বাচন করুন..."
                   className="mt-1 text-sm"
                   classNamePrefix="react-select"
                   isClearable
@@ -311,10 +317,7 @@ const UpdateCarForm = () => {
               </span>
             </div>
           </div>
-        </div>
 
-        {/* Date Fields */}
-        <div className="md:flex justify-between gap-3">
           <div className="mt-2 md:mt-0 w-full">
             <label className="text-primary text-sm font-semibold">
               ট্যাক্স মেয়াদোত্তীর্ণ তারিখ
@@ -338,6 +341,10 @@ const UpdateCarForm = () => {
               </span>
             </div>
           </div>
+        </div>
+
+        {/* Date Fields */}
+        <div className="md:flex justify-between gap-3">
           <div className="w-full">
             <label className="text-primary text-sm font-semibold">
               রোড পারমিট তারিখ
@@ -383,6 +390,21 @@ const UpdateCarForm = () => {
                 />
               </span>
             </div>
+          </div>
+          <div className="w-full relative">
+            <label className="text-primary text-sm font-semibold">
+              স্ট্যাটাস
+            </label>
+            <select
+              {...register("status", { required: true })}
+              className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
+            >
+              <option value={status}>{status}</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+
+            <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
           </div>
         </div>
 

@@ -91,9 +91,11 @@ const AddCarForm = () => {
               name="driver_name"
               control={control}
               rules={{ required: true }}
-              render={({ field }) => (
+              render={({ field: { onChange, value, ref } }) => (
                 <Select
-                  {...field}
+                  inputRef={ref}
+                  value={driverOptions.find((c) => c.value === value) || null}
+                  onChange={(val) => onChange(val ? val.value : "")}
                   options={driverOptions}
                   placeholder="ড্রাইভারের নাম নির্বাচন করুন..."
                   className="mt-1 text-sm"
@@ -102,6 +104,7 @@ const AddCarForm = () => {
                 />
               )}
             />
+
             {errors.driver_name && (
               <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
             )}
@@ -317,10 +320,6 @@ const AddCarForm = () => {
               </span>
             </div>
           </div>
-        </div>
-
-        {/* Date Fields */}
-        <div className="md:flex justify-between gap-3">
           <div className="mt-2 md:mt-0 w-full">
             <label className="text-primary text-sm font-semibold">
               ট্যাক্স মেয়াদোত্তীর্ণ তারিখ
@@ -346,6 +345,10 @@ const AddCarForm = () => {
               </span>
             </div>
           </div>
+        </div>
+
+        {/* Date Fields */}
+        <div className="md:flex justify-between gap-3">
           <div className="w-full">
             <label className="text-primary text-sm font-semibold">
               রোড পারমিট তারিখ
@@ -395,6 +398,23 @@ const AddCarForm = () => {
                 />
               </span>
             </div>
+          </div>
+          <div className="w-full relative">
+            <label className="text-primary text-sm font-semibold">
+              স্ট্যাটাস
+            </label>
+            <select
+              {...register("status", { required: true })}
+              className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
+            >
+              <option value="">স্ট্যাটাস নির্বাচন করুন</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+            {errors.status && (
+              <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+            )}
+            <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
           </div>
         </div>
 

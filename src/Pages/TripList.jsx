@@ -339,11 +339,18 @@ const TripList = () => {
             </thead>
             <tbody className="text-[#11375B] font-semibold bg-gray-100">
               {currentTrip?.map((dt, index) => {
+                const demarage = parseFloat(dt.demarage ?? "0") || 0;
                 const fuel = parseFloat(dt.fuel_price ?? "0") || 0;
                 const gas = parseFloat(dt.gas_price ?? "0") || 0;
                 const others = parseFloat(dt.other_expenses ?? "0") || 0;
                 const commision = dt.driver_percentage;
-                const totalCost = (fuel + gas + others + commision).toFixed(2);
+                const totalCost = (
+                  demarage +
+                  fuel +
+                  gas +
+                  others +
+                  commision
+                ).toFixed(2);
 
                 return (
                   <tr

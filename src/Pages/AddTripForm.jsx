@@ -4,7 +4,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useForm, Controller } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { FiCalendar } from "react-icons/fi";
-import { MdOutlineArrowDropDown } from "react-icons/md";
 import Select from "react-select";
 import BtnSubmit from "../components/Button/BtnSubmit";
 const AddTripForm = () => {
@@ -17,11 +16,12 @@ const AddTripForm = () => {
     formState: { errors },
   } = useForm();
   const tripDateRef = useRef(null);
+  const commision = parseFloat(watch("driver_percentage") || 0);
   const fuel = parseFloat(watch("fuel_price") || 0);
   const gas = parseFloat(watch("gas_price") || 0);
-  const totalDamarage = parseFloat(watch("damarage") || 0);
+  const totalDamarage = parseFloat(watch("demarage") || 0);
   const other = parseFloat(watch("other_expenses") || 0);
-  const total = fuel + gas + totalDamarage + other;
+  const total = commision + fuel + gas + totalDamarage + other;
   console.log("total", total);
   // driver name
   const [drivers, setDrivers] = useState([]);
@@ -184,9 +184,13 @@ const AddTripForm = () => {
                   name="vehicle_number"
                   control={control}
                   rules={{ required: true }}
-                  render={({ field }) => (
+                  render={({ field: { onChange, value, ref } }) => (
                     <Select
-                      {...field}
+                      inputRef={ref}
+                      value={
+                        vehicleOptions.find((c) => c.value === value) || null
+                      }
+                      onChange={(val) => onChange(val ? val.value : "")}
                       options={vehicleOptions}
                       placeholder="গাড়ির নম্বর নির্বাচন করুন..."
                       className="mt-1 text-sm"
@@ -198,9 +202,8 @@ const AddTripForm = () => {
                 {errors.vehicle_number && (
                   <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
                 )}
-                <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
               </div>
-              <div className="w-full relative">
+              <div className="mt-1 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   ড্রাইভারের নাম
                 </label>
@@ -208,9 +211,13 @@ const AddTripForm = () => {
                   name="driver_name"
                   control={control}
                   rules={{ required: true }}
-                  render={({ field }) => (
+                  render={({ field: { onChange, value, ref } }) => (
                     <Select
-                      {...field}
+                      inputRef={ref}
+                      value={
+                        driverOptions.find((c) => c.value === value) || null
+                      }
+                      onChange={(val) => onChange(val ? val.value : "")}
                       options={driverOptions}
                       placeholder="ড্রাইভারের নাম নির্বাচন করুন..."
                       className="mt-1 text-sm"
@@ -222,7 +229,6 @@ const AddTripForm = () => {
                 {errors.driver_name && (
                   <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
                 )}
-                <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
               </div>
             </div>
             <div className="md:flex justify-between gap-3">
@@ -245,11 +251,14 @@ const AddTripForm = () => {
                   ড্রাইভারের কমিশন
                 </label>
                 <input
-                  {...register("driver_percentage")}
+                  {...register("driver_percentage", { required: true })}
                   type="number"
                   placeholder="ড্রাইভারের কমিশন..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
+                {errors.driver_percentage && (
+                  <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+                )}
               </div>
             </div>
           </div>
@@ -270,7 +279,7 @@ const AddTripForm = () => {
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
-              <div className="mt-2 md:mt-1 w-full relative">
+              <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   গ্যাসের মূল্য
                 </label>
@@ -296,16 +305,19 @@ const AddTripForm = () => {
               </div>
               <div className="mt-2 md:mt-1 w-full relative">
                 <label className="text-primary text-sm font-semibold">
-                  জরিমানা
+                  ওয়েটিং চার্জ
                 </label>
                 <input
-                  {...register("damarage")}
+                  {...register("demarage", { required: true })}
                   type="number"
-                  placeholder="জরিমানা..."
+                  placeholder="ওয়েটিং চার্জ..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
+                {errors.demarage && (
+                  <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+                )}
               </div>
-              <div className="w-full">
+              <div className="mt-1 w-full">
                 <label className="text-primary text-sm font-semibold">
                   ট্রিপের খরচ
                 </label>
@@ -313,7 +325,7 @@ const AddTripForm = () => {
                   readOnly
                   value={total}
                   placeholder="ট্রিপের খরচ..."
-                  className="cursor-not-allowed mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+                  className="cursor-not-allowed mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-gray-200 outline-none"
                 />
               </div>
             </div>
@@ -331,12 +343,12 @@ const AddTripForm = () => {
                   কাস্টমারের নাম
                 </label>
                 <input
-                  {...register("customer_name", { required: true })}
+                  {...register("customer", { required: true })}
                   type="text"
                   placeholder="কাস্টমারের নাম..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
-                {errors.customer_name && (
+                {errors.customer && (
                   <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
                 )}
               </div>
@@ -359,7 +371,7 @@ const AddTripForm = () => {
                   অগ্রিম পেমেন্ট
                 </label>
                 <input
-                  {...register("advance_payment", { required: true })}
+                  {...register("advance")}
                   type="text"
                   placeholder="অন্যান্য খরচ..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"

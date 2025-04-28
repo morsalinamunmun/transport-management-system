@@ -11,11 +11,8 @@ import Select from "react-select";
 import BtnSubmit from "../../components/Button/BtnSubmit";
 
 const UpdateMaintenanceForm = () => {
-  const { register, handleSubmit, setValue, reset, control } = useForm();
-
+  // load data
   const updateMaintenanceLoaderData = useLoaderData();
-  const maintenanceDateRef = useRef(null);
-
   const {
     id,
     date,
@@ -48,6 +45,28 @@ const UpdateMaintenanceForm = () => {
     value: vehicle.registration_number,
     label: vehicle.registration_number,
   }));
+  // select driver
+  const [drivers, setDrivers] = useState([]);
+  useEffect(() => {
+    fetch("https://api.dropshep.com/api/driver")
+      .then((response) => response.json())
+      .then((data) => setDrivers(data.data))
+      .catch((error) => console.error("Error fetching driver data:", error));
+  }, []);
+
+  const driverOptions = drivers.map((driver) => ({
+    value: driver.name,
+    label: driver.name,
+  }));
+  const { register, handleSubmit, setValue, control } = useForm({
+    defaultValues: {
+      service_for: service_for || "",
+      vehicle_no: vehicle_no || "",
+    },
+  });
+
+  const maintenanceDateRef = useRef(null);
+
   const onSubmit = async (data) => {
     try {
       const formData = new FormData();
@@ -74,7 +93,6 @@ const UpdateMaintenanceForm = () => {
         toast.success("তথ্য সফলভাবে সংরক্ষণ হয়েছে!", {
           position: "top-right",
         });
-        reset();
         setPreviewImage(null);
       } else {
         toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
@@ -192,15 +210,18 @@ const UpdateMaintenanceForm = () => {
             </div>
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">
-                গাড়ির নাম্বার
+                গাড়ির নম্বর
               </label>
               <Controller
                 name="vehicle_no"
                 control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
+                render={({ field: { onChange, value, ref } }) => (
                   <Select
-                    {...field}
+                    inputRef={ref}
+                    value={
+                      vehicleOptions.find((c) => c.value === value) || null
+                    }
+                    onChange={(val) => onChange(val ? val.value : "")}
                     options={vehicleOptions}
                     placeholder={vehicle_no}
                     className="mt-1 text-sm"
@@ -257,17 +278,22 @@ const UpdateMaintenanceForm = () => {
               <label className="text-primary text-sm font-semibold">
                 সার্ভিস ফর
               </label>
-              <select
-                {...register("service_for")}
-                defaultValue={service_for}
-                className="mt-1 w-full text-gray-500 text-sm border border-gray-300 bg-white p-2 rounded appearance-none outline-none"
-              >
-                <option value="EngineOil">Engine Oil</option>
-                <option value="Pistons">Pistons</option>
-                <option value="ABS_Sensors">ABS Sensors</option>
-                <option value="BrakeDrum">Brake Drum</option>
-              </select>
-              <MdOutlineArrowDropDown className="absolute top-[35px] right-2 pointer-events-none text-xl text-gray-500" />
+              <Controller
+                name="service_for"
+                control={control}
+                render={({ field: { onChange, value, ref } }) => (
+                  <Select
+                    inputRef={ref}
+                    value={driverOptions.find((c) => c.value === value) || null}
+                    onChange={(val) => onChange(val ? val.value : "")}
+                    options={driverOptions}
+                    placeholder="ড্রাইভারের নাম নির্বাচন করুন..."
+                    className="mt-1 text-sm"
+                    classNamePrefix="react-select"
+                    isClearable
+                  />
+                )}
+              />
             </div>
             <div className="w-full">
               <label className="text-primary text-sm font-semibold">

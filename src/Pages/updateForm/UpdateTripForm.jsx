@@ -4,13 +4,37 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Controller, useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { FiCalendar } from "react-icons/fi";
-import { MdOutlineArrowDropDown } from "react-icons/md";
 import { useLoaderData } from "react-router-dom";
 import Select from "react-select";
 import BtnSubmit from "../../components/Button/BtnSubmit";
 
 const UpdateTripForm = () => {
-  const { register, handleSubmit, control } = useForm();
+  //   update loader data
+  const updateTripLoaderData = useLoaderData();
+  const {
+    id,
+    trip_date,
+    trip_time,
+    driver_name,
+    vehicle_number,
+    load_point,
+    unload_point,
+    driver_contact,
+    driver_percentage,
+    fuel_price,
+    gas_price,
+    other_expenses,
+    trip_price,
+    demarage,
+    customer,
+    advance,
+  } = updateTripLoaderData.data;
+  const { register, handleSubmit, control, watch } = useForm({
+    defaultValues: {
+      driver_name: driver_name || "",
+      vehicle_number: vehicle_number || "",
+    },
+  });
   const tripDateRef = useRef(null);
   // select driver
   const [drivers, setDrivers] = useState([]);
@@ -40,29 +64,13 @@ const UpdateTripForm = () => {
     label: driver.name,
   }));
 
-  //   update loader data
-  const updateTripLoaderData = useLoaderData();
-  const {
-    id,
-    trip_date,
-    trip_time,
-    driver_name,
-    vehicle_number,
-    load_point,
-    unload_point,
-    driver_contact,
-    driver_percentage,
-    fuel_price,
-    gas_price,
-    other_expenses,
-    trip_price,
-  } = updateTripLoaderData.data;
-  const fuel = parseFloat(fuel_price) || 0;
-  const gas = parseFloat(gas_price) || 0;
-  const other = parseFloat(other_expenses) || 0;
-  const price = parseFloat(trip_price) || 0;
-  const total = price - (fuel + gas + other);
-  console.log("total trip", total);
+  const commision = parseFloat(watch("driver_percentage") || 0);
+  const fuel = parseFloat(watch("fuel_price") || 0);
+  const gas = parseFloat(watch("gas_price") || 0);
+  const totalDamarage = parseFloat(watch("demarage") || 0);
+  const other = parseFloat(watch("other_expenses") || 0);
+  const total = commision + fuel + gas + totalDamarage + other;
+  console.log("total", total);
   console.log("updateTripLoaderData", updateTripLoaderData);
   const onSubmit = async (data) => {
     try {
@@ -180,6 +188,29 @@ const UpdateTripForm = () => {
               </span>
             </h5>
             <div className="md:flex justify-between gap-3">
+              <div className="mt-2 md:mt-0 w-full relative">
+                <label className="text-primary text-sm font-semibold">
+                  গাড়ির নম্বর
+                </label>
+                <Controller
+                  name="vehicle_number"
+                  control={control}
+                  render={({ field: { onChange, value, ref } }) => (
+                    <Select
+                      inputRef={ref}
+                      value={
+                        vehicleOptions.find((c) => c.value === value) || null
+                      }
+                      onChange={(val) => onChange(val ? val.value : "")}
+                      options={vehicleOptions}
+                      placeholder={vehicle_number}
+                      className="mt-1 text-sm"
+                      classNamePrefix="react-select"
+                      isClearable
+                    />
+                  )}
+                />
+              </div>
               <div className="w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   ড্রাইভারের নাম
@@ -187,10 +218,13 @@ const UpdateTripForm = () => {
                 <Controller
                   name="driver_name"
                   control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => (
+                  render={({ field: { onChange, value, ref } }) => (
                     <Select
-                      {...field}
+                      inputRef={ref}
+                      value={
+                        driverOptions.find((c) => c.value === value) || null
+                      }
+                      onChange={(val) => onChange(val ? val.value : "")}
                       options={driverOptions}
                       placeholder={driver_name}
                       className="mt-1 text-sm"
@@ -200,6 +234,8 @@ const UpdateTripForm = () => {
                   )}
                 />
               </div>
+            </div>
+            <div className="mt-1 md:flex justify-between gap-3">
               <div className="mt-2 md:mt-0 w-full relative">
                 <label className="text-primary text-sm font-semibold">
                   ড্রাইভারের মোবাইল
@@ -256,26 +292,6 @@ const UpdateTripForm = () => {
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
-              <div className="mt-2 md:mt-0 w-full relative">
-                <label className="text-primary text-sm font-semibold">
-                  গাড়ির নম্বর
-                </label>
-                <Controller
-                  name="vehicle_number"
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      options={vehicleOptions}
-                      placeholder={vehicle_number}
-                      className="mt-1 text-sm"
-                      classNamePrefix="react-select"
-                      isClearable
-                    />
-                  )}
-                />
-              </div>
             </div>
             <div className="mt-1 md:flex justify-between gap-3">
               <div className="mt-2 md:mt-0 w-full relative">
@@ -290,18 +306,19 @@ const UpdateTripForm = () => {
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
-              <div className="mt-2 md:mt-0 w-full relative">
+              <div className="mt-2 md:mt-1 w-full relative">
                 <label className="text-primary text-sm font-semibold">
-                  ট্রিপের ভাড়া
+                  জরিমানা
                 </label>
                 <input
-                  {...register("trip_price")}
-                  defaultValue={trip_price}
+                  {...register("demarage")}
+                  defaultValue={demarage}
                   type="number"
-                  placeholder="ট্রিপের ভাড়া..."
+                  placeholder="জরিমানা..."
                   className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
+
               <div className="w-full">
                 <label className="text-primary text-sm font-semibold">
                   ট্রিপের খরচ
@@ -311,6 +328,51 @@ const UpdateTripForm = () => {
                   value={total}
                   placeholder="ট্রিপের খরচ..."
                   className="cursor-not-allowed mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-gray-200 outline-none"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="mt-3 border border-gray-300 p-5 rounded-md">
+            <h5 className="text-primary font-semibold text-center pb-5">
+              <span className="py-2 border-b-2 border-primary">
+                কাস্টমার এবং পেমেন্ট তথ্য
+              </span>
+            </h5>
+            <div className="md:flex justify-between gap-3">
+              <div className="mt-2 md:mt-1 w-full relative">
+                <label className="text-primary text-sm font-semibold">
+                  কাস্টমারের নাম
+                </label>
+                <input
+                  {...register("customer")}
+                  defaultValue={customer}
+                  type="text"
+                  placeholder="কাস্টমারের নাম..."
+                  className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+                />
+              </div>
+              <div className="mt-2 md:mt-1 w-full relative">
+                <label className="text-primary text-sm font-semibold">
+                  ট্রিপের ভাড়া
+                </label>
+                <input
+                  {...register("trip_price")}
+                  defaultValue={trip_price}
+                  type="text"
+                  placeholder={trip_price}
+                  className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+                />
+              </div>
+              <div className="mt-2 md:mt-1 w-full relative">
+                <label className="text-primary text-sm font-semibold">
+                  অগ্রিম পেমেন্ট
+                </label>
+                <input
+                  {...register("advance")}
+                  defaultValue={advance}
+                  type="text"
+                  placeholder="অন্যান্য খরচ..."
+                  className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
                 />
               </div>
             </div>

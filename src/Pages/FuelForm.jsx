@@ -48,6 +48,9 @@ const FuelForm = () => {
   }));
   const onSubmit = async (data) => {
     console.log("add fuel data", data);
+    // if (!data.capacity) {
+    //   data.capacity = "";
+    // }
     try {
       const formData = new FormData();
       for (const key in data) {
@@ -112,15 +115,19 @@ const FuelForm = () => {
             </div>
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
-                গাড়ির নাম্বার
+                গাড়ির নম্বর
               </label>
               <Controller
                 name="vehicle_number"
                 control={control}
                 rules={{ required: true }}
-                render={({ field }) => (
+                render={({ field: { onChange, value, ref } }) => (
                   <Select
-                    {...field}
+                    inputRef={ref}
+                    value={
+                      vehicleOptions.find((c) => c.value === value) || null
+                    }
+                    onChange={(val) => onChange(val ? val.value : "")}
                     options={vehicleOptions}
                     placeholder="গাড়ির নম্বর নির্বাচন করুন..."
                     className="mt-1 text-sm"
@@ -144,9 +151,11 @@ const FuelForm = () => {
                 name="driver_name"
                 control={control}
                 rules={{ required: true }}
-                render={({ field }) => (
+                render={({ field: { onChange, value, ref } }) => (
                   <Select
-                    {...field}
+                    inputRef={ref}
+                    value={driverOptions.find((c) => c.value === value) || null}
+                    onChange={(val) => onChange(val ? val.value : "")}
                     options={driverOptions}
                     placeholder="ড্রাইভারের নাম নির্বাচন করুন..."
                     className="mt-1 text-sm"
@@ -263,7 +272,7 @@ const FuelForm = () => {
                 type="number"
                 value={total}
                 placeholder="মোট টাকা..."
-                className="cursor-not-allowed mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+                className="cursor-not-allowed mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-gray-200 outline-none"
               />
             </div>
           </div>

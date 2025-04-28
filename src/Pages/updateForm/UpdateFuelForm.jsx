@@ -9,8 +9,6 @@ import Select from "react-select";
 import BtnSubmit from "../../components/Button/BtnSubmit";
 
 const UpdateFuelForm = () => {
-  const fuelDateRef = useRef(null);
-  const { register, handleSubmit, control } = useForm();
   //   update loader data
   const updateFuelLoaderData = useLoaderData();
   const {
@@ -27,6 +25,18 @@ const UpdateFuelForm = () => {
     total_price,
   } = updateFuelLoaderData.data;
   console.log("updateFuelLoaderData", updateFuelLoaderData.data);
+
+  const fuelDateRef = useRef(null);
+  const { register, handleSubmit, control, watch } = useForm({
+    defaultValues: {
+      driver_name: driver_name || "",
+      vehicle_number: vehicle_number || "",
+    },
+  });
+  // calsulate total fuel price
+  const fuelQuantity = parseFloat(watch("quantity") || 0);
+  const fuelPrice = parseFloat(watch("price") || 0);
+  const total = fuelQuantity * fuelPrice;
   // driver name
   const [drivers, setDrivers] = useState([]);
   // car name / registration number
@@ -70,8 +80,10 @@ const UpdateFuelForm = () => {
       const resData = response.data;
       console.log("resData", resData);
 
-      if (resData.status === "Vehicle updated successfully") {
-        toast.success("গাড়ি সফলভাবে সংরক্ষণ হয়েছে!", { position: "top-right" });
+      if (resData.status === "success") {
+        toast.success("ফুয়েল সফলভাবে আপডেট হয়েছে!", {
+          position: "top-right",
+        });
       } else {
         toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
       }
@@ -118,17 +130,21 @@ const UpdateFuelForm = () => {
             </div>
             <div className="w-full relative">
               <label className="text-primary text-sm font-semibold">
-                গাড়ির নাম্বার
+                গাড়ির নম্বর
               </label>
               <Controller
                 name="vehicle_number"
                 control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
+                render={({ field: { onChange, value, ref } }) => (
                   <Select
-                    {...field}
+                    inputRef={ref}
+                    value={
+                      vehicleOptions.find((c) => c.value === value) || null
+                    }
+                    onChange={(val) => onChange(val ? val.value : "")}
                     options={vehicleOptions}
                     placeholder={vehicle_number}
+                    defaultValue={vehicle_number}
                     className="mt-1 text-sm"
                     classNamePrefix="react-select"
                     isClearable
@@ -146,10 +162,11 @@ const UpdateFuelForm = () => {
               <Controller
                 name="driver_name"
                 control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
+                render={({ field: { onChange, value, ref } }) => (
                   <Select
-                    {...field}
+                    inputRef={ref}
+                    value={driverOptions.find((c) => c.value === value) || null}
+                    onChange={(val) => onChange(val ? val.value : "")}
                     options={driverOptions}
                     placeholder={driver_name}
                     className="mt-1 text-sm"
@@ -254,6 +271,7 @@ const UpdateFuelForm = () => {
                 readOnly
                 {...register("total_price")}
                 defaultValue={total_price}
+                value={total}
                 type="text"
                 placeholder="মোট টাকা..."
                 className="cursor-not-allowed mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-gray-200 outline-none"

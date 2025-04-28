@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import "react-datepicker/dist/react-datepicker.css";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
@@ -13,7 +13,7 @@ const AddDriverForm = () => {
     register,
     handleSubmit,
     reset,
-    setValue,
+    control,
     formState: { errors },
   } = useForm();
   const [previewImage, setPreviewImage] = useState(null);
@@ -21,6 +21,7 @@ const AddDriverForm = () => {
 
   const onSubmit = async (data) => {
     console.log("add car data", data);
+
     try {
       const formData = new FormData();
       for (const key in data) {
@@ -47,15 +48,6 @@ const AddDriverForm = () => {
       const errorMessage =
         error.response?.data?.message || error.message || "Unknown error";
       toast.error("সার্ভার ত্রুটি: " + errorMessage);
-    }
-  };
-  // handle remove image
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreviewImage(url);
-      setValue("license_image", file);
     }
   };
 
@@ -125,6 +117,9 @@ const AddDriverForm = () => {
                 placeholder="জরুরী যোগাযোগ নাম্বার..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
+              {errors.emergency_contact && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
             </div>
           </div>
 
@@ -135,11 +130,14 @@ const AddDriverForm = () => {
                 ঠিকানা *
               </label>
               <input
-                {...register("address")}
+                {...register("address", { required: true })}
                 type="text"
                 placeholder="ঠিকানা..."
                 className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
               />
+              {errors.address && (
+                <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+              )}
             </div>
             <div className="mt-2 md:mt-0 w-full">
               <label className="text-primary text-sm font-semibold">
@@ -222,19 +220,48 @@ const AddDriverForm = () => {
                 লাইসেন্সের ছবি যুক্ত করুন
               </label>
               <div className="relative mt-1">
-                <label
-                  htmlFor="license_image"
-                  className="border p-2 rounded w-full block bg-white text-gray-500 text-sm cursor-pointer"
-                >
-                  {previewImage ? "ছবি নির্বাচিত হয়েছে" : "ছবি বাচাই করুন"}
-                </label>
-                <input
-                  {...register("license_image")}
-                  id="license_image"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImageChange}
+                <Controller
+                  name="license_image"
+                  control={control}
+                  rules={{ required: "পূরণ করতে হবে" }}
+                  render={({
+                    field: { onChange, ref },
+                    fieldState: { error },
+                  }) => (
+                    <div className="relative mt-1">
+                      <label
+                        htmlFor="license_image"
+                        className="border p-2 rounded w-full block bg-white text-gray-500 text-sm cursor-pointer"
+                      >
+                        {previewImage
+                          ? "ছবি নির্বাচিত হয়েছে"
+                          : "ছবি বাছাই করুন"}
+                      </label>
+                      <input
+                        id="license_image"
+                        type="file"
+                        accept="image/*"
+                        ref={ref}
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            const url = URL.createObjectURL(file);
+                            setPreviewImage(url);
+                            onChange(file); // ✅ Very important: update form field
+                          } else {
+                            setPreviewImage(null);
+                            onChange(null);
+                          }
+                        }}
+                      />
+                      {error && (
+                        <span className="text-red-600 text-sm">
+                          {error.message}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 />
               </div>
             </div>
