@@ -38,7 +38,7 @@ const Sidebar = ({ mobileSidebarOpen, setMobileSidebarOpen }) => {
         />
       )}
       <main
-        className={`w-64 bg-gray-200 h-screen transform transition-transform duration-300 z-50 overflow-y-auto border-r border-gray-300
+        className={`w-64 fixed min-h-screen bg-gray-200 transform transition-transform duration-300 z-50 overflow-y-auto border-r border-gray-300
     ${mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
     md:translate-x-0 md:static md:block`}
       >

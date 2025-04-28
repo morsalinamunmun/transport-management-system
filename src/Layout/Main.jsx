@@ -9,19 +9,29 @@ const Main = () => {
   const hideMenu =
     location.pathname.includes("/Login") ||
     location.pathname.includes("/ResetPass");
+
+  if (hideMenu) {
+    return (
+      <div className="min-h-screen">
+        <Outlet />
+      </div>
+    );
+  }
+
   return (
     <div className="flex">
-      {/* Sidebar stays fixed on all routes */}
-      {hideMenu || (
-        <div className="hidden md:block md:w-64 min-h-screen">
-          {hideMenu || <SIdeBar />}
-        </div>
-      )}
-      {/* Main content (changes via routing) */}
-      <div className="flex-1">
-        {hideMenu || <Header />}
-        <Outlet />
-        {hideMenu || <Footer />}
+      {/* Fixed Sidebar */}
+      <div className="hidden md:flex flex-col w-64 h-screen fixed bg-white border-r">
+        <SIdeBar />
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 md:ml-64 flex flex-col min-h-screen">
+        <Header />
+        <main className="flex-1 overflow-y-auto p-4">
+          <Outlet />
+        </main>
+        <Footer />
       </div>
     </div>
   );
