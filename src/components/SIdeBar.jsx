@@ -11,7 +11,7 @@ import logo from "../assets/logo.png";
 import avatar from "../assets/avatar.png";
 import { Link, useLocation } from "react-router-dom";
 
-const Sidebar = ({ mobileSidebarOpen, setMobileSidebarOpen }) => {
+const Sidebar = () => {
   const [openMenu, setOpenMenu] = useState({
     fleet: false,
     business: false,
@@ -30,18 +30,8 @@ const Sidebar = ({ mobileSidebarOpen, setMobileSidebarOpen }) => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="">
-      {mobileSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-gray-300 z-40 md:hidden"
-          onClick={() => setMobileSidebarOpen(false)}
-        />
-      )}
-      <main
-        className={`w-64 fixed min-h-screen bg-gray-200 transform transition-transform duration-300 z-50 overflow-y-auto border-r border-gray-300
-    ${mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
-    md:translate-x-0 md:static md:block`}
-      >
+    <div className="overflow-y-scroll hide-scrollbar">
+      <main>
         {/* Logo */}
         <div className="flex justify-center border-b border-gray-300">
           <Link to="/">
@@ -66,7 +56,7 @@ const Sidebar = ({ mobileSidebarOpen, setMobileSidebarOpen }) => {
           <ul className="space-y-6">
             {/* Dashboard */}
             <li
-              className={`py-1 px-3 rounded-sm cursor-pointer ${
+              className={`py-3 px-3 rounded-sm cursor-pointer ${
                 isActive("/")
                   ? "bg-primary text-white"
                   : "text-white bg-primary"
@@ -82,7 +72,7 @@ const Sidebar = ({ mobileSidebarOpen, setMobileSidebarOpen }) => {
             <li className="text-primary font-medium rounded-sm">
               <div
                 onClick={() => toggleMenu("fleet")}
-                className="flex justify-between items-center py-1 px-3 cursor-pointer hover:bg-primary hover:text-white hover:rounded-sm duration-300"
+                className="flex justify-between items-center py-3 px-3 cursor-pointer hover:bg-primary hover:text-white hover:rounded-sm duration-300"
               >
                 <span className="flex items-center gap-2">
                   <FaCarRear />
@@ -96,7 +86,7 @@ const Sidebar = ({ mobileSidebarOpen, setMobileSidebarOpen }) => {
                   <li>
                     <Link
                       to="/CarList"
-                      className={`flex gap-2 items-center px-3 py-1 rounded-sm font-medium ${
+                      className={`flex gap-2 items-center px-3 py-3 rounded-sm font-medium ${
                         isActive("/CarList")
                           ? "text-white bg-primary"
                           : "text-gray-500 hover:text-primary"
@@ -113,7 +103,7 @@ const Sidebar = ({ mobileSidebarOpen, setMobileSidebarOpen }) => {
                   <li>
                     <Link
                       to="/DriverList"
-                      className={`flex gap-2 items-center px-3 py-1 rounded-sm font-medium ${
+                      className={`flex gap-2 items-center px-3 py-3 rounded-sm font-medium ${
                         isActive("/DriverList")
                           ? "text-white bg-primary"
                           : "text-gray-500 hover:text-primary"
@@ -130,7 +120,7 @@ const Sidebar = ({ mobileSidebarOpen, setMobileSidebarOpen }) => {
                   <li>
                     <Link
                       to="/TripList"
-                      className={`flex gap-2 items-center px-3 py-1 rounded-sm font-medium ${
+                      className={`flex gap-2 items-center px-3 py-3 rounded-sm font-medium ${
                         isActive("/TripList")
                           ? "text-white bg-primary"
                           : "text-gray-500 hover:text-primary"
@@ -147,7 +137,7 @@ const Sidebar = ({ mobileSidebarOpen, setMobileSidebarOpen }) => {
                   <li>
                     <Link
                       to="/Fuel"
-                      className={`flex gap-2 items-center px-3 py-1 rounded-sm font-medium ${
+                      className={`flex gap-2 items-center px-3 py-3 rounded-sm font-medium ${
                         isActive("/Fuel")
                           ? "text-white bg-primary"
                           : "text-gray-500 hover:text-primary"
@@ -164,7 +154,7 @@ const Sidebar = ({ mobileSidebarOpen, setMobileSidebarOpen }) => {
                   <li>
                     <Link
                       to="/Parts"
-                      className={`flex gap-2 items-center px-3 py-1 rounded-sm font-medium ${
+                      className={`flex gap-2 items-center px-3 py-3 rounded-sm font-medium ${
                         isActive("/Parts")
                           ? "text-white bg-primary"
                           : "text-gray-500 hover:text-primary"
@@ -181,7 +171,7 @@ const Sidebar = ({ mobileSidebarOpen, setMobileSidebarOpen }) => {
                   <li>
                     <Link
                       to="/Maintenance"
-                      className={`flex gap-2 items-center px-3 py-1 rounded-sm font-medium ${
+                      className={`flex gap-2 items-center px-3 py-3 rounded-sm font-medium ${
                         isActive("/Maintenance")
                           ? "text-white bg-primary"
                           : "text-gray-500 hover:text-primary"
@@ -203,7 +193,7 @@ const Sidebar = ({ mobileSidebarOpen, setMobileSidebarOpen }) => {
             <li className="text-primary font-medium rounded-sm">
               <div
                 onClick={() => toggleMenu("business")}
-                className="flex justify-between items-center py-1 px-3 cursor-pointer hover:bg-primary hover:text-white hover:rounded-sm duration-300"
+                className="flex justify-between items-center py-3 px-3 cursor-pointer hover:bg-primary hover:text-white hover:rounded-sm duration-300"
               >
                 <span className="flex items-center gap-2">
                   <FaBriefcase />
@@ -217,7 +207,7 @@ const Sidebar = ({ mobileSidebarOpen, setMobileSidebarOpen }) => {
                   <li>
                     <Link
                       to="/DailyIncome"
-                      className={`flex gap-2 items-center px-3 py-1 rounded-sm font-medium ${
+                      className={`flex gap-2 items-center px-3 py-3 rounded-sm font-medium ${
                         isActive("/DailyIncome")
                           ? "text-white bg-primary"
                           : "text-gray-500 hover:text-primary"
@@ -234,7 +224,7 @@ const Sidebar = ({ mobileSidebarOpen, setMobileSidebarOpen }) => {
                   <li>
                     <Link
                       to="/DailyExpense"
-                      className={`flex gap-2 items-center px-3 py-1 rounded-sm font-medium ${
+                      className={`flex gap-2 items-center px-3 py-3 rounded-sm font-medium ${
                         isActive("/DailyExpense")
                           ? "text-white bg-primary"
                           : "text-gray-500 hover:text-primary"
@@ -256,7 +246,7 @@ const Sidebar = ({ mobileSidebarOpen, setMobileSidebarOpen }) => {
             <li className="text-primary font-medium rounded-sm">
               <div
                 onClick={() => toggleMenu("user")}
-                className="flex justify-between items-center py-1 px-3 cursor-pointer hover:bg-primary hover:text-white hover:rounded-sm duration-300"
+                className="flex justify-between items-center py-3 px-3 cursor-pointer hover:bg-primary hover:text-white hover:rounded-sm duration-300"
               >
                 <span className="flex items-center gap-2">
                   <FaUser />
@@ -270,7 +260,7 @@ const Sidebar = ({ mobileSidebarOpen, setMobileSidebarOpen }) => {
                   <li>
                     <Link
                       to="/AllUsers"
-                      className={`flex gap-2 items-center px-3 py-1 rounded-sm font-medium ${
+                      className={`flex gap-2 items-center px-3 py-3 rounded-sm font-medium ${
                         isActive("/AllUsers")
                           ? "text-white bg-primary"
                           : "text-gray-500 hover:text-primary"
