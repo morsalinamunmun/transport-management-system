@@ -13,7 +13,7 @@ const Main = () => {
     <div className="flex">
       {/* Sidebar stays fixed on all routes */}
       {hideMenu || (
-        <div className="hidden md:block md:bg-gray-200 md:w-64">
+        <div className="hidden md:block md:w-64 min-h-screen">
           {hideMenu || <SIdeBar />}
         </div>
       )}

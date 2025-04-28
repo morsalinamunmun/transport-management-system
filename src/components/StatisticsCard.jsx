@@ -11,6 +11,7 @@ import {
 const StatisticsCard = () => {
   const [trips, setTrips] = useState([]);
   const [vehicle, setvehicle] = useState([]);
+  const [users, setUsers] = useState([]);
   const [driver, setDriver] = useState([]);
   // trips
   useEffect(() => {
@@ -22,6 +23,12 @@ const StatisticsCard = () => {
   useEffect(() => {
     axios.get("https://api.dropshep.com/api/vehicle").then((res) => {
       setvehicle(res.data.data);
+    });
+  }, []);
+  // users
+  useEffect(() => {
+    axios.get("https://api.dropshep.com/api/users").then((res) => {
+      setUsers(res.data.data);
     });
   }, []);
   // drivers
@@ -81,7 +88,9 @@ const StatisticsCard = () => {
             <div>
               {/* todo */}
               <h3 className="text-[#11375B] md:font-semibold">টোটাল গ্রাহক</h3>
-              <span className="text-gray-500 font-semibold">10</span>
+              <span className="text-gray-500 font-semibold">
+                {users.length}
+              </span>
             </div>
           </div>
           <button className="w-full mt-3 md:mt-7 text-white font-semibold text-sm bg-[#11375B] md:px-3 py-1 rounded-md hover:bg-[#062238] transition-all duration-700 cursor-pointer hover:scale-105">

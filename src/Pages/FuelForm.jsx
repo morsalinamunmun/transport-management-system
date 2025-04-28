@@ -48,9 +48,7 @@ const FuelForm = () => {
   }));
   const onSubmit = async (data) => {
     console.log("add fuel data", data);
-    // if (!data.capacity) {
-    //   data.capacity = "";
-    // }
+    data.total_price = total;
     try {
       const formData = new FormData();
       for (const key in data) {
@@ -270,6 +268,7 @@ const FuelForm = () => {
                 readOnly
                 {...register("total_price", { required: true })}
                 type="number"
+                defaultValue={total}
                 value={total}
                 placeholder="মোট টাকা..."
                 className="cursor-not-allowed mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-gray-200 outline-none"
