@@ -39,7 +39,7 @@ const StatisticsCard = () => {
   }, []);
 
   return (
-    <div className="px-5 py-6">
+    <div className="px-1 md:px-5 py-6">
       <ul className="grid grid-cols-2 md:flex gap-3 justify-between">
         {/* Total Trips Card */}
         <li className="bg-white p-2 md:p-3 rounded-md drop-shadow-lg w-full">

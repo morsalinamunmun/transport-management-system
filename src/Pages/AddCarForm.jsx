@@ -134,6 +134,7 @@ const AddCarForm = () => {
             )}
           </div>
           <div className="relative mt-2 md:mt-0 w-full">
+            {/* todo garir size bad dite hobe */}
             <label className="text-primary text-sm font-semibold">
               গাড়ির সাইজ
             </label>

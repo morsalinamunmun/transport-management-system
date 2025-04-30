@@ -93,7 +93,7 @@ const OverViewCard = () => {
   const totalCost = octenCost + dieselCost + petrolCost + gasCost;
 
   return (
-    <div className="p-5">
+    <div className="md:p-5">
       <ul className="md:flex gap-3">
         {/* আয় কার্ড */}
         <li className="bg-white rounded-md p-3 w-full md:w-full mb-3">

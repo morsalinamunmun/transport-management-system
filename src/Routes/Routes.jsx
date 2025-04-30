@@ -28,6 +28,7 @@ import UpdateMaintenanceForm from "../Pages/updateForm/UpdateMaintenanceForm";
 import UpdateDriverForm from "../Pages/updateForm/UpdateDriverForm";
 import UpdateDailyIncomeForm from "../Pages/updateForm/UpdateDailyIncomeForm";
 import UpdateExpenseForm from "../Pages/updateForm/UpdateExpenseForm";
+import AdminRoute from "./AdminRoute";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -192,9 +193,9 @@ export const router = createBrowserRouter([
       {
         path: "DailyIncome",
         element: (
-          <PrivateRoute>
+          <AdminRoute>
             <DailyIncome />
-          </PrivateRoute>
+          </AdminRoute>
         ),
       },
       {
@@ -208,17 +209,17 @@ export const router = createBrowserRouter([
       {
         path: "AllUsers",
         element: (
-          <PrivateRoute>
+          <AdminRoute>
             <AllUsers />
-          </PrivateRoute>
+          </AdminRoute>
         ),
       },
       {
         path: "AddUserForm",
         element: (
-          <PrivateRoute>
+          <AdminRoute>
             <AddUserForm />
-          </PrivateRoute>
+          </AdminRoute>
         ),
       },
       {
@@ -242,9 +243,9 @@ export const router = createBrowserRouter([
       {
         path: "UpdateDailyIncomeForm/:id",
         element: (
-          <PrivateRoute>
+          <AdminRoute>
             <UpdateDailyIncomeForm />
-          </PrivateRoute>
+          </AdminRoute>
         ),
         loader: ({ params }) =>
           fetch(`https://api.dropshep.com/api/trip/${params.id}`),

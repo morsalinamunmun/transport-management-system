@@ -6,7 +6,7 @@ import { AuthContext } from "../../providers/AuthProvider";
 
 const Header = ({ setMobileSidebarOpen }) => {
   const [isAdminOpen, setIsAdminOpen] = useState(false);
-  const { logout, user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   // handle signout
@@ -56,12 +56,15 @@ const Header = ({ setMobileSidebarOpen }) => {
               alt="Admin"
               className="w-8 rounded-2xl drop-shadow"
             />
-            <h3 className="font-semibold text-primary">Admin</h3>
+            <h3 className="font-semibold text-primary">
+              {user?.data?.user?.role}
+            </h3>
           </div>
-
           {isAdminOpen && (
             <div className="absolute right-0 top-14 w-52 bg-white drop-shadow p-5 rounded-md shadow-lg z-50">
-              <p className="font-semibold text-primary">Admin</p>
+              <p className="font-semibold text-primary">
+                {user?.data?.user?.role}
+              </p>
               <span className="text-sm text-gray-600">
                 {user?.data?.user?.email}
               </span>
