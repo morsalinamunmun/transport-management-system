@@ -274,7 +274,7 @@ const CarList = () => {
   };
 
   return (
-    <main className="bg-gradient-to-br from-gray-100 to-white md:p-4">
+    <main className="  md:p-4">
       <Toaster />
       <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-6 border border-gray-200">
         {/* Header */}

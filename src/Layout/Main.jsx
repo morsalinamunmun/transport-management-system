@@ -119,7 +119,7 @@ const Main = () => {
         </div>
 
         {/* Content */}
-        <Content className="bg-[#F5F6FA] px-2 sm:px-4 md:px-6 py-4" style={{ flex: 1 }}>
+        <Content className="bg-white px-2 sm:px-4  py-4" style={{ flex: 1 }}>
           <Outlet />
         </Content>
 

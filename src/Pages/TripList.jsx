@@ -1015,7 +1015,7 @@ const TripList = () => {
           <Text type="secondary">
             <PhoneOutlined /> {record.driver_contact}
           </Text>
-          <Tag color="blue">কমিশন: {record.driver_percentage}</Tag>
+          <div>কমিশন: {record.driver_percentage}</div>
         </Space>
       ),
     },
@@ -1060,9 +1060,9 @@ const TripList = () => {
         const totalCost = fuel + gas + others + demarage + commission
 
         return (
-          <Tag color="red">
+          <div>
             <DollarOutlined /> {totalCost.toFixed(2)}
-          </Tag>
+          </div>
         )
       },
     },
@@ -1072,9 +1072,9 @@ const TripList = () => {
       key: "trip_price",
       // width: 100,
       render: (price) => (
-        <Tag color="green">
+        <div>
           <DollarOutlined /> {price}
-        </Tag>
+        </div>
       ),
     },
     {
