@@ -293,7 +293,7 @@ const OverViewCard = () => {
 
   const today = dayjs().format("YYYY-MM-DD")
 
-    
+
   // রিমাইন্ডার ফেচ
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -374,7 +374,7 @@ const OverViewCard = () => {
       try {
         const response = await axios.get("https://api.dropshep.com/api/maintenance")
         const data = response.data.data
-      
+
         const today = new Date().toISOString().split("T")[0]
 
         const total = data
@@ -396,7 +396,7 @@ const OverViewCard = () => {
       try {
         const response = await axios.get("https://api.dropshep.com/api/trip")
         const data = response.data.data
-          setTrips(data)
+        setTrips(data)
         const today = new Date().toISOString().split("T")[0]
 
         const todayTrips = data.filter((trip) => trip.trip_date === today)
@@ -462,9 +462,9 @@ const OverViewCard = () => {
       dataIndex: "type",
       key: "type",
       render: (text, record) => (
-        <Space>
+        <Space className="text-xs lg:text-sm">
           {record.icon}
-          <Text strong>{text}</Text>
+          <p strong className="text-xs lg:text-lg">{text}</p>
         </Space>
       ),
     },
@@ -495,7 +495,7 @@ const OverViewCard = () => {
       {/* Top Row - Income and Reminder Cards */}
       <Row gutter={[16, 16]} className="mb-5">
         {/* আয় কার্ড */}
-        <Col xs={12} md={12} lg={8}>
+        <Col xs={24} sm={12} md={12} lg={8}>
           <Card
             size="small"
             title={
@@ -508,6 +508,7 @@ const OverViewCard = () => {
             hoverable
             className="h-[150px] shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300"
           >
+            <div className="flex items-center justify-center h-full mt-7">
             <Space direction="vertical" size="middle" style={{ width: "100%" }}>
               <Statistic
                 value={todayIncome}
@@ -515,13 +516,14 @@ const OverViewCard = () => {
                 valueStyle={{ color: "#11375b", fontSize: "20px" }}
                 className=" flex justify-center text-center text-primary"
               />
-          
+
             </Space>
+            </div>
           </Card>
         </Col>
 
         {/* রিমাইন্ডার কার্ড */}
-        <Col xs={12} md={12} lg={8}>
+        <Col xs={24} sm={12} md={12} lg={8}>
           <Card
             size="small"
             title={
@@ -567,90 +569,90 @@ const OverViewCard = () => {
           </Card>
         </Col>
         {/* Total Trip */}
-        <Col xs={12} md={12} lg={8}>
-       <Card
+        <Col xs={24} sm={12} md={12} lg={8}>
+          <Card
             size="small"
             title={
               <Space className="text-gray-800">
-                
-                <FaCarSide style={{ color: "#faad14" }}/>
+
+                <FaCarSide style={{ color: "#faad14" }} />
                 <span>টোটাল ট্রিপ</span>
               </Space>
             }
             hoverable
             className="h-[150px] shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300"
           >
-            <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-              <Statistic
-                value={trips.length}
-                prefix="টোটাল ট্রিপ"
-                valueStyle={{ color: "#11375b", fontSize: "20px" }}
-                className="text-center justify-center"
-              />
-            </Space>
+            <div className="flex items-center justify-center h-full mt-7">
+              <Space>
+                <Statistic
+                  value={trips.length}
+                  prefix="টোটাল ট্রিপ"
+                  valueStyle={{ color: "#11375b", fontSize: "20px" }} />
+              </Space>
+            </div>
           </Card>
         </Col>
 
       </Row>
 
-{/* ব্যয় কার্ড */}
-       <Row gutter={[16, 16]}>
-        <Col xs={24} md={12}>
-        <Card
-        title={
-          <Space className="text-gray-800">
-            <DollarOutlined style={{ color: "#1890ff" }} />
-            <span>আজকের ব্যয় বিবরণী</span>
-          </Space>
-        }
-        extra={
-          <Space className="text-gray-600">
-            <Text>মোট ব্যয়:</Text>
-            <Text strong style={{ color: "#fa541c", fontSize: "16px" }}>
-              {totalExpense.toFixed(2)} টাকা
-            </Text>
-          </Space>
-        }
-        hoverable
-        className="shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300"
-      >
-        <Table
-          dataSource={expenseTableData}
-          columns={columns}
-          pagination={false}
-          size="small"
-          className="overflow-x-auto"
-          rowClassName="hover:bg-gray-50 transition-colors duration-200 w-full"
-          summary={(pageData) => {
-            const total = pageData.reduce((sum, record) => sum + record.amount, 0)
-            return (
-              <Table.Summary.Row className="bg-orange-50 border-t-2 border-orange-200">
-                <Table.Summary.Cell index={0}>
-                  <Space>
-                    <WarningOutlined style={{ color: "#fa8c16" }} />
-                    <Text strong className="text-gray-900">
-                      সর্বমোট
-                    </Text>
-                  </Space>
-                </Table.Summary.Cell>
-                <Table.Summary.Cell index={1} align="right">
-                  <Text strong style={{ color: "#fa541c", fontSize: "12px" }}>
-                    {total.toFixed(2)}
-                  </Text>
-                </Table.Summary.Cell>
-                <Table.Summary.Cell index={2} align="center">
-                  <Tag color="orange" className="font-medium">
-                    মোট ব্যয়
-                  </Tag>
-                </Table.Summary.Cell>
-              </Table.Summary.Row>
-            )
-          }}
-        />
-      </Card>
+      {/* ব্যয় কার্ড */}
+      <Row gutter={[16, 16]}>
+        <Col xs={24} lg={12}>
+          <Card
+            title={
+              <Space className="text-gray-800">
+                <DollarOutlined style={{ color: "#1890ff" }} />
+                <span>আজকের ব্যয় বিবরণী</span>
+              </Space>
+            }
+            extra={
+              <Space className="text-gray-600">
+                <Text>মোট ব্যয়:</Text>
+                <Text strong style={{ color: "#fa541c", fontSize: "16px" }}>
+                  {totalExpense.toFixed(2)} টাকা
+                </Text>
+              </Space>
+            }
+            hoverable
+            className="shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300"
+          >
+            <Table
+              dataSource={expenseTableData}
+              columns={columns}
+              pagination={false}
+              size="small"
+              className="overflow-x-auto"
+              rowClassName="hover:bg-gray-50 transition-colors duration-200 w-full"
+              summary={(pageData) => {
+                const total = pageData.reduce((sum, record) => sum + record.amount, 0)
+                return (
+                  <Table.Summary.Row className="bg-orange-50 border-t-2 border-orange-200">
+                    <Table.Summary.Cell index={0}>
+                      <Space>
+                        <WarningOutlined style={{ color: "#fa8c16" }} />
+                        <Text strong className="text-gray-900">
+                          সর্বমোট
+                        </Text>
+                      </Space>
+                    </Table.Summary.Cell>
+                    <Table.Summary.Cell index={1} align="right">
+                      <Text strong style={{ color: "#fa541c", fontSize: "12px" }}>
+                        {total.toFixed(2)}
+                      </Text>
+                    </Table.Summary.Cell>
+                    <Table.Summary.Cell index={2} align="center">
+                      <Tag color="orange" className="font-medium">
+                        মোট ব্যয়
+                      </Tag>
+                    </Table.Summary.Cell>
+                  </Table.Summary.Row>
+                )
+              }}
+            />
+          </Card>
         </Col>
-       </Row>
-      
+      </Row>
+
     </div>
   )
 }

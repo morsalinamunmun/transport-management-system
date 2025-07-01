@@ -696,6 +696,7 @@ import {
   EnvironmentOutlined,
   DollarOutlined,
 } from "@ant-design/icons"
+import { RiDeleteBinLine } from "react-icons/ri";
 import dayjs from "dayjs"
 import * as XLSX from "xlsx"
 import jsPDF from "jspdf"
@@ -719,6 +720,10 @@ const TripList = () => {
   const [viewModalOpen, setViewModalOpen] = useState(false)
   const [selectedTripId, setSelectedTripId] = useState(null)
   const [selectedTrip, setSelectedTrip] = useState(null)
+  const [pagination, setPagination] = useState({
+  current: 1,
+  pageSize: 10,
+})
 
   // Fetch trips data
   useEffect(() => {
@@ -985,7 +990,7 @@ const TripList = () => {
       key: "index",
       width: 50,
       render: (_, __, index) => (
-        <Text strong style={{ color: "#1890ff" }}>
+        <Text strong style={{ color: "#11375b" }} >
           {index + 1}
         </Text>
       ),
@@ -994,7 +999,7 @@ const TripList = () => {
       title: "তারিখ",
       dataIndex: "trip_date",
       key: "trip_date",
-      // width: 100,
+      // width: 130,
       render: (date) => (
         <Space direction="vertical" size={0}>
           <Text>
@@ -1003,22 +1008,22 @@ const TripList = () => {
         </Space>
       ),
     },
-    {
-      title: "ড্রাইভার ইনফো",
-      key: "driver_info",
-      // width: 100,
-      render: (_, record) => (
-        <Space direction="vertical" size={0}>
-          <Text>
-            <UserOutlined /> {record.driver_name}
-          </Text>
-          <Text type="secondary">
-            <PhoneOutlined /> {record.driver_contact}
-          </Text>
-          <div>কমিশন: {record.driver_percentage}</div>
-        </Space>
-      ),
-    },
+    // {
+    //   title: "ড্রাইভার ইনফো",
+    //   key: "driver_info",
+    //   // width: 100,
+    //   render: (_, record) => (
+    //     <Space direction="vertical" size={0}>
+    //       <Text>
+    //         <UserOutlined /> {record.driver_name}
+    //       </Text>
+    //       <Text type="secondary">
+    //         <PhoneOutlined /> {record.driver_contact}
+    //       </Text>
+    //       <div>কমিশন: {record.driver_percentage}</div>
+    //     </Space>
+    //   ),
+    // },
     {
       title: "ট্রিপ এবং গন্তব্য",
       key: "trip_destination",
@@ -1050,7 +1055,7 @@ const TripList = () => {
     {
       title: "ট্রিপের খরচ",
       key: "total_cost",
-      // width: 100,
+      // width: 130,
       render: (_, record) => {
         const fuel = Number.parseFloat(record.fuel_price) || 0
         const gas = Number.parseFloat(record.gas_price) || 0
@@ -1070,7 +1075,7 @@ const TripList = () => {
       title: "ট্রিপের ভাড়া",
       dataIndex: "trip_price",
       key: "trip_price",
-      // width: 100,
+      // width: 130,
       render: (price) => (
         <div>
           <DollarOutlined /> {price}
@@ -1081,41 +1086,41 @@ const TripList = () => {
       title: "অ্যাকশন",
       key: "actions",
       // width: 100,
-      fixed: "right",
+      // fixed: "right",
       render: (_, record) => (
         <Space>
-          <Tooltip title="সম্পাদনা">
-            <Button
-              type="primary"
-              size="small"
-              icon={<EditOutlined />}
-              onClick={() => (window.location.href = `/UpdateTripForm/${record.id}`)}
-            />
-          </Tooltip>
+           <Tooltip title="সম্পাদনা">
+                <EditOutlined
+                  className="text-yellow-500 cursor-pointer text-lg hover:!text-primary"
+                  onClick={() => (window.location.href = `/UpdateTripForm/${record.id}`)}
+                />
+              </Tooltip>
+
           <Tooltip title="দেখুন">
-            <Button type="default" size="small" icon={<EyeOutlined />} onClick={() => handleView(record.id)} />
-          </Tooltip>
-          <Tooltip title="ডিলিট">
-            <Button
-              type="primary"
-              danger
-              size="small"
-              icon={<DeleteOutlined />}
-              onClick={() => {
+                <EyeOutlined 
+                  className="border border-gray-200 rounded p-1 cursor-pointer text-lg hover:bg-primary hover:!text-white transition-all duration-300"
+                onClick={() => handleView(record.id)}
+                />
+              </Tooltip>         
+          
+           <Tooltip title="ডিলিট">
+                <RiDeleteBinLine
+                  className="bg-red-500 p-1 text-white cursor-pointer text-2xl rounded"
+                 onClick={() => {
                 setSelectedTripId(record.id)
                 setDeleteModalOpen(true)
               }}
-            />
-          </Tooltip>
+                />
+              </Tooltip> 
         </Space>
       ),
     },
   ]
 
   return (
-    <div className="overflow-hidden overflow-x-auto max-w-7xl mx-auto -z-10">
+    <div className="overflow-hidden  mx-auto -z-10">
     <div
-      style={{ padding: "24px", background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)", minHeight: "100vh" }}
+      style={{ padding: "24px", minHeight: "100vh" }}
     >
       <Card
         style={{
@@ -1128,7 +1133,7 @@ const TripList = () => {
         }}
       >
         {/* Header */}
-        {/* <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }}>
+        <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }}>
           <Col>
             <Title level={2} style={{ margin: 0, color: "#11375B" }}>
               <TruckOutlined style={{ marginRight: "12px", color: "#11375B" }} />
@@ -1154,7 +1159,7 @@ const TripList = () => {
               </Button>
             </Space>
           </Col>
-        </Row> */}
+        </Row>
 
         {/* Export and Search */}
         <Row justify="space-between" align="middle" style={{ marginBottom: "16px" }}>
@@ -1203,53 +1208,6 @@ const TripList = () => {
           </Card>
         )}
 
-        {/* Statistics Cards */}
-        {/* <Row gutter={16} style={{ marginBottom: "24px" }}>
-          <Col span={6}>
-            <Card>
-              <Statistic
-                title="মোট ট্রিপ"
-                value={totalTrips}
-                prefix={<TruckOutlined />}
-                valueStyle={{ color: "#3f8600" }}
-              />
-            </Card>
-          </Col>
-          <Col span={6}>
-            <Card>
-              <Statistic
-                title="মোট খরচ"
-                value={totalCost}
-                precision={2}
-                prefix={<DollarOutlined />}
-                valueStyle={{ color: "#cf1322" }}
-              />
-            </Card>
-          </Col>
-          <Col span={6}>
-            <Card>
-              <Statistic
-                title="মোট আয়"
-                value={totalRevenue}
-                precision={2}
-                prefix={<DollarOutlined />}
-                valueStyle={{ color: "#1890ff" }}
-              />
-            </Card>
-          </Col>
-          <Col span={6}>
-            <Card>
-              <Statistic
-                title="মোট লাভ"
-                value={totalProfit}
-                precision={2}
-                prefix={<DollarOutlined />}
-                valueStyle={{ color: totalProfit >= 0 ? "#3f8600" : "#cf1322" }}
-              />
-            </Card>
-          </Col>
-        </Row> */}
-
         {/* Table */}
         <Table
           columns={columns}
@@ -1257,16 +1215,19 @@ const TripList = () => {
           loading={loading}
           rowKey="id"
           scroll={{ x: 1200 }}
-          pagination={{
-            pageSize: 10,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
-          }}
-          style={{
-            background: "white",
-            borderRadius: "8px",
-          }}
+          // scroll={{ x: 'max-content' }}
+           pagination={{
+    current: pagination.current,
+    pageSize: pagination.pageSize,
+    showSizeChanger: true,
+    pageSizeOptions: ['10', '20', '50', '100'],
+    onChange: (page, pageSize) => {
+      setPagination({ current: page, pageSize })
+    },
+    onShowSizeChange: (current, size) => {
+      setPagination({ current: 1, pageSize: size }) // page reset to 1 when size changes
+    },
+  }}
         />
 
         {/* Delete Modal */}

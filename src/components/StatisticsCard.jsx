@@ -245,7 +245,7 @@ const StatisticsCard = () => {
     <div className="px-6 pt-6 ">
       <Row gutter={[20, 20]}>
         {statisticsData.map((item, index) => (
-          <Col xs={12} sm={12} lg={8} key={index}>
+          <Col xs={24} sm={12} lg={8} key={index}>
             <Card
               hoverable
               className={`${item.cardBg} ${item.borderColor} border-l-4 hover:shadow-xl hover:scale-105 transition-all duration-300 rounded-lg overflow-hidden`}
