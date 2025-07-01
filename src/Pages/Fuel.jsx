@@ -46,7 +46,6 @@ const Fuel = () => {
 
   if (loading) return <p className="text-center mt-16">Loading fuel...</p>;
 
-  console.log("fuel", fuel);
   // export functionality
   const headers = [
     { label: "#", key: "index" },
@@ -85,13 +84,13 @@ const Fuel = () => {
 
     const tableColumn = [
       "#",
-      "ড্রাইভারের নাম",
-      "গাড়ির নাম",
-      "ফুয়েলের ধরন",
-      "ফুয়েলিং তারিখ",
-      "গ্যালন/লিটার",
-      "লিটার প্রতি খরচ",
-      "সকল খরচ",
+      "Driver Name",
+      "Car Name",
+      "Fuel Type",
+      "Fueling Date",
+      "Gallon/Liter",
+      "Liter per cost",
+      "Total cost",
     ];
 
     const tableRows = fuel.map((dt, index) => [

@@ -34,7 +34,6 @@ const DailyIncome = () => {
     };
     fetchTrips();
   }, []);
-  console.log("trips", trips);
   // search
   const filteredIncome = trips.filter((dt) => {
     const term = searchTerm.toLowerCase();
@@ -108,6 +107,16 @@ const DailyIncome = () => {
   // ✅ Export PDF function
   const exportPDF = () => {
     const doc = new jsPDF();
+    const headers = [
+      { label: "#", key: "index" },
+      { label: "Date", key: "trip_date" },
+      { label: "Car", key: "vehicle_number" },
+      { label: "Load", key: "load_point" },
+      { label: "Unload", key: "unload_point" },
+      { label: "Trip Price", key: "trip_price" },
+      { label: "Total Cost", key: "totalCost" }, // corrected key
+      { label: "Profit", key: "profit" }, // corrected key
+    ];
     const tableColumn = headers.map((h) => h.label);
     const tableRows = csvData.map((row) => headers.map((h) => row[h.key]));
 
@@ -301,7 +310,6 @@ const DailyIncome = () => {
                       Number(trip.fuel_price || 0) +
                       Number(trip.driver_percentage || 0)
                     ).toFixed(2)}
-                    00
                   </td>
                   <td className="px-4 py-4">
                     {Number(trip.trip_price || 0) -

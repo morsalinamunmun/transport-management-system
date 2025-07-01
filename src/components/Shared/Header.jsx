@@ -21,12 +21,12 @@ const Header = ({ setMobileSidebarOpen }) => {
       <div className="flex justify-between items-center px-5 py-2.5 border-b border-gray-300 relative z-40 bg-white">
         {/* Title */}
         <div className="flex items-center gap-3 cursor-pointer">
-          <h3
+          {/* <h3
             className="text-primary md:hidden"
             onClick={() => setMobileSidebarOpen(true)} // Toggle sidebar on mobile
           >
             <FaBars />
-          </h3>
+          </h3> */}
 
           <Link to="/" className="font-semibold text-primary">
             Home

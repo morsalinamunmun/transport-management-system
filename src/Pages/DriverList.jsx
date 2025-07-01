@@ -41,8 +41,6 @@ const CarList = () => {
   }, []);
 
   if (loading) return <p className="text-center mt-16">Loading drivers...</p>;
-
-  console.log(drivers);
   // delete by id
   const handleDelete = async (id) => {
     try {
@@ -114,9 +112,40 @@ const CarList = () => {
   }));
   // excel
   const exportDriversToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(driverCsvData);
+    // Define English headers matching the table structure
+    const headers = [
+      "#",
+      "Name",
+      "Mobile",
+      "Address",
+      "Emergency Contact",
+      "License",
+      "License Expiry",
+      "Status",
+    ];
+
+    // Map driver data to match the order of headers
+    const formattedData = driverCsvData.map((driver, index) => ({
+      "#": index + 1,
+      Name: driver.name,
+      Mobile: driver.contact,
+      Address: driver.address,
+      "Emergency Contact": driver.emergency_contact,
+      License: driver.license,
+      "License Expiry": driver.expire_date,
+      Status: driver.status,
+    }));
+
+    // Create worksheet with custom headers
+    const worksheet = XLSX.utils.json_to_sheet(formattedData, {
+      header: headers,
+    });
+
+    // Create workbook
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Drivers");
+
+    // Write and download file
     const excelBuffer = XLSX.write(workbook, {
       bookType: "xlsx",
       type: "array",
@@ -124,14 +153,36 @@ const CarList = () => {
     const data = new Blob([excelBuffer], { type: "application/octet-stream" });
     saveAs(data, "drivers.xlsx");
   };
+
   // pdf
   const exportDriversToPDF = () => {
     const doc = new jsPDF();
-    const tableColumn = driverHeaders.map((h) => h.label);
-    const tableRows = driverCsvData.map((row) =>
-      driverHeaders.map((h) => row[h.key])
-    );
 
+    // English headers corresponding to your Bangla table
+    const tableColumn = [
+      "#",
+      "Name",
+      "Mobile",
+      "Address",
+      "Emergency Contact",
+      "License",
+      "License Expiry",
+      "Status",
+    ];
+
+    // Build table rows
+    const tableRows = driverCsvData.map((driver, index) => [
+      index + 1,
+      driver.name,
+      driver.contact,
+      driver.address,
+      driver.emergency_contact,
+      driver.license,
+      driver.expire_date,
+      driver.status,
+    ]);
+
+    // Generate PDF with autoTable
     autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
@@ -140,6 +191,7 @@ const CarList = () => {
 
     doc.save("drivers.pdf");
   };
+
   // print
   const printDriversTable = () => {
     // hide specific column

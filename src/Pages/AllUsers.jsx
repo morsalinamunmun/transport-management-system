@@ -127,6 +127,14 @@ const AllUsers = () => {
 
   const exportPDF = () => {
     const doc = new jsPDF();
+    const headers = [
+      { label: "#", key: "index" },
+      { label: "Name", key: "name" },
+      { label: "Mobile", key: "phone" },
+      { label: "Email", key: "email" },
+      { label: "Role", key: "role" },
+      { label: "Status", key: "status" },
+    ];
     const tableColumn = headers.map((h) => h.label);
     const tableRows = csvData.map((row) => headers.map((h) => row[h.key]));
 

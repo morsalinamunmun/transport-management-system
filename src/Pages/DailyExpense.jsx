@@ -26,7 +26,12 @@ const DailyExpense = () => {
       .get("https://api.dropshep.com/api/trip")
       .then((response) => {
         if (response.data.status === "success") {
-          setTrip(response.data.data);
+          const sortedData = response.data.data.sort((a, b) => {
+            const dateTimeA = new Date(`${a.trip_date}T${a.trip_time}`);
+            const dateTimeB = new Date(`${b.trip_date}T${b.trip_time}`);
+            return dateTimeB - dateTimeA; // descending order
+          });
+          setTrip(sortedData);
         }
         setLoading(false);
       })
@@ -35,8 +40,8 @@ const DailyExpense = () => {
         setLoading(false);
       });
   }, []);
+
   if (loading) return <p className="text-center mt-16">Loading trip...</p>;
-  console.log("trip:", trip);
   // export
   // ✅ Correct headers matching your table
   const headers = [
@@ -86,6 +91,15 @@ const DailyExpense = () => {
 
   const exportPDF = () => {
     const doc = new jsPDF();
+    const headers = [
+      { label: "#", key: "index" },
+      { label: "Date", key: "trip_date" },
+      { label: "Car Number", key: "vehicle_number" },
+      { label: "Driver Name", key: "driver_name" },
+      { label: "Trip Price", key: "trip_price" },
+      { label: "Other Cost", key: "totalCost" },
+      { label: "Total Cost", key: "totalTripCost" },
+    ];
     const tableColumn = headers.map((h) => h.label);
     const tableRows = csvData.map((row) => headers.map((h) => row[h.key]));
 

@@ -43,7 +43,6 @@ const Maintenance = () => {
   }, []);
   if (loading)
     return <p className="text-center mt-16">Loading maintenance...</p>;
-  console.log("maintenance", maintenance);
   // delete by id
   const handleDelete = async (id) => {
     try {
@@ -81,7 +80,7 @@ const Maintenance = () => {
     { label: "গাড়ির নাম", key: "vehicle_name" },
     { label: "মেইনটেনেন্সের ধরন", key: "service_for" },
     { label: "পার্টস এন্ড স্পায়ারস", key: "parts_and_spairs" },
-    { label: "মেইনটেনেন্সের তারিখ", key: "time" },
+    { label: "মেইনটেনেন্সের তারিখ", key: "date" },
     { label: "অগ্রাধিকার", key: "dignifies" },
     { label: "টোটাল খরচ", key: "total_cost" },
   ];
@@ -91,7 +90,7 @@ const Maintenance = () => {
     vehicle_no: dt.vehicle_no,
     service_for: dt.service_for,
     parts_and_spairs: dt.parts_and_spairs,
-    time: dt.time,
+    date: dt.date,
     dignifies: dt.dignifies,
     total_cost: dt.total_cost,
   }));
@@ -110,6 +109,16 @@ const Maintenance = () => {
   // pdf
   const exportPDF = () => {
     const doc = new jsPDF();
+    const headers = [
+      { label: "#", key: "index" },
+      { label: "Service Type", key: "service_type" },
+      { label: "Vehicle No", key: "vehicle_no" },
+      { label: "Service For", key: "service_for" },
+      { label: "Parts Spars", key: "parts_and_spairs" },
+      { label: "Maintenance Date", key: "date" },
+      { label: "Priority", key: "dignifies" },
+      { label: "Total Cost", key: "total_cost" },
+    ];
     const tableColumn = headers.map((h) => h.label);
     const tableRows = csvData.map((row) => headers.map((h) => row[h.key]));
     autoTable(doc, {

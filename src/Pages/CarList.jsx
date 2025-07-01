@@ -10,7 +10,9 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
+import { banglaFontBase64 } from "../assets/font/banglaFont";
 const CarList = () => {
   const [vehicles, setVehicle] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -77,7 +79,7 @@ const CarList = () => {
     { label: "নাম", key: "driver_name" },
     { label: "গাড়ি", key: "vehicle_name" },
     { label: "ধরন", key: "category" },
-    { label: "গাড়ির সাইজ", key: "size" },
+    { label: "গাড়ির আসন সংখ্যা", key: "size" },
     { label: "এলাকা", key: "registration_zone" },
     { label: "ট্রিপ", key: "0" },
     { label: "রেজিস্ট্রেশন নাম্বার", key: "registration_number" },
@@ -93,54 +95,104 @@ const CarList = () => {
     registration_zone: dt.registration_zone,
     trip: 0,
     registration_number: dt.registration_number,
+    status: dt.status,
   }));
   // export
   const exportExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(csvData);
+    // Define Bangla headers
+    const headers = [
+      "#",
+      "নাম",
+      "গাড়ি",
+      "ধরন",
+      "গাড়ির আসন সংখ্যা",
+      "এলাকা",
+      "ট্রিপ",
+      "রেজিস্ট্রেশন নাম্বার",
+      "স্ট্যাটাস",
+    ];
+
+    // Map your csvData to ensure column order matches the headers
+    const data = csvData.map((item, index) => ({
+      "#": index + 1,
+      নাম: item.driver_name,
+      গাড়ি: item.vehicle_name,
+      ধরন: item.category,
+      "গাড়ির আসন সংখ্যা": item.size,
+      এলাকা: item.registration_zone,
+      ট্রিপ: item.trip,
+      "রেজিস্ট্রেশন নাম্বার": item.registration_number,
+      স্ট্যাটাস: item.status,
+    }));
+
+    // Generate worksheet and prepend headers
+    const worksheet = XLSX.utils.json_to_sheet(data, { header: headers });
+
+    // Create workbook and append the sheet
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "vehicles Data");
+
+    // Write and save file
     const excelBuffer = XLSX.write(workbook, {
       bookType: "xlsx",
       type: "array",
     });
-    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
-    saveAs(data, "vehicles_data.xlsx");
+    const fileData = new Blob([excelBuffer], {
+      type: "application/octet-stream",
+    });
+    saveAs(fileData, "vehicles_data.xlsx");
   };
 
   const exportPDF = () => {
     const doc = new jsPDF();
 
+    // Step 1: Register and add the font correctly
+    doc.addFileToVFS("SolaimanLipi.ttf", banglaFontBase64);
+    doc.addFont("SolaimanLipi.ttf", "SolaimanLipi", "normal");
+    doc.setFont("SolaimanLipi");
+
+    // Step 2: Prepare table with Bangla data
     const tableColumn = [
       "#",
-      "নাম",
-      "গাড়ি",
-      "ধরন",
-      "গাড়ির সাইজ",
-      "এলাকা",
-      "ট্রিপ",
-      "রেজিস্ট্রেশন নাম্বার",
+      "Name",
+      "Car",
+      "Category",
+      "Total Seat No",
+      "Area",
+      "Trip",
+      "Registration No",
     ];
 
     const tableRows = vehicles.map((dt, index) => [
       index + 1,
       dt.driver_name,
-      dt.driver_name,
       dt.vehicle_name,
-      dt.date_time,
       dt.category,
       dt.size,
       dt.registration_zone,
+      0,
       dt.registration_number,
     ]);
 
+    // Step 3: Generate the PDF with proper encoding
     autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
+      styles: {
+        font: "SolaimanLipi", // Ensure this matches the font added earlier
+        fontStyle: "normal",
+        fontSize: 10,
+      },
+      headStyles: {
+        font: "SolaimanLipi", // Ensure this matches the font added earlier
+        fontStyle: "normal",
+        fillColor: "#11375B",
+      },
+      theme: "grid",
     });
 
     doc.save("vehicles_data.pdf");
   };
-
   const printTable = () => {
     // hide specific column
     const actionColumns = document.querySelectorAll(".action_column");
@@ -167,7 +219,6 @@ const CarList = () => {
     WinPrint.print();
     WinPrint.close();
   };
-  console.log(vehicles);
   // view car by id
   const handleViewCar = async (id) => {
     try {
@@ -253,6 +304,7 @@ const CarList = () => {
             </CSVLink>
             <button
               onClick={exportExcel}
+              headers={headers}
               className="py-2 px-5 hover:bg-primary bg-gray-200 hover:text-white rounded-md transition-all duration-300 cursor-pointer"
             >
               Excel
@@ -295,9 +347,8 @@ const CarList = () => {
                 <th className="px-2 py-3">নাম</th>
                 <th className="px-2 py-3">গাড়ি</th>
                 <th className="px-2 py-3">ধরন</th>
-                <th className="px-2 py-3">গাড়ির সাইজ</th>
+                <th className="px-2 py-3">গাড়ির আসন সংখ্যা</th>
                 <th className="px-2 py-3">এলাকা</th>
-
                 <th className="px-2 py-3">ট্রিপ</th>
                 <th className="px-2 py-3">রেজিস্ট্রেশন নাম্বার</th>
                 <th className="px-2 py-3">স্ট্যাটাস</th>
@@ -448,7 +499,8 @@ const CarList = () => {
                   <p>{selectedCar.category}</p>
                 </li>
                 <li className="w-[428px] flex text-primary font-semibold text-sm px-3 py-2">
-                  <p className="w-48">গাড়ির সাইজ</p> <p>{selectedCar.size}</p>
+                  <p className="w-48">গাড়ির আসন সংখ্যা</p>{" "}
+                  <p>{selectedCar.size}</p>
                 </li>
               </ul>
               <ul className="flex border-b border-r border-l border-gray-300">

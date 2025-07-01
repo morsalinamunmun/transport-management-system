@@ -20,3 +20,184 @@ input[type="date"].remove-date-icon::-moz-focusring {
   color: transparent;
   text-shadow: 0 0 0 #000;
 }
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for Ant Design components */
+.ant-table-thead > tr > th {
+  background: #11375b !important;
+  color: white !important;
+  font-weight: 600;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: #f0f8ff !important;
+}
+
+.ant-statistic-title {
+  font-weight: 600;
+  color: #11375b;
+}
+
+.ant-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ant-btn-primary {
+  background: #11375b;
+  border-color: #11375b;
+}
+
+.ant-btn-primary:hover {
+  background: #1e4a72;
+  border-color: #1e4a72;
+}
+
+/* Print styles */
+@media print {
+  .ant-table-pagination,
+  .ant-card-head,
+  .ant-btn,
+  .ant-input,
+  .ant-space {
+    display: none !important;
+  }
+
+  .ant-table {
+    font-size: 12px;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ant-table {
+    font-size: 12px;
+  }
+
+  .ant-statistic {
+    text-align: center;
+  }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #11375b #f5f5f5;
+}
+*::-webkit-scrollbar {
+  width: 9px;
+}
+*::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 20px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #11375b;
+  border-radius: 20px;
+  border: 3px solid #f5f5f5;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+  }
+}
+
+/* -------------------Sidebar------------------- */
+
+/* Target the selected menu item */
+.ant-menu-item-selected {
+  /* background-color: #11375b !important;  */
+  color: white !important; /* Change the text color */
+}
+
+.ant-layout-sider-children{
+  background-color: white;
+}
+
+.ant-layout-sider{
+  background-color: white;
+}
+
+.ant-menu-item-selected .anticon {
+  color: black !important; /* Change the icon color */
+}
+/* Custom CSS to change the collapse icon color */
+.custom-sider .ant-layout-sider-trigger {
+  background-color: #11375b !important;
+  color: #fff !important;
+}
+.custom-sider::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 20px;
+  border: none;
+}
+
+/* General styling for dashboard menu items */
+.ant-menu-item,
+.ant-menu-submenu {
+  color: #3d3e44 !important; /* Changes the color of the menu items */
+  font-size: 18px;
+  margin: 12px 0 !important;
+}
+
+.ant-menu-item, 
+.ant-menu-item-only-children, .ant-menu-title-content {
+  color: #3d3e44 !important; /* Changes the color of the menu items */
+  font-size: 18px;
+  margin: 12px 0 !important;
+}
+
+.ant-menu-submenu.ant-menu-submenu-inline.ant-menu-submenu-open {
+  color: #11375b !important;
+  /* font-size: 18px; */
+}
+
+.ant-menu-item .anticon,
+.ant-menu-title-content .anticon {
+  font-size: 18px !important; /* Changes the color of the icons */
+}
+
+:where(.css-dev-only-do-not-override-12s4gah).ant-menu-light .ant-menu-item, :where(.css-dev-only-do-not-override-12s4gah).ant-menu-light>.ant-menu .ant-menu-item, :where(.css-dev-only-do-not-override-12s4gah).ant-menu-light .ant-menu-submenu-title, :where(.css-dev-only-do-not-override-12s4gah).ant-menu-light>.ant-menu .ant-menu-submenu-title{
+  color: #737791;
+}
+.ant-menu-item-selected {
+  color: #fff !important; /* Set the color for selected items */
+}
+
+/* select menu hover bg color */
+.ant-menu-item-selected {
+  background-color: #11375b !important;
+  color: white !important;
+}
+
+/* icon & text hover color */
+.ant-menu-item-selected,
+.ant-menu-item-selected .ant-menu-title-content {
+  color: white !important;
+}
+
+.ant-menu-item-selected .anticon,
+.ant-menu-item-selected .anticon svg {
+  color: white !important;
+  fill: white !important;
+}
+
+/* Selected item */
+.custom-menu .ant-menu-item-selected {
+  /* background-color: #11375b !important; */
+  color: #fff !important;
+}
+
+
+:where(.css-dev-only-do-not-override-lsqbnl) a:hover{
+  color: white !important; /* Set the color for links */
+}
+
+.anticon,
+ .anticon {
+  padding-right: 5px;
+}

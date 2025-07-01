@@ -4,9 +4,10 @@ import StatisticsCard from "../components/StatisticsCard";
 
 const Home = () => {
   return (
-    <div className="bg-gray-100">
-      <OverViewCard />
+    <div className="">
       <StatisticsCard />
+      <OverViewCard />
+      
     </div>
   );
 };

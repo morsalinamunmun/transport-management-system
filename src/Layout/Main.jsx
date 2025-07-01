@@ -1,8 +1,72 @@
-import React, { useState, useEffect, useRef } from "react";
+// import React, { useState, useEffect, useRef } from "react";
+// import { Outlet, useLocation } from "react-router-dom";
+// import Header from "../components/Shared/Header";
+// import Footer from "../components/Shared/Footer";
+// import Sidebar from "../components/SIdeBar";
+
+// const Main = () => {
+//   const location = useLocation();
+//   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+//   const sidebarRef = useRef(null);
+
+//   const hideMenu =
+//     location.pathname.includes("/Login") ||
+//     location.pathname.includes("/ResetPass");
+
+//   // Close sidebar if clicked outside
+//   useEffect(() => {
+//     const handleClickOutside = (event) => {
+//       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+//         setMobileSidebarOpen(false);
+//       }
+//     };
+//     document.addEventListener("mousedown", handleClickOutside);
+
+//     // Cleanup event listener
+//     return () => {
+//       document.removeEventListener("mousedown", handleClickOutside);
+//     };
+//   }, []);
+
+//   if (hideMenu) {
+//     return (
+//       <div className="min-h-screen">
+//         <Outlet />
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="flex max-w-[1444px] h-full">
+//   {/* Normal Sidebar */}
+//   <div className=" h-full bg-white ">
+//     <Sidebar />
+//   </div>
+
+//   {/* Main content automatically beside sidebar */}
+//   <div className="flex-1 flex flex-col">
+//     <Header setMobileSidebarOpen={setMobileSidebarOpen} />
+//     <main className="flex-1 overflow-y-auto md:p-4" style={{ minHeight: 360 }}>
+//       <Outlet />
+//     </main>
+//     <Footer />
+//   </div>
+// </div>
+
+//   );
+// };
+
+// export default Main;
+
+
+import React, { useEffect, useRef, useState } from "react";
+import { Layout } from "antd";
 import { Outlet, useLocation } from "react-router-dom";
-import SIdeBar from "../components/SIdeBar";
+import Sidebar from "../components/SIdeBar";
 import Header from "../components/Shared/Header";
 import Footer from "../components/Shared/Footer";
+
+const { Sider, Content } = Layout;
 
 const Main = () => {
   const location = useLocation();
@@ -13,7 +77,6 @@ const Main = () => {
     location.pathname.includes("/Login") ||
     location.pathname.includes("/ResetPass");
 
-  // Close sidebar if clicked outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
@@ -21,8 +84,6 @@ const Main = () => {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-
-    // Cleanup event listener
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -37,37 +98,35 @@ const Main = () => {
   }
 
   return (
-    <div className="flex max-w-[1444px]">
-      {/* Fixed Sidebar (Desktop) */}
-      <div className="hidden md:flex flex-col w-64 h-screen fixed bg-gray-200 border-r border-gray-300">
-        <SIdeBar />
-      </div>
+    <Layout style={{ minHeight: "100vh" }}>
+      {/* Sidebar */}
+      {/* <Sider
+        width={260}
+        breakpoint="lg"
+        collapsedWidth="0"
+        trigger={null}
+        className="bg-white shadow-md"
+        style={{ height: "100vh", overflow: "auto", position: "sticky", top: 0 }}
+      > */}
+        <Sidebar />
+      {/* </Sider> */}
 
-      {/* Sidebar (Mobile) */}
-      {mobileSidebarOpen && (
-        <>
-          {/* Sidebar Slide */}
-          <div
-            ref={sidebarRef} // Attach the ref to the sidebar
-            className={`fixed top-0 left-0 w-64 h-full bg-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out overflow-y-scroll ${
-              mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
-            }`}
-          >
-            <SIdeBar />
-          </div>
-        </>
-      )}
+      {/* Main Layout */}
+      <Layout>
+        {/* Header */}
+        <div style={{ background: "#fff", zIndex: 10 }}>
+          <Header setMobileSidebarOpen={setMobileSidebarOpen} />
+        </div>
 
-      {/* Main Content */}
-      <div className="flex-1 md:ml-64 flex flex-col min-h-screen">
-        {/* Pass toggleSidebar function to Header */}
-        <Header setMobileSidebarOpen={setMobileSidebarOpen} />
-        <main className="flex-1 overflow-y-auto md:p-4">
+        {/* Content */}
+        <Content className="bg-[#F5F6FA] px-2 sm:px-4 md:px-6 py-4" style={{ flex: 1 }}>
           <Outlet />
-        </main>
+        </Content>
+
+        {/* Footer */}
         <Footer />
-      </div>
-    </div>
+      </Layout>
+    </Layout>
   );
 };
 
