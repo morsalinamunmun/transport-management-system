@@ -28,9 +28,6 @@ const Header = ({ setMobileSidebarOpen }) => {
             <FaBars />
           </h3> */}
 
-          <Link to="/" className="font-semibold text-primary">
-            Home
-          </Link>
         </div>
 
         {/* Search */}

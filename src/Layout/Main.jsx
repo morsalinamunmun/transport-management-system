@@ -119,7 +119,8 @@ const Main = () => {
         </div>
 
         {/* Content */}
-        <Content className="bg-white px-2 sm:px-4  py-4" style={{ flex: 1 }}>
+        <Content className="bg-white px-2 sm:px-4  py-4 hide-scrollbar" style={{ flex: 1, overflowY: "auto", // Ensure content is scrollable
+    maxHeight: "100vh", }}>
           <Outlet />
         </Content>
 

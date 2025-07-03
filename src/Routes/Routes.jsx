@@ -29,6 +29,7 @@ import UpdateDriverForm from "../Pages/updateForm/UpdateDriverForm";
 import UpdateDailyIncomeForm from "../Pages/updateForm/UpdateDailyIncomeForm";
 import UpdateExpenseForm from "../Pages/updateForm/UpdateExpenseForm";
 import AdminRoute from "./AdminRoute";
+import MonthlyStatement from "../Pages/MonthlyStatement";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -43,7 +44,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/CarList",
+        path: "/car-list",
         element: (
           <PrivateRoute>
             <CarList />
@@ -51,7 +52,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/AddCarForm",
+        path: "/add-carForm",
         element: (
           <PrivateRoute>
             <AddCarForm />
@@ -59,7 +60,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/UpdateCarForm/:id",
+        path: "/update-CarForm/:id",
         element: (
           <PrivateRoute>
             <UpdateCarForm />
@@ -69,7 +70,7 @@ export const router = createBrowserRouter([
           fetch(`https://api.dropshep.com/api/vehicle/${params.id}`),
       },
       {
-        path: "/DriverList",
+        path: "/driver-list",
         element: (
           <PrivateRoute>
             <DriverList />
@@ -77,7 +78,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/AddDriverForm",
+        path: "/add-driverForm",
         element: (
           <PrivateRoute>
             <AddDriverForm />
@@ -85,7 +86,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/UpdateDriverForm/:id",
+        path: "/update-driverForm/:id",
         element: (
           <PrivateRoute>
             <UpdateDriverForm />
@@ -95,7 +96,7 @@ export const router = createBrowserRouter([
           fetch(`https://api.dropshep.com/api/driver/${params.id}`),
       },
       {
-        path: "/TripList",
+        path: "/trip-list",
         element: (
           <PrivateRoute>
             <TripList />
@@ -103,7 +104,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/AddTripForm",
+        path: "/add-tripForm",
         element: (
           <PrivateRoute>
             <AddTripForm />
@@ -111,7 +112,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/UpdateTripForm/:id",
+        path: "/update-tripForm/:id",
         element: (
           <PrivateRoute>
             <UpdateTripForm />
@@ -121,7 +122,7 @@ export const router = createBrowserRouter([
           fetch(`https://api.dropshep.com/api/trip/${params.id}`),
       },
       {
-        path: "/Fuel",
+        path: "/fuel",
         element: (
           <PrivateRoute>
             <Fuel />
@@ -129,7 +130,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/FuelForm",
+        path: "/fuel-form",
         element: (
           <PrivateRoute>
             <FuelForm />
@@ -137,7 +138,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/UpdateFuelForm/:id",
+        path: "/update-fuelForm/:id",
         element: (
           <PrivateRoute>
             <UpdateFuelForm />
@@ -155,7 +156,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/UpdatePartsForm/:id",
+        path: "/update-partsForm/:id",
         element: (
           <PrivateRoute>
             <UpdatePartsForm />
@@ -165,7 +166,7 @@ export const router = createBrowserRouter([
           fetch(`https://api.dropshep.com/api/parts/${params.id}`),
       },
       {
-        path: "/Maintenance",
+        path: "/maintenance",
         element: (
           <PrivateRoute>
             <Maintenance />
@@ -173,7 +174,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/MaintenanceForm",
+        path: "/maintenanceForm",
         element: (
           <PrivateRoute>
             <MaintenanceForm />
@@ -181,7 +182,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/UpdateMaintenanceForm/:id",
+        path: "/update-maintenanceForm/:id",
         element: (
           <PrivateRoute>
             <UpdateMaintenanceForm />
@@ -191,7 +192,7 @@ export const router = createBrowserRouter([
           fetch(`https://api.dropshep.com/api/maintenance/${params.id}`),
       },
       {
-        path: "/DailyIncome",
+        path: "/daily-income",
         element: (
           <AdminRoute>
             <DailyIncome />
@@ -199,7 +200,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/DailyExpense",
+        path: "/daily-expense",
         element: (
           <PrivateRoute>
             <DailyExpense />
@@ -207,7 +208,15 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/AllUsers",
+        path: "/monthly-statement",
+        element: (
+          <PrivateRoute>
+            <MonthlyStatement/>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/all-users",
         element: (
           <AdminRoute>
             <AllUsers />
@@ -215,7 +224,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/AddUserForm",
+        path: "/add-userForm",
         element: (
           <AdminRoute>
             <AddUserForm />
@@ -223,7 +232,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/UpdateUsersForm/:id",
+        path: "/update-usersForm/:id",
         element: (
           <PrivateRoute>
             <UpdateUsersForm />
@@ -241,7 +250,7 @@ export const router = createBrowserRouter([
         element: <ResetPass />,
       },
       {
-        path: "/UpdateDailyIncomeForm/:id",
+        path: "/update-DailyIncomeForm/:id",
         element: (
           <AdminRoute>
             <UpdateDailyIncomeForm />
@@ -251,7 +260,7 @@ export const router = createBrowserRouter([
           fetch(`https://api.dropshep.com/api/trip/${params.id}`),
       },
       {
-        path: "/UpdateExpenseForm/:id",
+        path: "/Update-ExpenseForm/:id",
         element: (
           <PrivateRoute>
             <UpdateExpenseForm />

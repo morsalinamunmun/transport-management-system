@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <footer className="md:flex justify-between p-5 border-b border-gray-300">
+    <footer className="md:flex justify-between p-3 border-b border-gray-300">
       <p className="text-gray-500 text-center">
         Copyright © 2025{" "}
         <span className="text-primary font-semibold">Tramessy</span>.{" "}

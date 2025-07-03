@@ -1,352 +1,704 @@
-import React, { useEffect, useRef, useState } from "react";
-import { FaTruck, FaPlus, FaTrashAlt, FaPen } from "react-icons/fa";
-import { IoMdClose } from "react-icons/io";
-import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
-import { useForm } from "react-hook-form";
-import { FiCalendar } from "react-icons/fi";
-import { Link } from "react-router-dom";
-import { GrFormNext, GrFormPrevious } from "react-icons/gr";
-import BtnSubmit from "../components/Button/BtnSubmit";
+// import React, { useEffect, useRef, useState } from "react";
+// import { FaTruck, FaPlus, FaTrashAlt, FaPen } from "react-icons/fa";
+// import { IoMdClose } from "react-icons/io";
+// import axios from "axios";
+// import toast, { Toaster } from "react-hot-toast";
+// import { useForm } from "react-hook-form";
+// import { FiCalendar } from "react-icons/fi";
+// import { Link } from "react-router-dom";
+// import { GrFormNext, GrFormPrevious } from "react-icons/gr";
+// import BtnSubmit from "../components/Button/BtnSubmit";
+
+// const Parts = () => {
+//   const [showFilter, setShowFilter] = useState(false);
+//   const [parts, setParts] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   // delete modal
+//   const [isOpen, setIsOpen] = useState(false);
+//   const [selectedFuelId, setselectedFuelId] = useState(null);
+//   const toggleModal = () => setIsOpen(!isOpen);
+//   // search
+//   const [searchTerm, setSearchTerm] = useState("");
+//   // pagination
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const {
+//     register,
+//     handleSubmit,
+//     reset,
+//     formState: { errors },
+//   } = useForm();
+//   const partsDateRef = useRef(null);
+//   // post parts
+//   const onSubmit = async (data) => {
+//     try {
+//       const formData = new FormData();
+//       for (const key in data) {
+//         formData.append(key, data[key]);
+//       }
+//       const response = await axios.post(
+//         "https://api.dropshep.com/api/parts",
+//         formData
+//       );
+//       const resData = response.data;
+//       if (resData.status === "success") {
+//         toast.success("পার্টস সফলভাবে সংরক্ষণ হয়েছে!", {
+//           position: "top-right",
+//         });
+//         reset();
+//       } else {
+//         toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
+//       }
+//     } catch (error) {
+//       console.error(error);
+//       const errorMessage =
+//         error.response?.data?.message || error.message || "Unknown error";
+//       toast.error("সার্ভার ত্রুটি: " + errorMessage);
+//     }
+//   };
+//   // fetch all parts
+//   useEffect(() => {
+//     axios
+//       .get("https://api.dropshep.com/api/parts")
+//       .then((response) => {
+//         if (response.data.status === "success") {
+//           setParts(response.data.data);
+//         }
+//         setLoading(false);
+//       })
+//       .catch((error) => {
+//         console.error("Error fetching driver data:", error);
+//         setLoading(false);
+//       });
+//   }, []);
+
+//   if (loading) return <p className="text-center mt-16">Loading parts...</p>;
+
+//   // delete by id
+//   const handleDelete = async (id) => {
+//     try {
+//       const response = await fetch(`https://api.dropshep.com/api/parts/${id}`, {
+//         method: "DELETE",
+//       });
+
+//       if (!response.ok) {
+//         throw new Error("Failed to delete trip");
+//       }
+//       // Remove fuel from local list
+//       setParts((prev) => prev.filter((driver) => driver.id !== id));
+//       toast.success("পার্টস সফলভাবে ডিলিট হয়েছে", {
+//         position: "top-right",
+//         autoClose: 3000,
+//       });
+
+//       setIsOpen(false);
+//       setselectedFuelId(null);
+//     } catch (error) {
+//       console.error("Delete error:", error);
+//       toast.error("ডিলিট করতে সমস্যা হয়েছে!", {
+//         position: "top-right",
+//         autoClose: 3000,
+//       });
+//     }
+//   };
+//   // search
+//   const filteredParts = parts.filter((part) => {
+//     const term = searchTerm.toLowerCase();
+//     return (
+//       part.name?.toLowerCase().includes(term) ||
+//       part.date?.toLowerCase().includes(term)
+//     );
+//   });
+//   // pagination
+//   const itemsPerPage = 10;
+//   const indexOfLastItem = currentPage * itemsPerPage;
+//   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+//   const currentParts = filteredParts.slice(indexOfFirstItem, indexOfLastItem);
+//   const totalPages = Math.ceil(parts.length / itemsPerPage);
+//   const handlePrevPage = () => {
+//     if (currentPage > 1) setCurrentPage((currentPage) => currentPage - 1);
+//   };
+//   const handleNextPage = () => {
+//     if (currentPage < totalPages)
+//       setCurrentPage((currentPage) => currentPage + 1);
+//   };
+//   const handlePageClick = (number) => {
+//     setCurrentPage(number);
+//   };
+//   return (
+//     <main className="relative md:p-6">
+//       <Toaster position="top-right" reverseOrder={false} />
+//       <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-8 border border-gray-200">
+//         {/* Header */}
+//         <div className="md:flex items-center justify-between mb-6">
+//           <h1 className="text-xl font-extrabold text-[#11375B] flex items-center gap-3">
+//             <FaTruck className="text-[#11375B] text-2xl" />
+//             পার্টসের তালিকা
+//           </h1>
+//           <div className="mt-3 md:mt-0 flex gap-2">
+//             <button
+//               onClick={() => setShowFilter(true)}
+//               className="bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 py-1 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer"
+//             >
+//               <FaPlus /> পার্টস
+//             </button>
+//           </div>
+//         </div>
+//         {/* Export + Search */}
+//         <div className="md:flex justify-end items-center">
+//           <div className="mt-3 md:mt-0">
+//             <span className="text-primary font-semibold pr-3">Search: </span>
+//             <input
+//               type="text"
+//               value={searchTerm}
+//               onChange={(e) => {
+//                 setSearchTerm(e.target.value);
+//                 setCurrentPage(1);
+//               }}
+//               placeholder="সার্চ করুন..."
+//               className="border border-gray-300 rounded-md outline-none text-xs py-2 ps-2 pr-5"
+//             />
+//           </div>
+//         </div>
+//         {/* Table */}
+//         <div className="mt-5 overflow-x-auto rounded-xl">
+//           <table className="min-w-full text-sm text-left">
+//             <thead className="bg-[#11375B] text-white uppercase text-sm">
+//               <tr>
+//                 <th className="px-2 md:px-4 py-3">SL</th>
+//                 <th className="px-2 md:px-4 py-3">নাম</th>
+//                 <th className="px-2 md:px-4 py-3">অ্যাকশন</th>
+//               </tr>
+//             </thead>
+//             <tbody className="text-[#11375B] font-semibold">
+//               {currentParts?.map((part, index) => (
+//                 <tr
+//                   key={index}
+//                   className="hover:bg-gray-100 border-b border-r border-l border-gray-400 transition-all cursor-pointer"
+//                 >
+//                   <td className="md:border-r border-gray-400 px-2 md:px-4 py-4 font-bold">
+//                     {indexOfFirstItem + index + 1}
+//                   </td>
+//                   <td className="md:border-r border-gray-400 px-2 md:px-4 py-4">
+//                     {part.name}
+//                   </td>
+//                   <td className="px-2 md:px-4 py-4">
+//                     <div className="flex gap-2">
+//                       <Link to={`/UpdatePartsForm/${part.id}`}>
+//                         <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+//                           <FaPen className="text-[12px]" />
+//                         </button>
+//                       </Link>
+//                       <button className="text-red-900 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer">
+//                         <FaTrashAlt
+//                           onClick={() => {
+//                             setselectedFuelId(part.id);
+//                             setIsOpen(true);
+//                           }}
+//                           className="text-[12px]"
+//                         />
+//                       </button>
+//                     </div>
+//                   </td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         </div>
+//       </div>
+//       {/* pagination */}
+//       <div className="mt-10 flex justify-center">
+//         <div className="space-x-2 flex items-center">
+//           <button
+//             onClick={handlePrevPage}
+//             className={`p-2 ${
+//               currentPage === 1 ? "bg-gray-300" : "bg-primary text-white"
+//             } rounded-sm`}
+//             disabled={currentPage === 1}
+//           >
+//             <GrFormPrevious />
+//           </button>
+//           {[...Array(totalPages).keys()].map((number) => (
+//             <button
+//               key={number + 1}
+//               onClick={() => handlePageClick(number + 1)}
+//               className={`px-3 py-1 rounded-sm ${
+//                 currentPage === number + 1
+//                   ? "bg-primary text-white hover:bg-gray-200 hover:text-primary transition-all duration-300 cursor-pointer"
+//                   : "bg-gray-200 hover:bg-primary hover:text-white transition-all cursor-pointer"
+//               }`}
+//             >
+//               {number + 1}
+//             </button>
+//           ))}
+//           <button
+//             onClick={handleNextPage}
+//             className={`p-2 ${
+//               currentPage === totalPages
+//                 ? "bg-gray-300"
+//                 : "bg-primary text-white"
+//             } rounded-sm`}
+//             disabled={currentPage === totalPages}
+//           >
+//             <GrFormNext />
+//           </button>
+//         </div>
+//       </div>
+//       {/* Delete modal */}
+//       <div className="flex justify-center items-center">
+//         {isOpen && (
+//           <div className="fixed inset-0 flex items-center justify-center bg-[#000000ad] z-50">
+//             <div className="relative bg-white rounded-lg shadow-lg p-6 w-72 max-w-sm border border-gray-300">
+//               <button
+//                 onClick={toggleModal}
+//                 className="text-2xl absolute top-2 right-2 text-white bg-red-500 hover:bg-red-700 cursor-pointer rounded-sm"
+//               >
+//                 <IoMdClose />
+//               </button>
+
+//               <div className="flex justify-center mb-4 text-red-500 text-4xl">
+//                 <FaTrashAlt />
+//               </div>
+//               <p className="text-center text-gray-700 font-medium mb-6">
+//                 আপনি কি পার্টস ডিলিট করতে চান?
+//               </p>
+//               <div className="flex justify-center space-x-4">
+//                 <button
+//                   onClick={toggleModal}
+//                   className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-primary hover:text-white cursor-pointer"
+//                 >
+//                   না
+//                 </button>
+//                 <button
+//                   onClick={() => handleDelete(selectedFuelId)}
+//                   className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 cursor-pointer"
+//                 >
+//                   হ্যাঁ
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+//         )}
+//       </div>
+
+//       {/* Modal Form*/}
+//       {showFilter && (
+//         <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex justify-center items-center z-50">
+//           <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg relative">
+//             <button
+//               onClick={() => setShowFilter(false)}
+//               className="absolute top-2 right-2 text-white bg-primary rounded-sm hover:text-white hover:bg-secondary transition-all duration-300 cursor-pointer font-bold text-xl p-[2px]"
+//             >
+//               <IoMdClose />
+//             </button>
+//             <h2 className="text-xl font-semibold text-[#11375B] mb-4">
+//               পার্টস যোগ করুন
+//             </h2>
+
+//             <form action="" onSubmit={handleSubmit(onSubmit)}>
+//               <div className="mb-4">
+//                 <div className="w-full relative">
+//                   <label className="text-primary text-sm font-semibold">
+//                     পার্টসের নাম
+//                   </label>
+//                   <input
+//                     {...register("name", { required: true })}
+//                     type="text"
+//                     placeholder="পার্টসের নাম..."
+//                     className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
+//                   />
+//                   {errors.name && (
+//                     <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
+//                   )}
+//                 </div>
+//               </div>
+
+//               <div className="mb-4">
+//                 <div className="w-full">
+//                   <label className="text-primary text-sm font-semibold">
+//                     পার্টসের ভ্যালিডিটি
+//                   </label>
+//                   <div className="relative">
+//                     <input
+//                       type="date"
+//                       {...register("date")}
+//                       ref={(e) => {
+//                         register("date").ref(e);
+//                         partsDateRef.current = e;
+//                       }}
+//                       className="remove-date-icon mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none pr-10"
+//                     />
+
+//                     <span className="py-[11px] absolute right-0 px-3 top-[22px] transform -translate-y-1/2 bg-primary rounded-r">
+//                       <FiCalendar
+//                         className="text-white cursor-pointer"
+//                         onClick={() => partsDateRef.current?.showPicker?.()}
+//                       />
+//                     </span>
+//                   </div>
+//                 </div>
+//               </div>
+//               {/* Submit Button */}
+//               <div className="text-right">
+//                 <BtnSubmit>সাবমিট করুন</BtnSubmit>
+//               </div>
+//             </form>
+//           </div>
+//         </div>
+//       )}
+//     </main>
+//   );
+// };
+
+// export default Parts;
+
+
+import { useEffect, useState } from "react"
+import {
+  Table,
+  Button,
+  Input,
+  Modal,
+  Card,
+  Space,
+  Typography,
+  Row,
+  Col,
+  Tooltip,
+  Form,
+  DatePicker,
+  message,
+} from "antd"
+import { ToolOutlined, PlusOutlined, EditOutlined, DeleteOutlined, CalendarOutlined, SearchOutlined } from "@ant-design/icons"
+import axios from "axios"
+import { Link } from "react-router-dom"
+import { RiDeleteBinLine } from "react-icons/ri"
+
+const { Title, Text } = Typography
+const { Search } = Input
 
 const Parts = () => {
-  const [showFilter, setShowFilter] = useState(false);
-  const [parts, setParts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  // delete modal
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedFuelId, setselectedFuelId] = useState(null);
-  const toggleModal = () => setIsOpen(!isOpen);
-  // search
-  const [searchTerm, setSearchTerm] = useState("");
-  // pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
-  const partsDateRef = useRef(null);
-  // post parts
-  const onSubmit = async (data) => {
+  const [parts, setParts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [selectedPartId, setSelectedPartId] = useState(null)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+  })
+
+  const [form] = Form.useForm()
+
+  useEffect(() => {
+    fetchParts()
+  }, [])
+
+  const fetchParts = async () => {
     try {
-      const formData = new FormData();
-      for (const key in data) {
-        formData.append(key, data[key]);
+      const response = await axios.get("https://api.dropshep.com/api/parts")
+      if (response.data.status === "success") {
+        setParts(response.data.data)
       }
-      const response = await axios.post(
-        "https://api.dropshep.com/api/parts",
-        formData
-      );
-      const resData = response.data;
-      if (resData.status === "success") {
-        toast.success("পার্টস সফলভাবে সংরক্ষণ হয়েছে!", {
-          position: "top-right",
-        });
-        reset();
+      setLoading(false)
+    } catch (error) {
+      console.error("Error fetching parts data:", error)
+      message.error("পার্টসের তথ্য লোড করতে সমস্যা হয়েছে")
+      setLoading(false)
+    }
+  }
+
+  const handleAddPart = async (values) => {
+    try {
+      const formData = new FormData()
+      formData.append("name", values.name)
+      if (values.date) {
+        formData.append("date", values.date.format("YYYY-MM-DD"))
+      }
+
+      const response = await axios.post("https://api.dropshep.com/api/parts", formData)
+
+      if (response.data.status === "success") {
+        message.success("পার্টস সফলভাবে সংরক্ষণ হয়েছে!")
+        form.resetFields()
+        setShowAddModal(false)
+        fetchParts() // Refresh the list
       } else {
-        toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
+        message.error("সার্ভার ত্রুটি: " + (response.data.message || "অজানা সমস্যা"))
       }
     } catch (error) {
-      console.error(error);
-      const errorMessage =
-        error.response?.data?.message || error.message || "Unknown error";
-      toast.error("সার্ভার ত্রুটি: " + errorMessage);
+      console.error(error)
+      const errorMessage = error.response?.data?.message || error.message || "Unknown error"
+      message.error("সার্ভার ত্রুটি: " + errorMessage)
     }
-  };
-  // fetch all parts
-  useEffect(() => {
-    axios
-      .get("https://api.dropshep.com/api/parts")
-      .then((response) => {
-        if (response.data.status === "success") {
-          setParts(response.data.data);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching driver data:", error);
-        setLoading(false);
-      });
-  }, []);
+  }
 
-  if (loading) return <p className="text-center mt-16">Loading parts...</p>;
+  const handleDelete = async () => {
+    if (!selectedPartId) return
 
-  // delete by id
-  const handleDelete = async (id) => {
     try {
-      const response = await fetch(`https://api.dropshep.com/api/parts/${id}`, {
+      const response = await fetch(`https://api.dropshep.com/api/parts/${selectedPartId}`, {
         method: "DELETE",
-      });
+      })
 
       if (!response.ok) {
-        throw new Error("Failed to delete trip");
+        throw new Error("Failed to delete part")
       }
-      // Remove fuel from local list
-      setParts((prev) => prev.filter((driver) => driver.id !== id));
-      toast.success("পার্টস সফলভাবে ডিলিট হয়েছে", {
-        position: "top-right",
-        autoClose: 3000,
-      });
 
-      setIsOpen(false);
-      setselectedFuelId(null);
+      setParts((prev) => prev.filter((part) => part.id !== selectedPartId))
+      message.success("পার্টস সফলভাবে ডিলিট হয়েছে")
+      setDeleteModalOpen(false)
+      setSelectedPartId(null)
     } catch (error) {
-      console.error("Delete error:", error);
-      toast.error("ডিলিট করতে সমস্যা হয়েছে!", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      console.error("Delete error:", error)
+      message.error("ডিলিট করতে সমস্যা হয়েছে!")
     }
-  };
-  // search
+  }
+
+  // Filter parts based on search term
   const filteredParts = parts.filter((part) => {
-    const term = searchTerm.toLowerCase();
-    return (
-      part.name?.toLowerCase().includes(term) ||
-      part.date?.toLowerCase().includes(term)
-    );
-  });
-  // pagination
-  const itemsPerPage = 10;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentParts = filteredParts.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(parts.length / itemsPerPage);
-  const handlePrevPage = () => {
-    if (currentPage > 1) setCurrentPage((currentPage) => currentPage - 1);
-  };
-  const handleNextPage = () => {
-    if (currentPage < totalPages)
-      setCurrentPage((currentPage) => currentPage + 1);
-  };
-  const handlePageClick = (number) => {
-    setCurrentPage(number);
-  };
-  return (
-    <main className="relative bg-gradient-to-br from-gray-100 to-white md:p-6">
-      <Toaster position="top-right" reverseOrder={false} />
-      <div className="w-xs md:w-full overflow-hidden overflow-x-auto max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-2 py-10 md:p-8 border border-gray-200">
-        {/* Header */}
-        <div className="md:flex items-center justify-between mb-6">
-          <h1 className="text-xl font-extrabold text-[#11375B] flex items-center gap-3">
-            <FaTruck className="text-[#11375B] text-2xl" />
-            পার্টসের তালিকা
-          </h1>
-          <div className="mt-3 md:mt-0 flex gap-2">
-            <button
-              onClick={() => setShowFilter(true)}
-              className="bg-gradient-to-r from-[#11375B] to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-4 py-1 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer"
-            >
-              <FaPlus /> পার্টস
-            </button>
-          </div>
-        </div>
-        {/* Export + Search */}
-        <div className="md:flex justify-end items-center">
-          <div className="mt-3 md:mt-0">
-            <span className="text-primary font-semibold pr-3">Search: </span>
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setCurrentPage(1);
-              }}
-              placeholder="সার্চ করুন..."
-              className="border border-gray-300 rounded-md outline-none text-xs py-2 ps-2 pr-5"
-            />
-          </div>
-        </div>
-        {/* Table */}
-        <div className="mt-5 overflow-x-auto rounded-xl">
-          <table className="min-w-full text-sm text-left">
-            <thead className="bg-[#11375B] text-white uppercase text-sm">
-              <tr>
-                <th className="px-2 md:px-4 py-3">SL</th>
-                <th className="px-2 md:px-4 py-3">নাম</th>
-                <th className="px-2 md:px-4 py-3">অ্যাকশন</th>
-              </tr>
-            </thead>
-            <tbody className="text-[#11375B] font-semibold">
-              {currentParts?.map((part, index) => (
-                <tr
-                  key={index}
-                  className="hover:bg-gray-100 border-b border-r border-l border-gray-400 transition-all cursor-pointer"
-                >
-                  <td className="md:border-r border-gray-400 px-2 md:px-4 py-4 font-bold">
-                    {indexOfFirstItem + index + 1}
-                  </td>
-                  <td className="md:border-r border-gray-400 px-2 md:px-4 py-4">
-                    {part.name}
-                  </td>
-                  <td className="px-2 md:px-4 py-4">
-                    <div className="flex gap-2">
-                      <Link to={`/UpdatePartsForm/${part.id}`}>
-                        <button className="text-primary hover:bg-primary hover:text-white px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                          <FaPen className="text-[12px]" />
-                        </button>
-                      </Link>
-                      <button className="text-red-900 hover:text-white hover:bg-red-900 px-2 py-1 rounded shadow-md transition-all cursor-pointer">
-                        <FaTrashAlt
+    const term = searchTerm.toLowerCase()
+    return part.name?.toLowerCase().includes(term) || part.date?.toLowerCase().includes(term)
+  })
+
+  // Calculate totals
+  const totalParts = filteredParts.length
+  const activeParts = filteredParts.filter((part) => {
+    if (!part.date) return true
+    const today = new Date()
+    const partDate = new Date(part.date)
+    return partDate >= today
+  }).length
+  const expiredParts = totalParts - activeParts
+
+  // Check if part is expired
+  const isPartExpired = (date) => {
+    if (!date) return false
+    const today = new Date()
+    const partDate = new Date(date)
+    return partDate < today
+  }
+
+  // Table columns
+  const columns = [
+    {
+      title: "SL",
+      key: "index",
+      width: 60,
+      render: (_, __, index) => (
+        <Text strong style={{ color: "#11375b" }}>
+          {(pagination.current - 1) * pagination.pageSize + index + 1}
+        </Text>
+      ),
+    },
+    {
+      title: "পার্টসের নাম",
+      dataIndex: "name",
+      key: "name",
+      width: 200,
+      render: (name, record) => (
+        <Space>
+          <ToolOutlined  />
+          <Text >
+            {name}
+          </Text>
+        </Space>
+      ),
+    },
+    {
+      title: "ভ্যালিডিটি",
+      dataIndex: "date",
+      key: "date",
+      width: 150,
+      render: (date) => (
+        <Space>
+          <CalendarOutlined />
+          <Text >{date || "N/A"}</Text>
+        </Space>
+      ),
+    },
+    {
+      title: "স্ট্যাটাস",
+      key: "status",
+      width: 120,
+      render: (_, record) => {
+        const expired = isPartExpired(record.date)
+        return (
+          <span
+            className={`${expired? "text-red-500": "text-green-600"}`}
+          >
+            {expired ? "মেয়াদোত্তীর্ণ" : "সক্রিয়"}
+          </span>
+        )
+      },
+    },
+    {
+      title: "অ্যাকশন",
+      key: "actions",
+      width: 120,
+      render: (_, record) => (
+        <Space>
+           <Tooltip title="সম্পাদনা">
+            <Link to={`/update-partsForm/${record.id}`}>
+                <EditOutlined
+                  className="!text-yellow-500 cursor-pointer text-lg hover:!text-primary"
+                />
+                </Link>
+              </Tooltip>
+        
+          <Tooltip title="ডিলিট">
+                          <RiDeleteBinLine
+                            className="!text-red-500 p-1 text-white cursor-pointer text-2xl rounded"
                           onClick={() => {
-                            setselectedFuelId(part.id);
-                            setIsOpen(true);
-                          }}
-                          className="text-[12px]"
-                        />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      {/* pagination */}
-      <div className="mt-10 flex justify-center">
-        <div className="space-x-2 flex items-center">
-          <button
-            onClick={handlePrevPage}
-            className={`p-2 ${
-              currentPage === 1 ? "bg-gray-300" : "bg-primary text-white"
-            } rounded-sm`}
-            disabled={currentPage === 1}
-          >
-            <GrFormPrevious />
-          </button>
-          {[...Array(totalPages).keys()].map((number) => (
-            <button
-              key={number + 1}
-              onClick={() => handlePageClick(number + 1)}
-              className={`px-3 py-1 rounded-sm ${
-                currentPage === number + 1
-                  ? "bg-primary text-white hover:bg-gray-200 hover:text-primary transition-all duration-300 cursor-pointer"
-                  : "bg-gray-200 hover:bg-primary hover:text-white transition-all cursor-pointer"
-              }`}
-            >
-              {number + 1}
-            </button>
-          ))}
-          <button
-            onClick={handleNextPage}
-            className={`p-2 ${
-              currentPage === totalPages
-                ? "bg-gray-300"
-                : "bg-primary text-white"
-            } rounded-sm`}
-            disabled={currentPage === totalPages}
-          >
-            <GrFormNext />
-          </button>
-        </div>
-      </div>
-      {/* Delete modal */}
-      <div className="flex justify-center items-center">
-        {isOpen && (
-          <div className="fixed inset-0 flex items-center justify-center bg-[#000000ad] z-50">
-            <div className="relative bg-white rounded-lg shadow-lg p-6 w-72 max-w-sm border border-gray-300">
-              <button
-                onClick={toggleModal}
-                className="text-2xl absolute top-2 right-2 text-white bg-red-500 hover:bg-red-700 cursor-pointer rounded-sm"
-              >
-                <IoMdClose />
-              </button>
+                setSelectedPartId(record.id)
+                setDeleteModalOpen(true)
+              }}
+                          />
+                        </Tooltip>
+        </Space>
+      ),
+    },
+  ]
 
-              <div className="flex justify-center mb-4 text-red-500 text-4xl">
-                <FaTrashAlt />
-              </div>
-              <p className="text-center text-gray-700 font-medium mb-6">
-                আপনি কি পার্টস ডিলিট করতে চান?
-              </p>
-              <div className="flex justify-center space-x-4">
-                <button
-                  onClick={toggleModal}
-                  className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-primary hover:text-white cursor-pointer"
-                >
-                  না
-                </button>
-                <button
-                  onClick={() => handleDelete(selectedFuelId)}
-                  className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 cursor-pointer"
-                >
-                  হ্যাঁ
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Modal Form*/}
-      {showFilter && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg relative">
-            <button
-              onClick={() => setShowFilter(false)}
-              className="absolute top-2 right-2 text-white bg-primary rounded-sm hover:text-white hover:bg-secondary transition-all duration-300 cursor-pointer font-bold text-xl p-[2px]"
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        padding: "10px",
+      }}
+    >
+      <Card
+        className="max-w-7xl mx-auto"
+        style={{
+          boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
+          background: "rgba(255,255,255,0.9)",
+          backdropFilter: "blur(10px)",
+        }}
+      >
+        {/* Header */}
+        <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }}>
+          <Col>
+            <Title level={4} style={{ margin: 0, color: "#11375B" }}>
+              <ToolOutlined style={{ marginRight: "12px", color: "#11375B" }} />
+              পার্টসের তালিকা
+            </Title>
+          </Col>
+          <Col>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              size="middle"
+              onClick={() => setShowAddModal(true)}
+              className="!bg-primary"
             >
-              <IoMdClose />
-            </button>
-            <h2 className="text-xl font-semibold text-[#11375B] mb-4">
+              পার্টস
+            </Button>
+          </Col>
+        </Row>
+
+        {/* Search parts*/}
+        <Row justify="end" style={{ marginBottom: "16px" }}>
+          <Col>
+  <Search
+    placeholder="পার্টস খুঁজুন..."
+    allowClear
+    onChange={(e) => setSearchTerm(e.target.value)}
+    enterButton={
+      <Button
+        style={{
+          backgroundColor: "#11375B", 
+          color: "#fff",              
+          borderColor: "#11375B"
+        }}
+      >
+        <SearchOutlined />
+      </Button>
+    }
+  />
+</Col>
+        </Row>
+
+        {/* Table */}
+        <Table
+          columns={columns}
+          dataSource={filteredParts}
+          loading={loading}
+          rowKey="id"
+          scroll={{ x: "max-content" }}
+          size="middle"
+          pagination={{
+            current: pagination.current,
+            pageSize: pagination.pageSize,
+            showSizeChanger: true,
+            pageSizeOptions: ["10", "20", "50", "100"],
+            onChange: (page, pageSize) => {
+              setPagination({ current: page, pageSize })
+            },
+            onShowSizeChange: (current, size) => {
+              setPagination({ current: 1, pageSize: size })
+            },
+          }}
+        />
+
+        {/* Add Parts Modal */}
+        <Modal
+          title={
+            <Space>
+              <PlusOutlined style={{ color: "#1890ff" }} />
               পার্টস যোগ করুন
-            </h2>
+            </Space>
+          }
+          open={showAddModal}
+          onCancel={() => {
+            setShowAddModal(false)
+            form.resetFields()
+          }}
+          footer={null}
+          width={500}
+        >
+          <Form form={form} layout="vertical" onFinish={handleAddPart} style={{ marginTop: "20px" }}>
+            <Form.Item label="পার্টসের নাম" name="name" rules={[{ required: true, message: "পার্টসের নাম পূরণ করতে হবে" }]}>
+              <Input placeholder="পার্টসের নাম লিখুন..." />
+            </Form.Item>
 
-            <form action="" onSubmit={handleSubmit(onSubmit)}>
-              <div className="mb-4">
-                <div className="w-full relative">
-                  <label className="text-primary text-sm font-semibold">
-                    পার্টসের নাম
-                  </label>
-                  <input
-                    {...register("name", { required: true })}
-                    type="text"
-                    placeholder="পার্টসের নাম..."
-                    className="mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none"
-                  />
-                  {errors.name && (
-                    <span className="text-red-600 text-sm">পূরণ করতে হবে</span>
-                  )}
-                </div>
-              </div>
+            <Form.Item label="পার্টসের ভ্যালিডিটি" name="date">
+              <DatePicker style={{ width: "100%" }} placeholder="তারিখ নির্বাচন করুন" format="YYYY-MM-DD" />
+            </Form.Item>
 
-              <div className="mb-4">
-                <div className="w-full">
-                  <label className="text-primary text-sm font-semibold">
-                    পার্টসের ভ্যালিডিটি
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="date"
-                      {...register("date")}
-                      ref={(e) => {
-                        register("date").ref(e);
-                        partsDateRef.current = e;
-                      }}
-                      className="remove-date-icon mt-1 w-full text-sm border border-gray-300 px-3 py-2 rounded bg-white outline-none pr-10"
-                    />
+            <Form.Item style={{ textAlign: "right", marginBottom: 0 }}>
+              <Space>
+                <Button onClick={() => setShowAddModal(false)}>বাতিল</Button>
+                <Button type="primary" htmlType="submit">
+                  সাবমিট করুন
+                </Button>
+              </Space>
+            </Form.Item>
+          </Form>
+        </Modal>
 
-                    <span className="py-[11px] absolute right-0 px-3 top-[22px] transform -translate-y-1/2 bg-primary rounded-r">
-                      <FiCalendar
-                        className="text-white cursor-pointer"
-                        onClick={() => partsDateRef.current?.showPicker?.()}
-                      />
-                    </span>
-                  </div>
-                </div>
-              </div>
-              {/* Submit Button */}
-              <div className="text-right">
-                <BtnSubmit>সাবমিট করুন</BtnSubmit>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-    </main>
-  );
-};
+        {/* Delete Modal */}
+        <Modal
+          title={
+            <Space>
+              <DeleteOutlined style={{ color: "#ff4d4f" }} />
+              পার্টস ডিলিট করুন
+            </Space>
+          }
+          open={deleteModalOpen}
+          onOk={handleDelete}
+          onCancel={() => {
+            setDeleteModalOpen(false)
+            setSelectedPartId(null)
+          }}
+          okText="হ্যাঁ"
+          cancelText="না"
+          okButtonProps={{ danger: true }}
+        >
+          <p>আপনি কি নিশ্চিত যে এই পার্টসটি ডিলিট করতে চান?</p>
+        </Modal>
+      </Card>
+    </div>
+  )
+}
 
-export default Parts;
+export default Parts

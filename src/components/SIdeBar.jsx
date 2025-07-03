@@ -500,27 +500,27 @@ const Sidebar = () => {
       children: [
         {
           key: "CarList",
-          label: <Link to="/CarList">গাড়ি তালিকা</Link>,
+          label: <Link to="/car-list">গাড়ি তালিকা</Link>,
         },
         {
           key: "DriverList",
-          label: <Link to="/DriverList">ড্রাইভার তালিকা</Link>,
+          label: <Link to="/driver-list">ড্রাইভার তালিকা</Link>,
         },
         {
           key: "TripList",
-          label: <Link to="/TripList">ট্রিপ হিসাব</Link>,
+          label: <Link to="/trip-list">ট্রিপ হিসাব</Link>,
         },
         {
           key: "Fuel",
-          label: <Link to="/Fuel">ফুয়েল হিসাব</Link>,
+          label: <Link to="/fuel">ফুয়েল হিসাব</Link>,
         },
         {
           key: "Parts",
-          label: <Link to="/Parts">পার্টস এন্ড স্পায়ারস</Link>,
+          label: <Link to="/parts">পার্টস এন্ড স্পায়ারস</Link>,
         },
         {
           key: "Maintenance",
-          label: <Link to="/Maintenance">মেইনটেনেন্স</Link>,
+          label: <Link to="/maintenance">মেইনটেনেন্স</Link>,
         },
       ],
     },
@@ -531,11 +531,15 @@ const Sidebar = () => {
       children: [
         {
           key: "DailyIncome",
-          label: <Link to="/DailyIncome">দৈনিক আয়</Link>,
+          label: <Link to="/daily-income">দৈনিক আয়</Link>,
         },
         {
           key: "DailyExpense",
-          label: <Link to="/DailyExpense">দৈনিক ব্যয়</Link>,
+          label: <Link to="/daily-expense">দৈনিক ব্যয়</Link>,
+        },
+         {
+          key: "monthlyStatement",
+          label: <Link to="/monthly-statement">মাসিক স্টেটমেন্ট</Link>,
         },
       ],
     },
@@ -546,7 +550,7 @@ const Sidebar = () => {
       children: [
         {
           key: "AllUsers",
-          label: <Link to="/AllUsers">সকল ইউজার</Link>,
+          label: <Link to="/all-users">সকল ইউজার</Link>,
         },
       ],
     },
@@ -613,7 +617,7 @@ const Sidebar = () => {
       breakpoint="lg"
       collapsedWidth="80"
       width={260}
-      className="bg-white shadow-lg custom-sider"
+      className="bg-white shadow-2xl custom-sider"
       style={{
         height: "100vh",
         position: "sticky",
@@ -628,7 +632,7 @@ const Sidebar = () => {
           <img
             src={logo}
             alt="Logo"
-            className={`transition-all duration-300 ${collapsed ? "w-8 h-8" : "w-28 h-auto"}`}
+            className={`transition-all duration-300 ${collapsed ? "w-8 h-8" : "w-16 h-9"}`}
           />
         </Link>
       </div>
@@ -647,14 +651,14 @@ const Sidebar = () => {
       )}
 
       {/* Navigation Menu */}
-      <div className="p-2">
+      <div className="p-2 pb-8">
         <Menu
           mode="inline"
           theme="light"
           selectedKeys={[getSelectedKey()]}
           defaultOpenKeys={["fleet", "business", "user"]}
           items={adminMenuItems}
-          className="border-0 bg-transparent h-full custom-menu"
+          className="!border-none bg-white h-full custom-menu"
           style={{
             fontSize: "14px",
           }}

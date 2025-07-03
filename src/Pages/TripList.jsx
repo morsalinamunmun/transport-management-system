@@ -695,6 +695,9 @@ import {
   PhoneOutlined,
   EnvironmentOutlined,
   DollarOutlined,
+  FileTextOutlined,
+  FileExcelOutlined,
+  FilePdfOutlined,
 } from "@ant-design/icons"
 import { RiDeleteBinLine } from "react-icons/ri";
 import dayjs from "dayjs"
@@ -702,6 +705,11 @@ import * as XLSX from "xlsx"
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
 import { saveAs } from "file-saver"
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
 
 const { Title, Text } = Typography
 const { RangePicker } = DatePicker
@@ -724,6 +732,78 @@ const TripList = () => {
   current: 1,
   pageSize: 10,
 })
+
+// print trip table info
+// const printTripTable = () => {
+//     // hide specific column
+//     const actionColumns = document.querySelectorAll(".action_column");
+//     actionColumns.forEach((col) => {
+//       col.style.display = "none";
+//     });
+//     const printContent = document.querySelector("table").outerHTML;
+//     const WinPrint = window.open("", "", "width=900,height=650");
+//     WinPrint.document.write(`
+//       <html>
+//         <head>
+//           <title>Print</title>
+//           <style>
+//             table { width: 100%; border-collapse: collapse; }
+//             th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+//             @media print {
+//             .action_column { display: none !important; }
+//           }
+//           </style>
+//         </head>
+//         <body>${printContent}</body>
+//       </html>
+//     `);
+//     WinPrint.document.close();
+//     WinPrint.focus();
+//     WinPrint.print();
+//     WinPrint.close();
+//   };
+
+const printTripTable = () => {
+  const actionColumns = document.querySelectorAll(".action_column");
+  actionColumns.forEach((col) => {
+    col.style.display = "none";
+  });
+
+  const printContent = document.querySelector("table").outerHTML;
+  const WinPrint = window.open("", "", "width=900,height=650");
+  WinPrint.document.write(`
+    <html>
+      <head>
+        <title>Print</title>
+        <style>
+          table { width: 100%; border-collapse: collapse; }
+          th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        </style>
+      </head>
+      <body>${printContent}</body>
+    </html>
+  `);
+  WinPrint.document.close();
+  WinPrint.focus();
+  WinPrint.print();
+
+  // প্রিন্ট শেষ হলে UI রিকভার করার জন্য
+  window.onafterprint = () => {
+    actionColumns.forEach((col) => {
+      col.style.display = "";
+    });
+    window.onafterprint = null; // ইভেন্ট মুছে ফেলুন যাতে বারবার না হয়
+  };
+
+  // যদি ব্রাউজার onafterprint সাপোর্ট না করে, তাহলে কিছু সময় পর রিকভার করুন
+  setTimeout(() => {
+    actionColumns.forEach((col) => {
+      col.style.display = "";
+    });
+  }, 1000);
+
+  WinPrint.close();
+};
 
   // Fetch trips data
   useEffect(() => {
@@ -753,32 +833,36 @@ const TripList = () => {
   // Filter function
   useEffect(() => {
     const filtered = trip.filter((dt) => {
-      const term = searchTerm.toLowerCase()
-      const tripDate = dayjs(dt.trip_date)
+  const term = searchTerm.toLowerCase();
+  const tripDate = dayjs(dt.trip_date);
 
-      const matchesSearch =
-        dt.trip_date?.toLowerCase().includes(term) ||
-        dt.trip_time?.toLowerCase().includes(term) ||
-        dt.load_point?.toLowerCase().includes(term) ||
-        dt.unload_point?.toLowerCase().includes(term) ||
-        dt.driver_name?.toLowerCase().includes(term) ||
-        dt.customer?.toLowerCase().includes(term) ||
-        dt.driver_contact?.toLowerCase().includes(term) ||
-        String(dt.driver_percentage).includes(term) ||
-        String(dt.fuel_price).includes(term) ||
-        String(dt.gas_price).includes(term) ||
-        dt.vehicle_number?.toLowerCase().includes(term) ||
-        String(dt.other_expenses).includes(term) ||
-        String(dt.trip_price).includes(term)
+  const matchesSearch =
+    dt.trip_date?.toLowerCase().includes(term) ||
+    dt.trip_time?.toLowerCase().includes(term) ||
+    dt.load_point?.toLowerCase().includes(term) ||
+    dt.unload_point?.toLowerCase().includes(term) ||
+    dt.driver_name?.toLowerCase().includes(term) ||
+    dt.customer?.toLowerCase().includes(term) ||
+    dt.driver_contact?.toLowerCase().includes(term) ||
+    String(dt.driver_percentage).includes(term) ||
+    String(dt.fuel_price).includes(term) ||
+    String(dt.gas_price).includes(term) ||
+    dt.vehicle_number?.toLowerCase().includes(term) ||
+    String(dt.other_expenses).includes(term) ||
+    String(dt.trip_price).includes(term);
 
-      const matchesDateRange =
-        !dateRange || (tripDate.isAfter(dateRange[0]?.startOf("day")) && tripDate.isBefore(dateRange[1]?.endOf("day")))
+  const matchesDateRange =
+    !dateRange ||
+    (tripDate.isSameOrAfter(dayjs(dateRange[0]).startOf("day")) &&
+     tripDate.isSameOrBefore(dayjs(dateRange[1]).endOf("day")));
 
-      return matchesSearch && matchesDateRange
-    })
+  return matchesSearch && matchesDateRange;
+});
+
 
     setFilteredTrip(filtered)
   }, [trip, searchTerm, dateRange])
+
 
   // Delete trip
   const handleDelete = async () => {
@@ -999,11 +1083,12 @@ const TripList = () => {
       title: "তারিখ",
       dataIndex: "trip_date",
       key: "trip_date",
-      // width: 130,
+      width: 130,
       render: (date) => (
         <Space direction="vertical" size={0}>
           <Text>
-            <CalendarOutlined /> {date}
+            {/* <CalendarOutlined /> */}
+             {date}
           </Text>
         </Space>
       ),
@@ -1027,24 +1112,25 @@ const TripList = () => {
     {
       title: "ট্রিপ এবং গন্তব্য",
       key: "trip_destination",
-      // width: 200,
+      width: 200,
       render: (_, record) => (
         <Space direction="vertical" size={0}>
-          <Text>তারিখ: {record.trip_date}</Text>
-          <Text>
-            <EnvironmentOutlined /> লোড: {record.load_point}
+          {/* <Text>তারিখ: {record.trip_date}</Text> */}
+          <Text> 
+            লোড: {record.load_point}
           </Text>
           <Text>
-            <EnvironmentOutlined /> আনলোড: {record.unload_point}
+            {/* <EnvironmentOutlined />  */}
+            আনলোড: {record.unload_point}
           </Text>
-          <Text>সময়: {record.trip_time}</Text>
+          {/* <Text>সময়: {record.trip_time}</Text> */}
         </Space>
       ),
     },
     {
       title: "কাস্টমারের তথ্য",
       key: "customer_info",
-      // width: 100,
+      width: 180,
       render: (_, record) => (
         <Space direction="vertical" size={0}>
           <Text>নাম: {record.customer}</Text>
@@ -1055,7 +1141,7 @@ const TripList = () => {
     {
       title: "ট্রিপের খরচ",
       key: "total_cost",
-      // width: 130,
+      width: 130,
       render: (_, record) => {
         const fuel = Number.parseFloat(record.fuel_price) || 0
         const gas = Number.parseFloat(record.gas_price) || 0
@@ -1066,7 +1152,7 @@ const TripList = () => {
 
         return (
           <div>
-            <DollarOutlined /> {totalCost.toFixed(2)}
+             {totalCost.toFixed(2)}
           </div>
         )
       },
@@ -1075,37 +1161,38 @@ const TripList = () => {
       title: "ট্রিপের ভাড়া",
       dataIndex: "trip_price",
       key: "trip_price",
-      // width: 130,
+      width: 130,
       render: (price) => (
         <div>
-          <DollarOutlined /> {price}
+           {price}
         </div>
       ),
     },
     {
       title: "অ্যাকশন",
       key: "actions",
-      // width: 100,
+      className: "action_column",
+      width: 130,
       // fixed: "right",
       render: (_, record) => (
         <Space>
            <Tooltip title="সম্পাদনা">
                 <EditOutlined
-                  className="text-yellow-500 cursor-pointer text-lg hover:!text-primary"
-                  onClick={() => (window.location.href = `/UpdateTripForm/${record.id}`)}
+                  className="!text-yellow-500 cursor-pointer text-lg hover:!text-primary"
+                  onClick={() => (window.location.href = `/update-tripForm/${record.id}`)}
                 />
               </Tooltip>
 
           <Tooltip title="দেখুন">
                 <EyeOutlined 
-                  className="border border-gray-200 rounded p-1 cursor-pointer text-lg hover:bg-primary hover:!text-white transition-all duration-300"
+                  className="bg-white rounded shadow-md p-1 cursor-pointer text-lg hover:bg-primary hover:!text-white transition-all duration-300"
                 onClick={() => handleView(record.id)}
                 />
               </Tooltip>         
           
            <Tooltip title="ডিলিট">
                 <RiDeleteBinLine
-                  className="bg-red-500 p-1 text-white cursor-pointer text-2xl rounded"
+                  className="!text-red-500 p-1 text-white cursor-pointer text-2xl rounded"
                  onClick={() => {
                 setSelectedTripId(record.id)
                 setDeleteModalOpen(true)
@@ -1117,85 +1204,65 @@ const TripList = () => {
     },
   ]
 
+
   return (
     <div className="overflow-hidden  mx-auto -z-10">
     <div
-      style={{ padding: "24px", minHeight: "100vh" }}
+      style={{ padding: "10px", minHeight: "100vh" }}
     >
       <Card
         style={{
           maxWidth: "100%",
-          margin: "0 auto",
-          borderRadius: "16px",
           boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
           background: "rgba(255,255,255,0.9)",
           backdropFilter: "blur(10px)",
         }}
+        className="rounded-lg"
       >
         {/* Header */}
         <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }}>
           <Col>
-            <Title level={2} style={{ margin: 0, color: "#11375B" }}>
+            <Title level={4} style={{ margin: 0, color: "#11375B" }}>
               <TruckOutlined style={{ marginRight: "12px", color: "#11375B" }} />
               ট্রিপের হিসাব
             </Title>
           </Col>
-          <Col>
+          <Col className="mt-3 md:mt-0">
             <Space>
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
                 style={{ background: "#11375B", borderColor: "#11375B" }}
-                onClick={() => (window.location.href = "/AddTripForm")}
+                onClick={() => (window.location.href = "/add-tripForm")}
               >
                 ট্রিপ
               </Button>
               <Button
                 icon={<FilterOutlined />}
                 onClick={() => setShowFilter(!showFilter)}
-                style={{ background: "#11375B", borderColor: "#11375B", color: "white" }}
+                style={{
+                  background: showFilter ? "#11375b" : "transparent",
+                  color: showFilter ? "white" : "#11375b",
+                  borderColor: "#11375b",
+                }}
               >
                 ফিল্টার
               </Button>
             </Space>
           </Col>
         </Row>
-
-        {/* Export and Search */}
-        <Row justify="space-between" align="middle" style={{ marginBottom: "16px" }}>
-          <Col>
-            <Space>
-              <Dropdown menu={{ items: exportMenuItems }} placement="bottomLeft">
-                <Button icon={<ExportOutlined />}>Export</Button>
-              </Dropdown>
-              <Button icon={<PrinterOutlined />} onClick={() => window.print()}>
-                Print
-              </Button>
-            </Space>
-          </Col>
-          <Col>
-            <Search
-              placeholder="সার্চ করুন..."
-              allowClear
-              style={{ width: 300 }}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              prefix={<SearchOutlined />}
-            />
-          </Col>
-        </Row>
-
         {/* Filter Section */}
         {showFilter && (
-          <Card style={{ marginBottom: "16px", background: "#f8f9fa" }}>
+          <Card style={{ marginBottom: "16px" }}>
             <Row gutter={16} align="middle">
-              <Col span={8}>
+              <Col sm={10} lg={20}>
                 <RangePicker
                   style={{ width: "100%" }}
                   onChange={(dates) => setDateRange(dates)}
                   placeholder={["শুরুর তারিখ", "শেষের তারিখ"]}
                 />
               </Col>
-              <Col>
+              <Col span={4}>
                 <Button
                   type="primary"
                   icon={<FilterOutlined />}
@@ -1208,14 +1275,92 @@ const TripList = () => {
           </Card>
         )}
 
+        {/* Export and Search */}
+        <Row justify="space-between" align="middle" style={{ marginBottom: "16px" }} gutter={[16, 16]}>
+          {/* <Col>
+            <Space>
+              <Dropdown menu={{ items: exportMenuItems }} placement="bottomLeft">
+                <Button icon={<ExportOutlined />}>Export</Button>
+              </Dropdown>
+              <Button icon={<PrinterOutlined />} onClick={() => window.print()}>
+                Print
+              </Button>
+            </Space>
+          </Col> */}
+         <Col>
+  <Space wrap>
+    {/* CSV */}
+    <Button
+      icon={<FileTextOutlined style={{ color: "#1890ff" }} />}
+      className="!bg-blue-50 border !border-blue-100 hover:!bg-white hover:!text-primary"
+      onClick={exportCSV}
+    >
+      CSV
+    </Button>
+
+    {/* Excel */}
+    <Button
+      icon={<FileExcelOutlined style={{ color: "#52c41a" }} />}
+      onClick={exportExcel}
+      className="!bg-green-50 border !border-green-100 hover:!bg-white hover:!text-primary"
+    >
+      Excel
+    </Button>
+
+    {/* PDF */}
+    <Button
+      icon={<FilePdfOutlined style={{ color: "#f5222d" }} />}
+      onClick={exportPDF}
+      className="!bg-orange-50 border !border-orange-100 hover:!bg-white hover:!text-primary"
+    >
+      PDF
+    </Button>
+
+    {/* Print */}
+    <Button
+      icon={<PrinterOutlined style={{ color: "#722ed1" }} />} 
+      onClick={printTripTable}
+      className="!bg-blue-50 border !border-blue-100 hover:!bg-white hover:!text-primary"
+    >
+      Print
+    </Button>
+  </Space>
+</Col>
+
+{/* Search trip */}
+          <Col>
+  <Search
+    placeholder="সার্চ করুন..."
+    allowClear
+    // prefix={<SearchOutlined />}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    enterButton={
+      <Button
+        style={{
+          backgroundColor: "#11375B", 
+          color: "#fff",              
+          borderColor: "#11375B"
+        }}
+      >
+        <SearchOutlined />
+      </Button>
+    }
+    // style={{ width: 300 }}
+    // className="!w-[20%] md:!w-[40%]"
+  />
+</Col>
+
+        </Row>
+
         {/* Table */}
         <Table
           columns={columns}
           dataSource={filteredTrip}
           loading={loading}
+           size="middle"
           rowKey="id"
-          scroll={{ x: 1200 }}
-          // scroll={{ x: 'max-content' }}
+          // scroll={{ x: 1200 }}
+          scroll={{ x: 'max-content' }}
            pagination={{
     current: pagination.current,
     pageSize: pagination.pageSize,
@@ -1228,6 +1373,55 @@ const TripList = () => {
       setPagination({ current: 1, pageSize: size }) // page reset to 1 when size changes
     },
   }}
+
+summary={() => {
+  const totalCost = filteredTrip.reduce((sum, trip) => {
+    const fuel = Number.parseFloat(trip.fuel_price) || 0
+    const gas = Number.parseFloat(trip.gas_price) || 0
+    const others = Number.parseFloat(trip.other_expenses) || 0
+    const demarage = Number.parseFloat(trip.demarage) || 0
+    const commission = Number.parseFloat(trip.driver_percentage) || 0
+    return sum + fuel + gas + others + demarage + commission
+  }, 0)
+
+  const totalRevenue = filteredTrip.reduce(
+    (sum, trip) => sum + (Number(trip.trip_price) || 0),
+    0
+  )
+
+  return (
+    <Table.Summary fixed>
+      <Table.Summary.Row className="bg-blue-50">
+        {/* Column 0-4 skip */}
+        <Table.Summary.Cell index={0} />
+        <Table.Summary.Cell index={1}>
+          <Text strong style={{ color: "#11375b", whiteSpace: "nowrap" }}>
+            Total
+          </Text>
+        </Table.Summary.Cell>
+        <Table.Summary.Cell index={2} />
+        <Table.Summary.Cell index={3} />
+
+        {/* খরচের মোট */}
+        <Table.Summary.Cell index={5}>
+          <Text strong style={{ color: "#11375b", whiteSpace: "nowrap" }}>
+            ৳ {totalCost.toFixed(2)}
+          </Text>
+        </Table.Summary.Cell>
+
+        {/* ভাড়ার মোট */}
+        <Table.Summary.Cell index={6}>
+          <Text strong style={{ color: "#11375b", whiteSpace: "nowrap" }}>
+             ৳ {totalRevenue.toFixed(2)}
+          </Text>
+        </Table.Summary.Cell>
+
+        {/* Last column - অ্যাকশন */}
+        <Table.Summary.Cell index={7} className="summary_action_cell"/>
+      </Table.Summary.Row>
+    </Table.Summary>
+  )
+}}
         />
 
         {/* Delete Modal */}
