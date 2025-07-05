@@ -260,8 +260,10 @@
 // export default OverViewCard;
 
 
+
+
 import { useEffect, useState } from "react"
-import { Card, Row, Col, Statistic, List, Typography, Space, Badge, Table, Tag } from "antd"
+import { Card, Row, Col, Statistic, List, Typography, Space, Badge, Table, Tag, Spin } from "antd"
 import {
   DollarOutlined,
   ToolOutlined,
@@ -288,13 +290,16 @@ const OverViewCard = () => {
   const [demarage, setDemarage] = useState(0)
   const [driverCommission, setDriverCommission] = useState(0)
   const [todayIncome, setTodayIncome] = useState(0)
-
   const [trips, setTrips] = useState([])
+
+  const [loadingIncome, setLoadingIncome] = useState(true)
+  const [loadingReminder, setLoadingReminder] = useState(true)
+  const [loadingTrips, setLoadingTrips] = useState(true)
+  const [loadingExpenses, setLoadingExpenses] = useState(true)
 
   const today = dayjs().format("YYYY-MM-DD")
 
-
-  // রিমাইন্ডার ফেচ
+  // Reminder
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
@@ -320,13 +325,15 @@ const OverViewCard = () => {
         setExpiringDocs(expiring)
       } catch (error) {
         console.error("Error fetching vehicle data:", error)
+      } finally {
+        setLoadingReminder(false)
       }
     }
 
     fetchVehicles()
   }, [])
 
-  // আজকের ফুয়েল এবং গ্যাস খরচ
+  // Fuel
   useEffect(() => {
     const fetchFuelData = async () => {
       try {
@@ -342,15 +349,10 @@ const OverViewCard = () => {
             const totalPrice = Number.parseFloat(fuel.total_price) || 0
             const type = (fuel.type || "").toLowerCase()
 
-            if (type === "octen") {
-              octen += totalPrice
-            } else if (type === "diesel") {
-              diesel += totalPrice
-            } else if (type === "petroll" || type === "petrol") {
-              petrol += totalPrice
-            } else if (type === "gas") {
-              gas += totalPrice
-            }
+            if (type === "octen") octen += totalPrice
+            else if (type === "diesel") diesel += totalPrice
+            else if (type === "petroll" || type === "petrol") petrol += totalPrice
+            else if (type === "gas") gas += totalPrice
           }
         })
 
@@ -360,21 +362,20 @@ const OverViewCard = () => {
         setGasCost(gas)
       } catch (error) {
         console.error("Error fetching fuel data:", error)
+      } finally {
+        setLoadingExpenses(false)
       }
     }
 
     fetchFuelData()
   }, [today])
 
-  const totalCost = octenCost + dieselCost + petrolCost + gasCost
-
-  // calculate total maintenance cost
+  // Maintenance
   useEffect(() => {
     const fetchMaintenanceData = async () => {
       try {
         const response = await axios.get("https://api.dropshep.com/api/maintenance")
         const data = response.data.data
-
         const today = new Date().toISOString().split("T")[0]
 
         const total = data
@@ -390,29 +391,26 @@ const OverViewCard = () => {
     fetchMaintenanceData()
   }, [])
 
-  // trip cost
+  // Trips
   useEffect(() => {
     const fetchTripData = async () => {
       try {
         const response = await axios.get("https://api.dropshep.com/api/trip")
         const data = response.data.data
         setTrips(data)
-        const today = new Date().toISOString().split("T")[0]
 
+        const today = new Date().toISOString().split("T")[0]
         const todayTrips = data.filter((trip) => trip.trip_date === today)
 
         const totalOtherExpenses = todayTrips.reduce(
           (sum, trip) => sum + Number.parseFloat(trip.other_expenses || 0),
           0,
         )
-
         const totalDemarage = todayTrips.reduce((sum, trip) => sum + Number.parseFloat(trip.demarage || 0), 0)
-
         const totalCommission = todayTrips.reduce(
           (sum, trip) => sum + Number.parseFloat(trip.driver_percentage || 0),
           0,
         )
-
         const totalTripIncome = todayTrips.reduce((sum, trip) => sum + Number.parseFloat(trip.trip_price || 0), 0)
 
         setOtherExpenses(totalOtherExpenses)
@@ -421,17 +419,20 @@ const OverViewCard = () => {
         setTodayIncome(totalTripIncome)
       } catch (error) {
         console.error("Failed to fetch trip data", error)
+      } finally {
+        setLoadingTrips(false)
+        setLoadingIncome(false)
       }
     }
 
     fetchTripData()
   }, [])
 
+  const totalCost = octenCost + dieselCost + petrolCost + gasCost
   const totalCommission = otherExpenses + demarage + driverCommission
   const totalExpense = totalCost + todayCost + totalCommission
   const profit = todayIncome - totalExpense
 
-  // Expense table data
   const expenseTableData = [
     {
       key: "1",
@@ -464,7 +465,7 @@ const OverViewCard = () => {
       render: (text, record) => (
         <Space className="text-xs lg:text-sm">
           {record.icon}
-          <p strong className="text-xs lg:text-lg">{text}</p>
+          <p className="text-xs lg:text-lg">{text}</p>
         </Space>
       ),
     },
@@ -485,16 +486,16 @@ const OverViewCard = () => {
       key: "status",
       align: "center",
       render: (status) => (
-        <Tag color={status === "active" ? "red" : "default"}>{status === "active" ? "খরচ হয়েছে" : "খরচ নেই"}</Tag>
+        <Tag color={status === "active" ? "red" : "default"}>
+          {status === "active" ? "খরচ হয়েছে" : "খরচ নেই"}
+        </Tag>
       ),
     },
   ]
 
   return (
-    <div className="p-6 ">
-      {/* Top Row - Income and Reminder Cards */}
+    <div className="p-6">
       <Row gutter={[16, 16]} className="mb-5">
-        {/* আয় কার্ড */}
         <Col xs={24} sm={12} md={12} lg={8}>
           <Card
             size="small"
@@ -505,24 +506,19 @@ const OverViewCard = () => {
               </Space>
             }
             extra={<Badge count="আয়" style={{ backgroundColor: "#52c41a" }} />}
-            hoverable
             className="h-[150px] shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300"
           >
             <div className="flex items-center justify-center h-full mt-7">
-            <Space direction="vertical" size="middle" style={{ width: "100%" }}>
               <Statistic
                 value={todayIncome}
                 suffix="টাকা"
                 valueStyle={{ color: "#11375b", fontSize: "20px" }}
-                className=" flex justify-center text-center text-primary"
+                loading={loadingIncome}
               />
-
-            </Space>
             </div>
           </Card>
         </Col>
 
-        {/* রিমাইন্ডার কার্ড */}
         <Col xs={24} sm={12} md={12} lg={8}>
           <Card
             size="small"
@@ -533,11 +529,14 @@ const OverViewCard = () => {
                 {expiringDocs.length > 0 && <Badge count={expiringDocs.length} />}
               </Space>
             }
-            hoverable
             className="h-[150px] shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300"
             bodyStyle={{ padding: "12px", maxHeight: "140px", overflowY: "auto" }}
           >
-            {expiringDocs.length > 0 ? (
+            {loadingReminder ? (
+              <div className="flex justify-center items-center h-full">
+                <Spin size="small" />
+              </div>
+            ) : expiringDocs.length > 0 ? (
               <List
                 size="small"
                 dataSource={expiringDocs}
@@ -545,9 +544,7 @@ const OverViewCard = () => {
                   <List.Item className="py-2 border-b border-gray-100 last:border-b-0">
                     <Space direction="vertical" size="small" style={{ width: "100%" }}>
                       <div className="flex justify-between items-center">
-                        <Text strong className="text-xs text-gray-900">
-                          {item.vehicle}
-                        </Text>
+                        <Text strong className="text-xs text-gray-900">{item.vehicle}</Text>
                         <Tag color={item.daysLeft <= 3 ? "red" : "orange"} className="text-xs font-medium">
                           {item.daysLeft} দিন
                         </Tag>
@@ -561,41 +558,35 @@ const OverViewCard = () => {
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-gray-400">
                 <BellOutlined className="text-2xl mb-2" />
-                <Text type="secondary" className="text-xs">
-                  কোনো মেয়াদোত্তীর্ণ ডেট নেই
-                </Text>
+                <Text type="secondary" className="text-xs">কোনো মেয়াদোত্তীর্ণ ডেট নেই</Text>
               </div>
             )}
           </Card>
         </Col>
-        {/* Total Trip */}
+
         <Col xs={24} sm={12} md={12} lg={8}>
           <Card
             size="small"
             title={
               <Space className="text-gray-800">
-
                 <FaCarSide style={{ color: "#faad14" }} />
                 <span>টোটাল ট্রিপ</span>
               </Space>
             }
-            hoverable
             className="h-[150px] shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300"
           >
             <div className="flex items-center justify-center h-full mt-7">
-              <Space>
-                <Statistic
-                  value={trips.length}
-                  prefix="টোটাল ট্রিপ"
-                  valueStyle={{ color: "#11375b", fontSize: "20px" }} />
-              </Space>
+              <Statistic
+                value={trips.length}
+                prefix="টোটাল ট্রিপ"
+                valueStyle={{ color: "#11375b", fontSize: "20px" }}
+                loading={loadingTrips}
+              />
             </div>
           </Card>
         </Col>
-
       </Row>
 
-      {/* ব্যয় কার্ড */}
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={12}>
           <Card
@@ -613,15 +604,14 @@ const OverViewCard = () => {
                 </Text>
               </Space>
             }
-            hoverable
             className="shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300"
           >
             <Table
+              loading={loadingExpenses}
               dataSource={expenseTableData}
               columns={columns}
               pagination={false}
               size="small"
-              className="overflow-x-auto"
               rowClassName="hover:bg-gray-50 transition-colors duration-200 w-full"
               summary={(pageData) => {
                 const total = pageData.reduce((sum, record) => sum + record.amount, 0)
@@ -630,9 +620,7 @@ const OverViewCard = () => {
                     <Table.Summary.Cell index={0}>
                       <Space>
                         <WarningOutlined style={{ color: "#fa8c16" }} />
-                        <Text strong className="text-gray-900">
-                          সর্বমোট
-                        </Text>
+                        <Text strong className="text-gray-900">সর্বমোট</Text>
                       </Space>
                     </Table.Summary.Cell>
                     <Table.Summary.Cell index={1} align="right">
@@ -641,9 +629,7 @@ const OverViewCard = () => {
                       </Text>
                     </Table.Summary.Cell>
                     <Table.Summary.Cell index={2} align="center">
-                      <Tag color="orange" className="font-medium">
-                        মোট ব্যয়
-                      </Tag>
+                      <Tag color="orange" className="font-medium">মোট ব্যয়</Tag>
                     </Table.Summary.Cell>
                   </Table.Summary.Row>
                 )
@@ -652,7 +638,6 @@ const OverViewCard = () => {
           </Card>
         </Col>
       </Row>
-
     </div>
   )
 }

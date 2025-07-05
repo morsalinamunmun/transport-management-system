@@ -636,7 +636,7 @@ const AddCarForm = () => {
             </Col>
           </Row>
           {/* Submit Button */}
-          <Row justify="center" style={{ marginTop: "32px" }}>
+          <Row style={{ marginTop: "32px" }}>
             <Col>
               <Button
                 type="primary"

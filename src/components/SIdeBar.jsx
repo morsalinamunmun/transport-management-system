@@ -534,6 +534,10 @@ const Sidebar = () => {
           label: <Link to="/daily-income">দৈনিক আয়</Link>,
         },
         {
+          key: "DailyTripExpense",
+          label: <Link to="/daily-trip-expense">দৈনিক ট্রিপের ব্যয়</Link>,
+        },
+        {
           key: "DailyExpense",
           label: <Link to="/daily-expense">দৈনিক ব্যয়</Link>,
         },

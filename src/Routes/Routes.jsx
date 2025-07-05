@@ -30,6 +30,7 @@ import UpdateDailyIncomeForm from "../Pages/updateForm/UpdateDailyIncomeForm";
 import UpdateExpenseForm from "../Pages/updateForm/UpdateExpenseForm";
 import AdminRoute from "./AdminRoute";
 import MonthlyStatement from "../Pages/MonthlyStatement";
+import DailyTripExpense from "../Pages/DailyTripExpense";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -197,6 +198,14 @@ export const router = createBrowserRouter([
           <AdminRoute>
             <DailyIncome />
           </AdminRoute>
+        ),
+      },
+      {
+        path: "/daily-trip-expense",
+        element: (
+          <PrivateRoute>
+            <DailyTripExpense />
+          </PrivateRoute>
         ),
       },
       {

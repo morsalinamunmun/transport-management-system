@@ -663,11 +663,13 @@ import {
   CarOutlined,
   SaveOutlined,
 } from "@ant-design/icons"
+import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 const { Title } = Typography;
 
 const AddTripForm = () => {
+  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const {
     register,
@@ -684,6 +686,7 @@ const AddTripForm = () => {
   const totalDamarage = parseFloat(watch("demarage") || 0);
   const other = parseFloat(watch("other_expenses") || 0);
   const total = commision + fuel + gas + totalDamarage + other;
+  const navigate = useNavigate();
 
   const [drivers, setDrivers] = useState([]);
   const [vehicles, setVehicles] = useState([]);
@@ -700,27 +703,29 @@ const AddTripForm = () => {
       .catch((err) => console.error(err));
   }, []);
 
-  const onSubmit = async (data) => {
-    try {
-      const formData = new FormData();
-      for (const key in data) {
-        formData.append(key, data[key]);
-      }
-      const response = await axios.post("https://api.dropshep.com/api/trip", formData);
-      const resData = response.data;
-      if (resData.status === "success") {
-        toast.success("ট্রিপ সফলভাবে সংরক্ষণ হয়েছে!", {
-          position: "top-right",
-        });
-        reset();
-      } else {
-        toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
-      }
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || "Unknown error";
-      toast.error("সার্ভার ত্রুটি: " + errorMessage);
+  const onFinish = async (values) => {
+setLoading(true);
+  try {
+    const formData = new FormData();
+    for (const key in values) {
+      formData.append(key, values[key]);
     }
-  };
+
+    const response = await axios.post("https://api.dropshep.com/api/trip", formData);
+    const resData = response.data;
+
+    if (resData.status === "success") {
+      toast.success("ট্রিপ সফলভাবে সংরক্ষণ হয়েছে!");
+      form.resetFields(); 
+      navigate("/trip-list")
+    } else {
+      toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
+    }
+  } catch (error) {
+    toast.error("সার্ভার ত্রুটি: " + (error?.response?.data?.message || error.message));
+     setLoading(false);
+  }
+};
 
   return (
     <div className="mt-10">
@@ -731,7 +736,7 @@ const AddTripForm = () => {
         </Title>
         <Form
           layout="vertical"
-          onFinish={handleSubmit(onSubmit)}
+          onFinish={onFinish}
           form={form}
         >
           {/* ট্রিপ এবং গন্তব্য সেকশন */}
@@ -854,12 +859,12 @@ const AddTripForm = () => {
               </Col>
             </Row>
 
-          <Row justify="center" style={{ marginTop: "32px" }}>
+          <Row style={{ marginTop: "32px" }}>
             <Col>
               <Button
                 type="primary"
                 htmlType="submit"
-                // loading={loading}
+                loading={loading}
                 icon={<SaveOutlined />}
                 size="middel"
                 // 

@@ -877,7 +877,7 @@ const UpdateMaintenanceForm = () => {
           </Row>
 
           {/* Submit Button */}
-          <Row justify="center" style={{ marginTop: "32px" }}>
+          <Row style={{ marginTop: "32px" }}>
             <Col>
               <Button
                 type="primary"
@@ -885,7 +885,6 @@ const UpdateMaintenanceForm = () => {
                 loading={loading}
                 icon={<SaveOutlined />}
                 size="middel"
-                // 
                 className="!bg-primary w-full max-w-xs mx-auto"
               >
                 আপডেট করুন

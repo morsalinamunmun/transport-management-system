@@ -398,7 +398,6 @@ import {
   Row,
   Col,
   Typography,
-  Space,
   message,
   Image,
 } from "antd";
@@ -412,61 +411,44 @@ import {
   DeleteOutlined,
   SaveOutlined,
 } from "@ant-design/icons";
-import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import moment from "moment";
-import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-
+import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 
 const MaintenanceForm = () => {
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
   const [vehicles, setVehicles] = useState([]);
   const [drivers, setDrivers] = useState([]);
-  const [previewImage, setPreviewImage] = useState(null);
+ const navigate = useNavigate();
+ const [previewImage, setPreviewImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  // react-hook-form for validation & control
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm();
 
-  // Watch cost and cost_by to calculate total_cost dynamically
-  const cost = watch("cost");
-  const cost_by = watch("cost_by");
-
-  useEffect(() => {
-    const total = (parseFloat(cost) || 0) + (parseFloat(cost_by) || 0);
-    setValue("total_cost", total.toFixed(2));
-  }, [cost, cost_by, setValue]);
-
-  // Fetch vehicles
+  // Load Vehicles and Drivers
   useEffect(() => {
     fetch("https://api.dropshep.com/api/vehicle")
       .then((res) => res.json())
-      .then((data) => setVehicles(data.data || []))
-      .catch(() => message.error("গাড়ির তথ্য লোড করতে সমস্যা হয়েছে"));
-  }, []);
+      .then((data) => setVehicles(data.data || []));
 
-  // Fetch drivers
-  useEffect(() => {
     fetch("https://api.dropshep.com/api/driver")
       .then((res) => res.json())
-      .then((data) => setDrivers(data.data || []))
-      .catch(() => message.error("ড্রাইভারের তথ্য লোড করতে সমস্যা হয়েছে"));
+      .then((data) => setDrivers(data.data || []));
   }, []);
 
-  // Upload props for file validation
-  const uploadProps = {
+   const updateTotalCost = () => {
+    const cost = form.getFieldValue("cost") || 0;
+    const cost_by = form.getFieldValue("cost_by") || 0;
+    const total = Number(cost) + Number(cost_by);
+    form.setFieldsValue({ total_cost: total });
+  };
+
+  // upload image
+    const uploadProps = {
     beforeUpload: (file) => {
       const isImage = file.type.startsWith("image/");
       if (!isImage) {
@@ -478,527 +460,299 @@ const MaintenanceForm = () => {
         message.error("ছবির সাইজ ৫MB এর কম হতে হবে!");
         return false;
       }
-      handleImageChange({ file });
-      return false; // prevent automatic upload
+      setImageFile(file);
+      setPreviewImage(URL.createObjectURL(file));
+      return false;
     },
     showUploadList: false,
   };
 
-  const handleImageChange = (info) => {
-    const file = info.file.originFileObj || info.file;
-    if (file) {
-      setPreviewImage(URL.createObjectURL(file));
-      setImageFile(file);
-    }
-  };
-
   const removeImage = () => {
-    setPreviewImage(null);
     setImageFile(null);
-    setValue("receipt", null);
+    setPreviewImage(null);
   };
 
-  const onSubmit = async (data) => {
+  const onFinish = async (values) => {
     setLoading(true);
-    console.log(data, "d")
-    
     try {
       const formData = new FormData();
-
-      // Calculate total_cost again to be sure
-      const total = (parseFloat(data.cost) || 0) + (parseFloat(data.cost_by) || 0);
-      data.total_cost = total.toFixed(2);
-
-      Object.keys(data).forEach((key) => {
-        if (data[key] !== undefined && data[key] !== null) {
-          if (key === "date") {
-            formData.append(key, data[key].format("YYYY-MM-DD"));
-          } else {
-            formData.append(key, data[key]);
-          }
-        }
+      formData.append("date", values.date.format("YYYY-MM-DD"));
+      Object.entries(values).forEach(([key, value]) => {
+        if (key !== "date") formData.append(key, value);
       });
-
-      if (imageFile) {
+    if (imageFile) {
         formData.append("receipt", imageFile);
       }
-      // Replace URL with your actual POST URL
-      const response = await axios.post(
-        "https://api.dropshep.com/api/maintenance",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
 
-      if (response.data.status === "success") {
-        toast.success(response.data.message || "তথ্য সফলভাবে সংরক্ষণ হয়েছে!")
+      // Calculate total cost
+      const cost = parseFloat(values.cost || 0);
+      const cost_by = parseFloat(values.cost_by || 0);
+      const total_cost = cost + cost_by;
+      formData.append("total_cost", total_cost);
+
+      const res = await axios.post("https://api.dropshep.com/api/maintenance", formData);
+      if (res.data.status === "success") {
+        toast.success("তথ্য সফলভাবে সংরক্ষণ হয়েছে!");
         form.resetFields();
-        setPreviewImage(null);
-        setImageFile(null);
-        // navigate("/maintenance");
+        removeImage();
+        navigate("/maintenance")
+         setLoading(false);
       } else {
-        toast.error("সার্ভার ত্রুটি: " + (response.data.message || "অজানা সমস্যা"));
+        toast.error("সার্ভার ত্রুটি: " + (res.data.message || "Unknown Error"));
       }
     } catch (error) {
       toast.error("সার্ভার ত্রুটি: " + (error.message || "Unknown error"));
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen p-4 bg-gray-50">
-      <Toaster/>
-      <Card
-        className="max-w-7xl mx-auto"
-        style={{
-          boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
-          background: "rgba(255,255,255,0.9)",
-          backdropFilter: "blur(10px)",
-        }}
+      <Toaster />
+      <Card className="max-w-5xl mx-auto">
+        <Title level={4} style={{ color: "#11375B" }}>
+          <ToolOutlined className="mr-2" />
+          মেইনটেনেন্স ফর্ম
+        </Title>
+
+       <Form
+  layout="vertical"
+  form={form}
+  size="large"
+  onFinish={onFinish}
+>
+  <Row gutter={[16, 16]} className="-space-y-4">
+    {/* Maintenance Date */}
+    <Col xs={24} md={12}>
+      <Form.Item
+        name="date"
+        label="মেইনটেনেন্স তারিখ"
+        rules={[{ required: true, message: "তারিখ নির্বাচন করুন!" }]}
       >
-        <div className="mb-6">
-          <Title level={4} style={{ color: "#11375B" }}>
-            <ToolOutlined className="mr-2" />
-            মেইনটেনেন্স 
-          </Title>
-        </div>
+        <DatePicker
+          style={{ width: "100%" }}
+          placeholder="তারিখ নির্বাচন করুন"
+          format="DD-MM-YYYY"
+          suffixIcon={<CalendarOutlined style={{ color: "#11375B" }} />}
+          size="middel"
+        />
+      </Form.Item>
+    </Col>
 
-        <Form layout="vertical" onFinish={handleSubmit(onSubmit)} size="large" form={form}>
-          <Row gutter={[16, 16]} className="-space-y-4">
-            {/* Maintenance Date */}
-            <Col xs={24} md={12}>
-              <Form.Item
-                // label={
-                //   <Space>
-                //     <CalendarOutlined style={{ color: "#11375B" }} />
-                //     <Text strong style={{ color: "#11375B" }}>
-                //       মেইনটেনেন্স তারিখ
-                //     </Text>
-                //   </Space>
-                // }
-                label="মেইনটেনেন্স তারিখ"
-                rules={[{ required: true, message: "তারিখ নির্বাচন করুন!"}]}>
-                <Controller
-                  control={control}
-                  name="date"
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <DatePicker
-                    size="middel"
-                      {...field}
-                      style={{ width: "100%" }}
-                      placeholder="তারিখ নির্বাচন করুন"
-                      format="DD-MM-YYYY"
-                      suffixIcon={<CalendarOutlined style={{ color: "#11375B" }} />}
-                      onChange={(date) => field.onChange(date)}
-                      value={field.value || null}
-                    />
-                  )}
-                />
-              </Form.Item>
-            </Col>
+    {/* Service Type */}
+    <Col xs={24} md={12}>
+      <Form.Item
+        name="service_type"
+        label="সার্ভিসের ধরন"
+        rules={[{ required: true, message: "সার্ভিসের ধরন নির্বাচন করুন!" }]}
+      >
+        <Select placeholder="সার্ভিসের ধরন নির্বাচন করুন" size="middel">
+          <Option value="Maintenance">Maintenance</Option>
+          <Option value="General">General</Option>
+          <Option value="Emergency">Emergency</Option>
+          <Option value="Preventive">Preventive</Option>
+        </Select>
+      </Form.Item>
+    </Col>
 
-            {/* Service Type */}
-            <Col xs={24} md={12}>
-              <Form.Item
-                label={
-                  <Space>
-                    <ToolOutlined style={{ color: "#11375B" }} />
-                    <Text strong style={{ color: "#11375B" }}>
-                      সার্ভিসের ধরন
-                    </Text>
-                  </Space>
-                }
-                validateStatus={errors.service_type ? "error" : ""}
-                help={errors.service_type && "সার্ভিসের ধরন নির্বাচন করুন!"}
-              >
-                <Controller
-                  control={control}
-                  name="service_type"
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      placeholder="সার্ভিসের ধরন নির্বাচন করুন"
-                      onChange={(val) => field.onChange(val)}
-                      value={field.value || undefined}
-                      options={[
-                        { label: "Maintenance", value: "Maintenance" },
-                        { label: "General", value: "General" },
-                        { label: "Emergency", value: "Emergency" },
-                        { label: "Preventive", value: "Preventive" },
-                      ]}
-                      size="middle"
-                    />
-                  )}
-                />
-              </Form.Item>
-            </Col>
+    {/* Parts and Spares */}
+    <Col xs={24} md={12}>
+      <Form.Item
+        name="parts_and_spairs"
+        label="পার্টস এন্ড স্পায়ারস"
+        rules={[{ required: true, message: "পার্টস নির্বাচন করুন!" }]}
+      >
+        <Select placeholder="পার্টস নির্বাচন করুন" size="middel">
+          <Option value="EngineOil">Engine Oil</Option>
+          <Option value="Pistons">Pistons</Option>
+          <Option value="ABS_Sensors">ABS Sensors</Option>
+          <Option value="BrakeDrum">Brake Drum</Option>
+          <Option value="Tires">Tires</Option>
+          <Option value="Battery">Battery</Option>
+          <Option value="Filters">Filters</Option>
+        </Select>
+      </Form.Item>
+    </Col>
 
-            {/* Parts and Spares */}
-            <Col xs={24} md={12}>
-              <Form.Item
-                label={
-                  <Space>
-                    <ToolOutlined style={{ color: "#11375B" }} />
-                    <Text strong style={{ color: "#11375B" }}>
-                      পার্টস এন্ড স্পায়ারস
-                    </Text>
-                  </Space>
-                }
-                validateStatus={errors.parts_and_spairs ? "error" : ""}
-                help={errors.parts_and_spairs && "পার্টস নির্বাচন করুন!"}
-              >
-                <Controller
-                  control={control}
-                  name="parts_and_spairs"
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      placeholder="পার্টস নির্বাচন করুন"
-                      onChange={(val) => field.onChange(val)}
-                      value={field.value || undefined}
-                      options={[
-                        { label: "Engine Oil", value: "EngineOil" },
-                        { label: "Pistons", value: "Pistons" },
-                        { label: "ABS Sensors", value: "ABS_Sensors" },
-                        { label: "Brake Drum", value: "BrakeDrum" },
-                        { label: "Tires", value: "Tires" },
-                        { label: "Battery", value: "Battery" },
-                        { label: "Filters", value: "Filters" },
-                      ]}
-                      size="middle"
-                    />
-                  )}
-                />
-              </Form.Item>
-            </Col>
+    {/* Maintenance Type */}
+    <Col xs={24} md={12}>
+      <Form.Item
+        name="maintenance_type"
+        label="মেইনটেনেন্সের ধরন"
+        rules={[{ required: true, message: "মেইনটেনেন্সের ধরন নির্বাচন করুন!" }]}
+      >
+        <Select placeholder="মেইনটেনেন্সের ধরন নির্বাচন করুন" size="middel">
+          <Option value="EngineOil">Engine Oil Change</Option>
+          <Option value="Pistons">Piston Replacement</Option>
+          <Option value="ABS_Sensors">ABS Sensor Check</Option>
+          <Option value="BrakeDrum">Brake Drum Service</Option>
+          <Option value="TireRotation">Tire Rotation</Option>
+          <Option value="BatteryCheck">Battery Check</Option>
+        </Select>
+      </Form.Item>
+    </Col>
 
-            {/* Maintenance Type */}
-            <Col xs={24} md={12}>
-              <Form.Item
-                label={
-                  <Space>
-                    <ToolOutlined style={{ color: "#11375B" }} />
-                    <Text strong style={{ color: "#11375B" }}>
-                      মেইনটেনেন্সের ধরন
-                    </Text>
-                  </Space>
-                }
-                validateStatus={errors.maintenance_type ? "error" : ""}
-                help={errors.maintenance_type && "মেইনটেনেন্সের ধরন নির্বাচন করুন!"}
-              >
-                <Controller
-                  control={control}
-                  name="maintenance_type"
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      placeholder="মেইনটেনেন্সের ধরন নির্বাচন করুন"
-                      onChange={(val) => field.onChange(val)}
-                      value={field.value || undefined}
-                      options={[
-                        { label: "Engine Oil Change", value: "EngineOil" },
-                        { label: "Piston Replacement", value: "Pistons" },
-                        { label: "ABS Sensor Check", value: "ABS_Sensors" },
-                        { label: "Brake Drum Service", value: "BrakeDrum" },
-                        { label: "Tire Rotation", value: "TireRotation" },
-                        { label: "Battery Check", value: "BatteryCheck" },
-                      ]}
-                      size="middle"
-                    />
-                  )}
-                />
-              </Form.Item>
-            </Col>
+    {/* Cost */}
+    <Col xs={24} md={12}>
+      <Form.Item
+        name="cost"
+        label="পার্টসের মূল্য"
+        rules={[{ required: true, message: "খরচের পরিমাণ লিখুন!" }]}
+      >
+        <InputNumber
+          min={0}
+          style={{ width: "100%" }}
+          formatter={(val) =>
+                    `৳ ${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  parser={(val) => val.replace(/৳\s?|(,*)/g, "")}
+                  size="middle"
+                  onChange={updateTotalCost}
+        />
+      </Form.Item>
+    </Col>
 
-            {/* Cost */}
-            <Col xs={24} md={12}>
-              <Form.Item
-                label={
-                  <Space>
-                    <DollarOutlined style={{ color: "#11375B" }} />
-                    <Text strong style={{ color: "#11375B" }}>
-                      পার্টসের মূল্য
-                    </Text>
-                  </Space>
-                }
-                validateStatus={errors.cost ? "error" : ""}
-                help={errors.cost && "খরচের পরিমাণ লিখুন!"}
-              >
-                <Controller
-                  control={control}
-                  name="cost"
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <InputNumber
-                    size="middel"
-                      {...field}
-                      style={{ width: "100%" }}
-                      min={0}
-                      formatter={(val) =>
-                        val ? `৳ ${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ""
-                      }
-                      parser={(val) => val?.replace(/৳\s?|(,*)/g, "")}
-                      onChange={(val) => field.onChange(val)}
-                    />
-                  )}
-                />
-              </Form.Item>
-            </Col>
+    {/* Vehicle Number */}
+    <Col xs={24} md={12}>
+      <Form.Item
+        name="vehicle_no"
+        label="গাড়ির নম্বর"
+        rules={[{ required: true, message: "গাড়ির নম্বর নির্বাচন করুন!" }]}
+      >
+        <Select
+          showSearch
+          placeholder="গাড়ির নম্বর নির্বাচন করুন"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().includes(input.toLowerCase())
+          }
+          size="middel"
+        >
+          {vehicles.map((v) => (
+            <Option key={v.id} value={v.registration_number}>
+              {v.registration_number} - {v.vehicle_name}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+    </Col>
 
-            {/* Vehicle Number */}
-            <Col xs={24} md={12}>
-              <Form.Item
-                label={
-                  <Space>
-                    <CarOutlined style={{ color: "#11375B" }} />
-                    <Text strong style={{ color: "#11375B" }}>
-                      গাড়ির নম্বর
-                    </Text>
-                  </Space>
-                }
-                validateStatus={errors.vehicle_no ? "error" : ""}
-                help={errors.vehicle_no && "গাড়ির নম্বর নির্বাচন করুন!"}
-              >
-                <Controller
-                  control={control}
-                  name="vehicle_no"
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      showSearch
-                      placeholder="গাড়ির নম্বর নির্বাচন করুন"
-                      onChange={(val) => field.onChange(val)}
-                      value={field.value || undefined}
-                      filterOption={(input, option) =>
-                        option.children
-                          .toLowerCase()
-                          .indexOf(input.toLowerCase()) >= 0
-                      }
-                      size="middle"
-                    >
-                      {vehicles.map((v) => (
-                        <Option key={v.id} value={v.registration_number}>
-                          {v.registration_number} - {v.vehicle_name}
-                        </Option>
-                      ))}
-                    </Select>
-                  )}
-                />
-              </Form.Item>
-            </Col>
+    {/* Cost By */}
+    <Col xs={24} md={12}>
+      <Form.Item name="cost_by" label="সার্ভিস খরচ">
+        <Input placeholder="চার্জ বাই (যেমন: মেকানিক নাম)" formatter={(val) =>
+                    `৳ ${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  parser={(val) => val.replace(/৳\s?|(,*)/g, "")}
+                  size="middle"
+                  onChange={updateTotalCost}/>
+      </Form.Item>
+    </Col>
 
-            {/* Cost By */}
-            <Col xs={24} md={12}>
-              <Form.Item
-                label={
-                  <Space>
-                    <UserOutlined style={{ color: "#11375B" }} />
-                    <Text strong style={{ color: "#11375B" }}>
-                      সার্ভিস খরচ
-                    </Text>
-                  </Space>
-                }
-              >
-                <Controller
-                  control={control}
-                  name="cost_by"
-                  render={({ field }) => (
-                    <Input
-                    size="middel"
-                      {...field}
-                      placeholder="চার্জ বাই (যেমন: মেকানিক নাম)"
-                      onChange={(e) => field.onChange(e.target.value)}
-                    />
-                  )}
-                />
-              </Form.Item>
-            </Col>
+    {/* Total Cost */}
+    <Col xs={24} md={12}>
+      <Form.Item
+        name="total_cost"
+        label="সর্বমোট খরচ"
+        rules={[{ required: true, message: "সর্বমোট খরচ লিখুন!" }]}
+      >
+        <InputNumber
+          disabled
+          min={0}
+          style={{ width: "100%" }}
+          formatter={(val) =>
+                    `৳ ${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  parser={(val) => val.replace(/৳\s?|(,*)/g, "")}
+                  size="middle"
+        />
+      </Form.Item>
+    </Col>
 
-            {/* Total Cost */}
-            <Col xs={24} md={12}>
-              <Form.Item
-                label={
-                  <Space>
-                    <DollarOutlined style={{ color: "#11375B" }} />
-                    <Text strong style={{ color: "#11375B" }}>
-                      সর্বমোট খরচ
-                    </Text>
-                  </Space>
-                }
-                validateStatus={errors.total_cost ? "error" : ""}
-                help={errors.total_cost && "সর্বমোট খরচ লিখুন!"}
-              >
-                <Controller
-                  control={control}
-                  name="total_cost"
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <InputNumber
-                    size="middel"
-                      {...field}
-                      style={{ width: "100%" }}
-                      min={0}
-                      formatter={(val) =>
-                        val ? `৳ ${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ""
-                      }
-                      parser={(val) => val?.replace(/৳\s?|(,*)/g, "")}
-                      onChange={(val) => field.onChange(val)}
-                      disabled // total cost auto-calculated
-                    />
-                  )}
-                />
-              </Form.Item>
-            </Col>
+    {/* Priority */}
+    <Col xs={24} md={12}>
+      <Form.Item
+        name="dignifies"
+        label="প্রিয়োরিটি"
+        rules={[{ required: true, message: "প্রিয়োরিটি নির্বাচন করুন!" }]}
+      >
+        <Select placeholder="প্রিয়োরিটি নির্বাচন করুন" size="middel">
+          <Option value="High">
+            <span className="text-red-500 text-xl">●</span> High Priority
+          </Option>
+          <Option value="Medium">
+            <span className="text-yellow-500 text-xl">●</span> Medium Priority
+          </Option>
+          <Option value="Low">
+            <span className="text-green-500 text-xl">●</span> Low Priority
+          </Option>
+        </Select>
+      </Form.Item>
+    </Col>
 
-            {/* Priority */}
-            <Col xs={24} md={12}>
-              <Form.Item
-                label={
-                  <Space>
-                    <ToolOutlined style={{ color: "#11375B" }} />
-                    <Text strong style={{ color: "#11375B" }}>
-                      প্রিয়োরিটি
-                    </Text>
-                  </Space>
-                }
-                validateStatus={errors.dignifies ? "error" : ""}
-                help={errors.dignifies && "প্রিয়োরিটি নির্বাচন করুন!"}
-              >
-                <Controller
-                  control={control}
-                  name="dignifies"
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      placeholder="প্রিয়োরিটি নির্বাচন করুন"
-                      onChange={(val) => field.onChange(val)}
-                      value={field.value || undefined}
-                      size="middle"
-                    >
-                      <Option value="High">
-                        <Space>
-                          <span className="text-red-500 text-xl">●</span> High Priority
-                        </Space>
-                      </Option>
-                      <Option value="Medium">
-                        <Space>
-                          <span className="text-yellow-500 text-xl">●</span> Medium Priority
-                        </Space>
-                      </Option>
-                      <Option value="Low">
-                        <Space>
-                          <span className="text-green-500 text-xl">●</span> Low Priority
-                        </Space>
-                      </Option>
-                    </Select>
-                  )}
-                />
-              </Form.Item>
-            </Col>
+    {/* Service For */}
+    <Col xs={24} md={12}>
+      <Form.Item name="service_for" label="সার্ভিস ফর (ড্রাইভার)">
+        <Select
+          showSearch
+          allowClear
+          placeholder="ড্রাইভার নির্বাচন করুন"
+          filterOption={(input, option) =>
+            option.children.toLowerCase().includes(input.toLowerCase())
+          }
+          size="middel"
+        >
+          {drivers.map((d) => (
+            <Option key={d.id} value={d.name}>
+              {d.name} - {d.contact}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+    </Col>
 
-            {/* Service For (Driver) */}
-            <Col xs={24} md={12}>
-              <Form.Item
-                label={
-                  <Space>
-                    <UserOutlined style={{ color: "#11375B" }} />
-                    <Text strong style={{ color: "#11375B" }}>
-                      সার্ভিস ফর (ড্রাইভার)
-                    </Text>
-                  </Space>
-                }
-              >
-                <Controller
-                  control={control}
-                  name="service_for"
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      showSearch
-                      allowClear
-                      placeholder="ড্রাইভার নির্বাচন করুন"
-                      onChange={(val) => field.onChange(val)}
-                      value={field.value || undefined}
-                      filterOption={(input, option) =>
-                        option.children
-                          .toLowerCase()
-                          .indexOf(input.toLowerCase()) >= 0
-                      }
-                      size="middle"
-                    >
-                      {drivers.map((d) => (
-                        <Option key={d.id} value={d.name}>
-                          {d.name} - {d.contact}
-                        </Option>
-                      ))}
-                    </Select>
-                  )}
-                />
-              </Form.Item>
-            </Col>
+    {/* Upload Receipt */}
+    <Col xs={24}>
+      <Form.Item label="ক্যাশ মেমো / কাগজের ছবি">
+        <Upload {...uploadProps} accept="image/*" listType="picture">
+          <Button icon={<UploadOutlined />} className="border-primary text-primary">
+            ছবি আপলোড করুন
+          </Button>
+        </Upload>
 
-            {/* Receipt Upload */}
-            <Col xs={24}>
-              <Form.Item
-                label={
-                  <Text strong style={{ color: "#11375B" }}>
-                    ক্যাশ মেমো / কাগজের ছবি
-                  </Text>
-                }
-              >
-                <Upload {...uploadProps} accept="image/*" listType="picture">
-                  <Button
-                    icon={<UploadOutlined />}
-                    className="border-primary text-primary"
-                  >
-                    ছবি আপলোড করুন
-                  </Button>
-                </Upload>
+        {previewImage && (
+          <div className="relative inline-block max-w-xs mt-4">
+            <Image
+              src={previewImage}
+              alt="Receipt Preview"
+              style={{ borderRadius: 8, border: "1px solid #d9d9d9" }}
+            />
+            <Button
+              danger
+              icon={<DeleteOutlined />}
+              size="small"
+              onClick={removeImage}
+              className="absolute top-2 right-2 shadow-md"
+            />
+          </div>
+        )}
+      </Form.Item>
+    </Col>
 
-                {previewImage && (
-                  <div className="relative inline-block max-w-xs mt-4">
-                    <Image
-                      src={previewImage}
-                      alt="Receipt Preview"
-                      style={{ borderRadius: 8, border: "1px solid #d9d9d9" }}
-                    />
-                    <Button
-                      danger
-                      icon={<DeleteOutlined />}
-                      size="small"
-                      onClick={removeImage}
-                      className="absolute top-2 right-2 shadow-md"
-                    />
-                  </div>
-                )}
-              </Form.Item>
-            </Col>
+    {/* Submit */}
+    <Col xs={24} className=" mt-8">
+      <Button
+        type="primary"
+        htmlType="submit"
+        loading={loading}
+        size="middel"
+        icon={<SaveOutlined />}
+        className="!bg-primary"
+      >
+        সংরক্ষণ করুন
+      </Button>
+    </Col>
+  </Row>
+</Form>
 
-            {/* Submit Button */}
-          <Row justify="center" style={{ marginTop: "32px" }}>
-            <Col xs={24} className="text-center mt-8">
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={loading}
-                icon={<SaveOutlined />}
-                size="middel"
-                className="!bg-primary w-full max-w-xs mx-auto"
-              >
-                সংরক্ষণ করুন
-              </Button>
-            </Col>
-            </Row>
-          </Row>
-        </Form>
       </Card>
     </div>
   );

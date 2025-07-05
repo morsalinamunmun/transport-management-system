@@ -17,32 +17,14 @@ const Header = ({ setMobileSidebarOpen }) => {
 
   return (
     <>
-      {/* Header */}
-      <div className="flex justify-between items-center px-5 py-2.5 border-b border-gray-300 relative z-40 bg-white">
-        {/* Title */}
-        <div className="flex items-center gap-3 cursor-pointer">
-          {/* <h3
-            className="text-primary md:hidden"
-            onClick={() => setMobileSidebarOpen(true)} // Toggle sidebar on mobile
-          >
-            <FaBars />
-          </h3> */}
+       <header className="h-18 border-b border-gray-200 bg-card flex items-center px-6">
+            {/* <SidebarTrigger className="mr-4" /> */}
+           <div className="flex-1">
+  <h1 className="text-sm md:text-lg font-bold text-primary">ট্রান্সপোর্ট ম্যানেজমেন্ট সফটওয়্যার</h1>
+  <p className="text-[8px] md:text-xs text-gray-500">পরিবর্তনশীল জগতে স্মার্ট সমাধান</p>
+</div>
 
-        </div>
-
-        {/* Search */}
-        <div className="hidden md:block relative">
-          <input
-            type="text"
-            className="border border-gray-300 rounded-md outline-none w-96 h-9 px-5"
-            placeholder="Search..."
-          />
-          <div className="absolute top-0 right-0 bg-primary py-2.5 w-10 flex items-center justify-center rounded-r-md text-white hover:bg-secondary cursor-pointer">
-            <FaMagnifyingGlass />
-          </div>
-        </div>
-
-        {/* Admin Dropdown */}
+              {/* Admin Dropdown */}
         <div className="relative bg-white p-2 rounded-md flex gap-2 items-center">
           <div
             className="flex items-center gap-2 cursor-pointer"
@@ -53,9 +35,9 @@ const Header = ({ setMobileSidebarOpen }) => {
               alt="Admin"
               className="w-8 rounded-2xl drop-shadow"
             />
-            <h3 className="font-semibold text-primary">
+            {/* <h3 className="font-semibold text-primary">
               {user?.data?.user?.role}
-            </h3>
+            </h3> */}
           </div>
           {isAdminOpen && (
             <div className="absolute right-0 top-14 w-52 bg-white drop-shadow p-5 rounded-md shadow-lg z-50">
@@ -71,13 +53,13 @@ const Header = ({ setMobileSidebarOpen }) => {
                   onClick={handleSignout}
                   className="text-red-500 font-medium hover:underline cursor-pointer"
                 >
-                  Logout
+                  লগ আউট
                 </button>
               </p>
             </div>
           )}
         </div>
-      </div>
+          </header>
     </>
   );
 };

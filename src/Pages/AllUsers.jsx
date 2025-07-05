@@ -363,9 +363,514 @@
 // export default AllUsers;
 
 
-"use client"
 
-import { useEffect, useState, useRef } from "react"
+// import { useEffect, useState, useRef } from "react"
+// import {
+//   Table,
+//   Button,
+//   Input,
+//   Card,
+//   Space,
+//   Typography,
+//   Row,
+//   Col,
+//   Tooltip,
+//   message,
+//   Statistic,
+//   Tag,
+//   Modal,
+//   Spin,
+// } from "antd"
+// import {
+//   UserOutlined,
+//   PlusOutlined,
+//   EditOutlined,
+//   DeleteOutlined,
+//   SearchOutlined,
+//   FileTextOutlined,
+//   FileExcelOutlined,
+//   FilePdfOutlined,
+//   PrinterOutlined,
+//   PhoneOutlined,
+//   MailOutlined,
+//   TeamOutlined,
+//   CheckCircleOutlined,
+//   ExclamationCircleOutlined,
+// } from "@ant-design/icons"
+// import axios from "axios"
+// import { Link } from "react-router-dom"
+// import * as XLSX from "xlsx"
+// import { saveAs } from "file-saver"
+// import jsPDF from "jspdf"
+// import autoTable from "jspdf-autotable"
+// import { RiDeleteBinLine } from "react-icons/ri"
+
+// const { Title, Text } = Typography
+// const { Search } = Input
+// const { confirm } = Modal
+
+// const AllUsers = () => {
+//   const [users, setUsers] = useState([])
+//   const [loading, setLoading] = useState(true)
+//   const [searchTerm, setSearchTerm] = useState("")
+//   const [pagination, setPagination] = useState({
+//     current: 1,
+//     pageSize: 10,
+//   })
+
+//   const printRef = useRef()
+
+//   useEffect(() => {
+//     fetchUsers()
+//   }, [])
+
+//   const fetchUsers = async () => {
+//     try {
+//       const response = await axios.get("https://api.dropshep.com/api/users")
+//       if (response.data.status === "success") {
+//         setUsers(response.data.data)
+//       }
+//       setLoading(false)
+//     } catch (error) {
+//       console.error("Error fetching user data:", error)
+//       message.error("ইউজার ডেটা লোড করতে সমস্যা হয়েছে")
+//       setLoading(false)
+//     }
+//   }
+
+//   const handleDelete = async (id) => {
+//     try {
+//       const response = await fetch(`https://api.dropshep.com/api/users/delete/${id}`, {
+//         method: "DELETE",
+//       })
+
+//       if (!response.ok) {
+//         throw new Error("Failed to delete user")
+//       }
+
+//       setUsers((prev) => prev.filter((user) => user.id !== id))
+//       message.success("ইউজার সফলভাবে ডিলিট হয়েছে")
+//     } catch (error) {
+//       console.error("Delete error:", error)
+//       message.error("ডিলিট করতে সমস্যা হয়েছে!")
+//     }
+//   }
+
+//   const showDeleteConfirm = (user) => {
+//     confirm({
+//       title: "ইউজার ডিলিট করুন",
+//       icon: <ExclamationCircleOutlined />,
+//       content: `আপনি কি নিশ্চিত যে "${user.name}" কে ডিলিট করতে চান?`,
+//       okText: "হ্যাঁ",
+//       okType: "danger",
+//       cancelText: "না",
+//       onOk() {
+//         handleDelete(user.id)
+//       },
+//     })
+//   }
+
+//   // Export functionality
+//   const csvData = users.map((user, index) => ({
+//     index: index + 1,
+//     name: user.name,
+//     phone: user.phone,
+//     email: user.email,
+//     role: user.role,
+//     status: user.status,
+//   }))
+
+//   const exportCSV = () => {
+//     const csvContent = [
+//       ["#", "নাম", "মোবাইল", "ইমেইল", "ধরন", "স্ট্যাটাস"],
+//       ...csvData.map((item) => [item.index, item.name, item.phone, item.email, item.role, item.status]),
+//     ]
+//       .map((row) => row.join(","))
+//       .join("\n")
+
+//     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+//     saveAs(blob, "users_data.csv")
+//   }
+
+//   const exportExcel = () => {
+//     const headers = ["#", "নাম", "মোবাইল", "ইমেইল", "ধরন", "স্ট্যাটাস"]
+
+//     const formattedData = csvData.map((item) => ({
+//       "#": item.index,
+//       নাম: item.name,
+//       মোবাইল: item.phone,
+//       ইমেইল: item.email,
+//       ধরন: item.role,
+//       স্ট্যাটাস: item.status,
+//     }))
+
+//     const worksheet = XLSX.utils.json_to_sheet(formattedData, { header: headers })
+//     const workbook = XLSX.utils.book_new()
+//     XLSX.utils.book_append_sheet(workbook, worksheet, "Users Data")
+//     const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" })
+//     const data = new Blob([excelBuffer], { type: "application/octet-stream" })
+//     saveAs(data, "users_data.xlsx")
+//   }
+
+//   const exportPDF = () => {
+//     const doc = new jsPDF()
+//     const tableColumn = ["#", "Name", "Mobile", "Email", "Role", "Status"]
+
+//     const tableRows = csvData.map((item) => [item.index, item.name, item.phone, item.email, item.role, item.status])
+
+//     autoTable(doc, {
+//       head: [tableColumn],
+//       body: tableRows,
+//       styles: { font: "helvetica", fontSize: 8 },
+//     })
+
+//     doc.save("users_data.pdf")
+//   }
+
+//   // Print function
+//   const printTable = () => {
+//     const printContent = printRef.current.innerHTML
+//     const WinPrint = window.open("", "", "width=900,height=650")
+//     WinPrint.document.write(`
+//       <html>
+//         <head>
+//           <title>Print</title>
+//           <style>
+//             table { width: 100%; border-collapse: collapse; }
+//             th, td { border: 1px solid #000; padding: 8px; text-align: center; }
+//             .ant-btn { display: none; }
+//           </style>
+//         </head>
+//         <body>${printContent}</body>
+//       </html>
+//     `)
+//     WinPrint.document.close()
+//     WinPrint.focus()
+//     WinPrint.print()
+//     WinPrint.close()
+//   }
+
+//   // Filter users based on search term
+//   const filteredUsers = users.filter((user) => {
+//     const term = searchTerm.toLowerCase()
+//     return (
+//       user.name?.toLowerCase().includes(term) ||
+//       user.phone?.toLowerCase().includes(term) ||
+//       user.email?.toLowerCase().includes(term) ||
+//       user.role?.toLowerCase().includes(term) ||
+//       user.status?.toLowerCase().includes(term)
+//     )
+//   })
+
+//   // Calculate totals
+//   const totalUsers = filteredUsers.length
+//   const activeUsers = filteredUsers.filter((user) => user.status?.toLowerCase() === "active").length
+//   const inactiveUsers = totalUsers - activeUsers
+//   const adminUsers = filteredUsers.filter((user) => user.role?.toLowerCase() === "admin").length
+
+//   // Get role color
+//   const getRoleColor = (role) => {
+//     switch (role?.toLowerCase()) {
+//       case "admin":
+//         return "red"
+//       case "manager":
+//         return "orange"
+//       case "user":
+//         return "blue"
+//       case "driver":
+//         return "green"
+//       default:
+//         return "default"
+//     }
+//   }
+
+//   // Get status color
+//   const getStatusColor = (status) => {
+//     switch (status?.toLowerCase()) {
+//       case "active":
+//         return "success"
+//       case "inactive":
+//         return "error"
+//       case "pending":
+//         return "warning"
+//       case "suspended":
+//         return "error"
+//       default:
+//         return "default"
+//     }
+//   }
+
+//   if (loading) {
+//     return (
+//       <div
+//         style={{
+//           minHeight: "100vh",
+//           display: "flex",
+//           justifyContent: "center",
+//           alignItems: "center",
+//         }}
+//       >
+//         <Spin size="large" />
+//       </div>
+//     )
+//   }
+
+//   // Table columns
+//   const columns = [
+//     {
+//       title: "SL",
+//       key: "index",
+//       width: 50,
+//       render: (_, __, index) => (
+//         <Text strong style={{ color: "#11375b" }}>
+//           {(pagination.current - 1) * pagination.pageSize + index + 1}
+//         </Text>
+//       ),
+//     },
+//     {
+//       title: "নাম",
+//       dataIndex: "name",
+//       key: "name",
+//       width: 150,
+//       render: (name) => (
+//         <Space>
+//           <Text strong>{name}</Text>
+//         </Space>
+//       ),
+//     },
+//     {
+//       title: "মোবাইল",
+//       dataIndex: "phone",
+//       key: "phone",
+//       width: 130,
+//       render: (phone) => (
+//         <Space>
+//           <Text>{phone}</Text>
+//         </Space>
+//       ),
+//     },
+//     {
+//       title: "ইমেইল",
+//       dataIndex: "email",
+//       key: "email",
+//       width: 200,
+//       ellipsis: {
+//         showTitle: false,
+//       },
+//       render: (email) => (
+//         <Tooltip placement="topLeft" title={email}>
+//           <Space>
+//             <Text>{email}</Text>
+//           </Space>
+//         </Tooltip>
+//       ),
+//     },
+//     {
+//       title: "ধরন",
+//       dataIndex: "role",
+//       key: "role",
+//       width: 100,
+//       render: (role) => <Text>{role}</Text>,
+//       filters: [
+//         { text: "Admin", value: "admin" },
+//         { text: "Manager", value: "manager" },
+//         { text: "User", value: "user" },
+//         { text: "Driver", value: "driver" },
+//       ],
+//       onFilter: (value, record) => {
+//         const recordRole = record.role?.toLowerCase() || ""
+//         return recordRole === value
+//       },
+//     },
+//     {
+//       title: "স্ট্যাটাস",
+//       dataIndex: "status",
+//       key: "status",
+//       width: 100,
+//       align: "center",
+//       render: (status) => <Tag color={getStatusColor(status)}>{status}</Tag>,
+//       filters: [
+//         { text: "Active", value: "active" },
+//         { text: "Inactive", value: "inactive" },
+//         { text: "Pending", value: "pending" },
+//         { text: "Suspended", value: "suspended" },
+//       ],
+//       onFilter: (value, record) => {
+//         const recordStatus = record.status?.toLowerCase() || ""
+//         return recordStatus === value
+//       },
+//     },
+//     {
+//       title: "অ্যাকশন",
+//       key: "actions",
+//       width: 120,
+//       align: "center",
+//       render: (_, record) => (
+//         <Space>
+//            <Tooltip title="সম্পাদনা">
+//                   <Link to={`/update-usersForm/${record.id}`}>
+//                         <EditOutlined
+//                           className="!text-yellow-500 cursor-pointer text-lg hover:!text-primary"
+//                         />
+//                         </Link>
+//                       </Tooltip>
+//                              <Tooltip title="ডিলিট">
+//                                   <RiDeleteBinLine
+//                                     className="!text-red-500 p-1 text-white cursor-pointer text-2xl rounded"
+//                                    onClick={() => showDeleteConfirm(record)}
+                                
+//                                   />
+//                                   </Tooltip>
+//         </Space>
+//       ),
+//     },
+//   ]
+
+//   return (
+//     <div
+//       style={{
+//         minHeight: "100vh",
+//         padding: "10px",
+//       }}
+//     >
+//       <Card
+//         className="max-w-7xl mx-auto"
+//         style={{
+//           boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
+//           background: "rgba(255,255,255,0.9)",
+//           backdropFilter: "blur(10px)",
+//         }}
+//       >
+//         {/* Header */}
+//         <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }}>
+//           <Col>
+//             <Title level={4} style={{ margin: 0, color: "#11375B" }}>
+//               <UserOutlined style={{ marginRight: "12px", color: "#11375B" }} />
+//               সকল ইউজারের তালিকা
+//             </Title>
+//           </Col>
+//           <Col>
+//             <Link to="/add-userForm">
+//               <Button
+//                 type="primary"
+//                 icon={<PlusOutlined />}
+//                 size="middel"
+//                 className="!bg-primary"
+//               >
+//                 ইউজার
+//               </Button>
+//             </Link>
+//           </Col>
+//         </Row>
+
+//         {/* Export and Search */}
+//         <Row justify="space-between" align="middle" style={{ marginBottom: "16px" }}>
+//           <Col>
+//             <Space wrap>
+//               {/* CSV */}
+//               <Button
+//                 icon={<FileTextOutlined style={{ color: "#1890ff" }} />}
+//                 onClick={exportCSV}
+//                 style={{
+//                   backgroundColor: "#e6f7ff",
+//                   borderColor: "#91d5ff",
+//                   color: "#1890ff",
+//                 }}
+//               >
+//                 CSV
+//               </Button>
+//               {/* Excel */}
+//               <Button
+//                 icon={<FileExcelOutlined style={{ color: "#52c41a" }} />}
+//                 onClick={exportExcel}
+//                 style={{
+//                   backgroundColor: "#f6ffed",
+//                   borderColor: "#b7eb8f",
+//                   color: "#52c41a",
+//                 }}
+//               >
+//                 Excel
+//               </Button>
+//               {/* PDF */}
+//               <Button
+//                 icon={<FilePdfOutlined style={{ color: "#f5222d" }} />}
+//                 onClick={exportPDF}
+//                 style={{
+//                   backgroundColor: "#fff2e8",
+//                   borderColor: "#ffbb96",
+//                   color: "#f5222d",
+//                 }}
+//               >
+//                 PDF
+//               </Button>
+//               {/* Print */}
+//               <Button
+//                 icon={<PrinterOutlined style={{ color: "#722ed1" }} />}
+//                 onClick={printTable}
+//                 style={{
+//                   backgroundColor: "#f9f0ff",
+//                   borderColor: "#d3adf7",
+//                   color: "#722ed1",
+//                 }}
+//               >
+//                 Print
+//               </Button>
+//             </Space>
+//           </Col>
+
+//           {/* Search */}
+//           <Col>
+//             <Search
+//               placeholder="ইউজার খুঁজুন...."
+//               allowClear
+//               onChange={(e) => setSearchTerm(e.target.value)}
+//               enterButton={
+//                 <Button
+//                   style={{
+//                     backgroundColor: "#11375B",
+//                     color: "#fff",
+//                     borderColor: "#11375B",
+//                   }}
+//                 >
+//                   <SearchOutlined />
+//                 </Button>
+//               }
+//             />
+//           </Col>
+//         </Row>
+
+//         {/* Table */}
+//         <div ref={printRef}>
+//           <Table
+//             columns={columns}
+//             dataSource={filteredUsers}
+//             loading={loading}
+//             rowKey="id"
+//             scroll={{ x: "max-content" }}
+//             size="middle"
+//             pagination={{
+//               current: pagination.current,
+//               pageSize: pagination.pageSize,
+//               showSizeChanger: true,
+//               pageSizeOptions: ["10", "20", "50", "100"],
+//               onChange: (page, pageSize) => {
+//                 setPagination({ current: page, pageSize })
+//               },
+//               onShowSizeChange: (current, size) => {
+//                 setPagination({ current: 1, pageSize: size })
+//               },
+//             }}
+//           />
+//         </div>
+//       </Card>
+//     </div>
+//   )
+// }
+
+// export default AllUsers
+
+
+import { useEffect, useState, useRef } from "react";
 import {
   Table,
   Button,
@@ -377,373 +882,176 @@ import {
   Col,
   Tooltip,
   message,
-  Statistic,
   Tag,
   Modal,
   Spin,
-} from "antd"
+} from "antd";
 import {
   UserOutlined,
   PlusOutlined,
   EditOutlined,
-  DeleteOutlined,
-  SearchOutlined,
-  FileTextOutlined,
-  FileExcelOutlined,
-  FilePdfOutlined,
-  PrinterOutlined,
-  PhoneOutlined,
-  MailOutlined,
-  TeamOutlined,
-  CheckCircleOutlined,
   ExclamationCircleOutlined,
-} from "@ant-design/icons"
-import axios from "axios"
-import { Link } from "react-router-dom"
-import * as XLSX from "xlsx"
-import { saveAs } from "file-saver"
-import jsPDF from "jspdf"
-import autoTable from "jspdf-autotable"
-import { RiDeleteBinLine } from "react-icons/ri"
+  SearchOutlined,
+} from "@ant-design/icons";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { RiDeleteBinLine } from "react-icons/ri";
 
-const { Title, Text } = Typography
-const { Search } = Input
-const { confirm } = Modal
+const { Title, Text } = Typography;
+const { Search } = Input;
+const { confirm } = Modal;
 
 const AllUsers = () => {
-  const [users, setUsers] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState("")
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
-  })
-
-  const printRef = useRef()
+  });
 
   useEffect(() => {
-    fetchUsers()
-  }, [])
+    fetchUsers();
+  }, []);
+   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("https://api.dropshep.com/api/users")
+      const response = await axios.get("https://api.dropshep.com/api/users");
       if (response.data.status === "success") {
-        setUsers(response.data.data)
+        setUsers(response.data.data);
       }
-      setLoading(false)
+      setLoading(false);
     } catch (error) {
-      console.error("Error fetching user data:", error)
-      message.error("ইউজার ডেটা লোড করতে সমস্যা হয়েছে")
-      setLoading(false)
+      console.error("Error fetching user data:", error);
+      message.error("ইউজার ডেটা লোড করতে সমস্যা হয়েছে");
+      setLoading(false);
     }
-  }
+  };
 
-  const handleDelete = async (id) => {
+  //  Show confirmation modal
+  const showDeleteModal = (user) => {
+    setSelectedUser(user);
+    setDeleteModalVisible(true);
+  };
+  // cancel delete modal
+  const handleCancel = () => {
+    setDeleteModalVisible(false);
+    setSelectedUser(null);
+  };
+
+  //  Delete user
+const handleDelete = async () => {
+    if (!selectedUser) return;
+
     try {
-      const response = await fetch(`https://api.dropshep.com/api/users/delete/${id}`, {
-        method: "DELETE",
-      })
-
-      if (!response.ok) {
-        throw new Error("Failed to delete user")
+      const response = await axios.delete(
+        `https://api.dropshep.com/api/users/delete/${selectedUser.id}`
+      );
+      if (response.data.status === "success") {
+        setUsers((prev) => prev.filter((user) => user.id !== selectedUser.id));
+        message.success("ইউজার সফলভাবে ডিলিট হয়েছে");
+        setDeleteModalVisible(false);
+        setSelectedUser(null);
+      } else {
+        throw new Error("ডিলিট ব্যর্থ");
       }
-
-      setUsers((prev) => prev.filter((user) => user.id !== id))
-      message.success("ইউজার সফলভাবে ডিলিট হয়েছে")
     } catch (error) {
-      console.error("Delete error:", error)
-      message.error("ডিলিট করতে সমস্যা হয়েছে!")
+      console.error("Delete error:", error);
+      message.error("ডিলিট করতে সমস্যা হয়েছে!");
     }
-  }
+  };
 
-  const showDeleteConfirm = (user) => {
-    confirm({
-      title: "ইউজার ডিলিট করুন",
-      icon: <ExclamationCircleOutlined />,
-      content: `আপনি কি নিশ্চিত যে "${user.name}" কে ডিলিট করতে চান?`,
-      okText: "হ্যাঁ",
-      okType: "danger",
-      cancelText: "না",
-      onOk() {
-        handleDelete(user.id)
-      },
-    })
-  }
 
-  // Export functionality
-  const csvData = users.map((user, index) => ({
-    index: index + 1,
-    name: user.name,
-    phone: user.phone,
-    email: user.email,
-    role: user.role,
-    status: user.status,
-  }))
-
-  const exportCSV = () => {
-    const csvContent = [
-      ["#", "নাম", "মোবাইল", "ইমেইল", "ধরন", "স্ট্যাটাস"],
-      ...csvData.map((item) => [item.index, item.name, item.phone, item.email, item.role, item.status]),
-    ]
-      .map((row) => row.join(","))
-      .join("\n")
-
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
-    saveAs(blob, "users_data.csv")
-  }
-
-  const exportExcel = () => {
-    const headers = ["#", "নাম", "মোবাইল", "ইমেইল", "ধরন", "স্ট্যাটাস"]
-
-    const formattedData = csvData.map((item) => ({
-      "#": item.index,
-      নাম: item.name,
-      মোবাইল: item.phone,
-      ইমেইল: item.email,
-      ধরন: item.role,
-      স্ট্যাটাস: item.status,
-    }))
-
-    const worksheet = XLSX.utils.json_to_sheet(formattedData, { header: headers })
-    const workbook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Users Data")
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" })
-    const data = new Blob([excelBuffer], { type: "application/octet-stream" })
-    saveAs(data, "users_data.xlsx")
-  }
-
-  const exportPDF = () => {
-    const doc = new jsPDF()
-    const tableColumn = ["#", "Name", "Mobile", "Email", "Role", "Status"]
-
-    const tableRows = csvData.map((item) => [item.index, item.name, item.phone, item.email, item.role, item.status])
-
-    autoTable(doc, {
-      head: [tableColumn],
-      body: tableRows,
-      styles: { font: "helvetica", fontSize: 8 },
-    })
-
-    doc.save("users_data.pdf")
-  }
-
-  // Print function
-  const printTable = () => {
-    const printContent = printRef.current.innerHTML
-    const WinPrint = window.open("", "", "width=900,height=650")
-    WinPrint.document.write(`
-      <html>
-        <head>
-          <title>Print</title>
-          <style>
-            table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #000; padding: 8px; text-align: center; }
-            .ant-btn { display: none; }
-          </style>
-        </head>
-        <body>${printContent}</body>
-      </html>
-    `)
-    WinPrint.document.close()
-    WinPrint.focus()
-    WinPrint.print()
-    WinPrint.close()
-  }
-
-  // Filter users based on search term
-  const filteredUsers = users.filter((user) => {
-    const term = searchTerm.toLowerCase()
-    return (
-      user.name?.toLowerCase().includes(term) ||
-      user.phone?.toLowerCase().includes(term) ||
-      user.email?.toLowerCase().includes(term) ||
-      user.role?.toLowerCase().includes(term) ||
-      user.status?.toLowerCase().includes(term)
+  const filteredUsers = users.filter((user) =>
+    Object.values(user).some((value) =>
+      String(value).toLowerCase().includes(searchTerm.toLowerCase())
     )
-  })
+  );
 
-  // Calculate totals
-  const totalUsers = filteredUsers.length
-  const activeUsers = filteredUsers.filter((user) => user.status?.toLowerCase() === "active").length
-  const inactiveUsers = totalUsers - activeUsers
-  const adminUsers = filteredUsers.filter((user) => user.role?.toLowerCase() === "admin").length
-
-  // Get role color
-  const getRoleColor = (role) => {
-    switch (role?.toLowerCase()) {
-      case "admin":
-        return "red"
-      case "manager":
-        return "orange"
-      case "user":
-        return "blue"
-      case "driver":
-        return "green"
-      default:
-        return "default"
-    }
-  }
-
-  // Get status color
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
       case "active":
-        return "success"
+        return "success";
       case "inactive":
-        return "error"
-      case "pending":
-        return "warning"
-      case "suspended":
-        return "error"
+        return "error";
       default:
-        return "default"
+        return "default";
     }
-  }
+  };
 
-  if (loading) {
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Spin size="large" />
-      </div>
-    )
-  }
-
-  // Table columns
   const columns = [
     {
       title: "SL",
-      key: "index",
-      width: 50,
-      render: (_, __, index) => (
-        <Text strong style={{ color: "#11375b" }}>
-          {(pagination.current - 1) * pagination.pageSize + index + 1}
-        </Text>
-      ),
+      render: (_, __, index) =>
+        (pagination.current - 1) * pagination.pageSize + index + 1,
+      width: 60,
     },
     {
       title: "নাম",
       dataIndex: "name",
       key: "name",
-      width: 150,
-      render: (name) => (
-        <Space>
-          <Text strong>{name}</Text>
-        </Space>
-      ),
     },
     {
       title: "মোবাইল",
       dataIndex: "phone",
       key: "phone",
-      width: 130,
-      render: (phone) => (
-        <Space>
-          <Text>{phone}</Text>
-        </Space>
-      ),
     },
     {
       title: "ইমেইল",
       dataIndex: "email",
       key: "email",
-      width: 200,
-      ellipsis: {
-        showTitle: false,
-      },
-      render: (email) => (
-        <Tooltip placement="topLeft" title={email}>
-          <Space>
-            <Text>{email}</Text>
-          </Space>
-        </Tooltip>
-      ),
     },
     {
       title: "ধরন",
       dataIndex: "role",
       key: "role",
-      width: 100,
-      render: (role) => <Text>{role}</Text>,
-      filters: [
-        { text: "Admin", value: "admin" },
-        { text: "Manager", value: "manager" },
-        { text: "User", value: "user" },
-        { text: "Driver", value: "driver" },
-      ],
-      onFilter: (value, record) => {
-        const recordRole = record.role?.toLowerCase() || ""
-        return recordRole === value
-      },
     },
     {
       title: "স্ট্যাটাস",
       dataIndex: "status",
       key: "status",
-      width: 100,
-      align: "center",
-      render: (status) => <Tag color={getStatusColor(status)}>{status}</Tag>,
-      filters: [
-        { text: "Active", value: "active" },
-        { text: "Inactive", value: "inactive" },
-        { text: "Pending", value: "pending" },
-        { text: "Suspended", value: "suspended" },
-      ],
-      onFilter: (value, record) => {
-        const recordStatus = record.status?.toLowerCase() || ""
-        return recordStatus === value
-      },
+      render: (status) => (
+        <Tag color={getStatusColor(status)}>{status}</Tag>
+      ),
     },
     {
       title: "অ্যাকশন",
       key: "actions",
-      width: 120,
-      align: "center",
       render: (_, record) => (
         <Space>
-           <Tooltip title="সম্পাদনা">
-                  <Link to={`/update-usersForm/${record.id}`}>
-                        <EditOutlined
-                          className="!text-yellow-500 cursor-pointer text-lg hover:!text-primary"
-                        />
-                        </Link>
-                      </Tooltip>
-                             <Tooltip title="ডিলিট">
-                                  <RiDeleteBinLine
-                                    className="!text-red-500 p-1 text-white cursor-pointer text-2xl rounded"
-                                   onClick={() => showDeleteConfirm(record)}
-                                
-                                  />
-                                  </Tooltip>
+          <Tooltip title="সম্পাদনা">
+            <Link to={`/update-usersForm/${record.id}`}>
+              <EditOutlined className="!text-yellow-500 cursor-pointer text-lg hover:!text-primary" />
+            </Link>
+          </Tooltip>
+          <Tooltip title="ডিলিট">
+            <RiDeleteBinLine
+              className="text-red-500 cursor-pointer text-xl"
+               onClick={() => {
+  showDeleteModal(record);
+}}
+            />
+          </Tooltip>
         </Space>
       ),
     },
-  ]
+  ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        padding: "10px",
-      }}
-    >
-      <Card
-        className="max-w-7xl mx-auto"
-        style={{
-          boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
-          background: "rgba(255,255,255,0.9)",
-          backdropFilter: "blur(10px)",
-        }}
-      >
+    <div className="p-4">
+      <Card className="max-w-7xl mx-auto">
         {/* Header */}
-        <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }}>
+        <Row justify="space-between" align="middle" className="mb-4">
           <Col>
             <Title level={4} style={{ margin: 0, color: "#11375B" }}>
               <UserOutlined style={{ marginRight: "12px", color: "#11375B" }} />
@@ -751,11 +1059,10 @@ const AllUsers = () => {
             </Title>
           </Col>
           <Col>
-            <Link to="/AddUserForm">
+            <Link to="/add-userForm">
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
-                size="middel"
                 className="!bg-primary"
               >
                 ইউজার
@@ -764,65 +1071,11 @@ const AllUsers = () => {
           </Col>
         </Row>
 
-        {/* Export and Search */}
-        <Row justify="space-between" align="middle" style={{ marginBottom: "16px" }}>
-          <Col>
-            <Space wrap>
-              {/* CSV */}
-              <Button
-                icon={<FileTextOutlined style={{ color: "#1890ff" }} />}
-                onClick={exportCSV}
-                style={{
-                  backgroundColor: "#e6f7ff",
-                  borderColor: "#91d5ff",
-                  color: "#1890ff",
-                }}
-              >
-                CSV
-              </Button>
-              {/* Excel */}
-              <Button
-                icon={<FileExcelOutlined style={{ color: "#52c41a" }} />}
-                onClick={exportExcel}
-                style={{
-                  backgroundColor: "#f6ffed",
-                  borderColor: "#b7eb8f",
-                  color: "#52c41a",
-                }}
-              >
-                Excel
-              </Button>
-              {/* PDF */}
-              <Button
-                icon={<FilePdfOutlined style={{ color: "#f5222d" }} />}
-                onClick={exportPDF}
-                style={{
-                  backgroundColor: "#fff2e8",
-                  borderColor: "#ffbb96",
-                  color: "#f5222d",
-                }}
-              >
-                PDF
-              </Button>
-              {/* Print */}
-              <Button
-                icon={<PrinterOutlined style={{ color: "#722ed1" }} />}
-                onClick={printTable}
-                style={{
-                  backgroundColor: "#f9f0ff",
-                  borderColor: "#d3adf7",
-                  color: "#722ed1",
-                }}
-              >
-                Print
-              </Button>
-            </Space>
-          </Col>
-
-          {/* Search */}
+        {/* Search */}
+        <Row justify="end" className="mb-4">
           <Col>
             <Search
-              placeholder="ইউজার খুঁজুন...."
+              placeholder="ইউজার খুঁজুন..."
               allowClear
               onChange={(e) => setSearchTerm(e.target.value)}
               enterButton={
@@ -841,31 +1094,37 @@ const AllUsers = () => {
         </Row>
 
         {/* Table */}
-        <div ref={printRef}>
-          <Table
-            columns={columns}
-            dataSource={filteredUsers}
-            loading={loading}
-            rowKey="id"
-            scroll={{ x: "max-content" }}
-            size="middle"
-            pagination={{
-              current: pagination.current,
-              pageSize: pagination.pageSize,
-              showSizeChanger: true,
-              pageSizeOptions: ["10", "20", "50", "100"],
-              onChange: (page, pageSize) => {
-                setPagination({ current: page, pageSize })
-              },
-              onShowSizeChange: (current, size) => {
-                setPagination({ current: 1, pageSize: size })
-              },
-            }}
-          />
-        </div>
+        <Table
+        size="small"
+          columns={columns}
+          dataSource={filteredUsers}
+          rowKey="id"
+          scroll={{ x: true }}
+          pagination={{
+            current: pagination.current,
+            pageSize: pagination.pageSize,
+            showSizeChanger: true,
+            pageSizeOptions: ["10", "20", "50"],
+            onChange: (page, pageSize) => {
+              setPagination({ current: page, pageSize });
+            },
+          }}
+        />
       </Card>
+      <Modal
+        visible={deleteModalVisible}
+        title="ডিলিট কনফার্মেশন"
+        onOk={handleDelete}
+        onCancel={handleCancel}
+        okText="হ্যাঁ"
+        cancelText="না"
+        okButtonProps={{ danger: true }}
+      >
+        <ExclamationCircleOutlined style={{ color: "red", marginRight: 8 }} />
+        আপনি কি নিশ্চিত যে "{selectedUser?.name}" ইউজারকে ডিলিট করতে চান?
+      </Modal>
     </div>
-  )
-}
+  );
+};
 
-export default AllUsers
+export default AllUsers;

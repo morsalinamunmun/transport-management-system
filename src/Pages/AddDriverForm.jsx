@@ -523,7 +523,7 @@ const AddDriverForm = () => {
           </Row>
 
           {/* Submit */}
-          <Row justify="center">
+          <Row >
             <Col>
               <Button
                 type="primary"

@@ -154,14 +154,18 @@
 
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { Card, Statistic, Row, Col } from "antd"
+import { Card, Statistic, Row, Col, Spin } from "antd"
 import { CarOutlined, TeamOutlined, UserAddOutlined, TruckOutlined } from "@ant-design/icons"
 
 const StatisticsCard = () => {
   const [trips, setTrips] = useState([])
   const [vehicle, setvehicle] = useState([])
   const [uniqueCustomerCount, setUniqueCustomerCount] = useState(0)
-  const [driver, setDriver] = useState([])
+  const [driver, setDriver] = useState([]);
+
+  const [loadingVehicle, setLoadingVehicle] = useState(true)
+  const [loadingCustomer, setLoadingCustomer] = useState(true)
+  const [loadingDriver, setLoadingDriver] = useState(true)
 
   // trips
   useEffect(() => {
@@ -174,6 +178,7 @@ const StatisticsCard = () => {
   useEffect(() => {
     axios.get("https://api.dropshep.com/api/vehicle").then((res) => {
       setvehicle(res.data.data)
+      setLoadingVehicle(false)
     })
   }, [])
 
@@ -187,10 +192,12 @@ const StatisticsCard = () => {
           const customerNames = trips.map((trip) => trip.customer?.trim()).filter((name) => name && name !== "")
           const uniqueCustomers = new Set(customerNames)
           setUniqueCustomerCount(uniqueCustomers.size)
+           setLoadingCustomer(false)
         }
       })
       .catch((error) => {
         console.error("Error fetching trips:", error)
+         setLoadingCustomer(false)
       })
   }, [])
 
@@ -199,6 +206,7 @@ const StatisticsCard = () => {
     axios.get("https://api.dropshep.com/api/driver").then((res) => {
       setDriver(res.data.data)
     })
+     setLoadingDriver(false)
   }, [])
 
   const statisticsData = [
@@ -214,6 +222,7 @@ const StatisticsCard = () => {
     {
       title: "টোটাল গাড়ি",
       value: vehicle.length,
+      loading: loadingVehicle,
       icon: <CarOutlined className="!text-white text-xl" />,
       iconBg: "bg-gradient-to-r from-green-500 to-green-600",
       cardBg: "bg-gradient-to-r from-green-50 to-green-100",
@@ -223,6 +232,7 @@ const StatisticsCard = () => {
     {
       title: "টোটাল গ্রাহক",
       value: uniqueCustomerCount,
+      loading: loadingCustomer,
       icon: <TeamOutlined className="!text-white text-xl" />,
       iconBg: "bg-gradient-to-r from-orange-500 to-orange-600",
       cardBg: "bg-gradient-to-r from-orange-50 to-orange-100",
@@ -232,6 +242,7 @@ const StatisticsCard = () => {
     {
       title: "ড্রাইভার",
       value: driver.length,
+      loading: loadingDriver,
       icon: <UserAddOutlined className="!text-white text-xl" />,
       iconBg: "bg-gradient-to-r from-purple-500 to-purple-600",
       cardBg: "bg-gradient-to-r from-purple-50 to-purple-100",
@@ -257,7 +268,7 @@ const StatisticsCard = () => {
                       <div className={`p-3 bg-primary rounded-lg shadow-md`}>{item.icon}</div>
                     <h3 className={`text-primary font-semibold text-xs md:text-base`}>{item.title}</h3>
                     </div>
-                    <p className="text-3xl font-medium">{item.value}</p>
+                    <p className="text-3xl font-medium">{item.loading ? <Spin size="small" /> : item.value}</p>
                   </div>
                   {/* <Statistic
                     value={item.value}
