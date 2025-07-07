@@ -497,14 +497,14 @@ const Maintenance = () => {
 
   const fetchMaintenance = async () => {
     try {
-      const response = await axios.get("https://api.dropshep.com/api/maintenance")
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/maintenance`)
       if (response.data.status === "success") {
         setMaintenance(response.data.data)
       }
       setLoading(false)
     } catch (error) {
       console.error("Error fetching maintenance data:", error)
-      message.error("মেইনটেনেন্স ডেটা লোড করতে সমস্যা হয়েছে")
+      // message.error("মেইনটেনেন্স ডেটা লোড করতে সমস্যা হয়েছে")
       setLoading(false)
     }
   }
@@ -513,7 +513,7 @@ const Maintenance = () => {
     if (!selectedMaintenanceId) return
 
     try {
-      const response = await fetch(`https://api.dropshep.com/api/maintenance/${selectedMaintenanceId}`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/maintenance/${selectedMaintenanceId}`, {
         method: "DELETE",
       })
 
@@ -787,7 +787,7 @@ const Maintenance = () => {
       render: (_, record) => (
         <Space>
           <Tooltip title="সম্পাদনা">
-            <Link to={`/update-maintenanceForm/${record.id}`}>
+            <Link to={`/tramessy/update-maintenanceForm/${record.id}`}>
                 <EditOutlined
                   className="!text-yellow-500 cursor-pointer text-lg hover:!text-primary"
                 />
@@ -816,7 +816,7 @@ const Maintenance = () => {
       }}
     >
       <Card
-        className="max-w-7xl mx-auto"
+        className=""
         style={{
           boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
           background: "rgba(255,255,255,0.9)",
@@ -824,7 +824,7 @@ const Maintenance = () => {
         }}
       >
         {/* Header */}
-        <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }}>
+        <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }} gutter={[16, 16]}>
           <Col>
             <Title level={4} style={{ margin: 0, color: "#11375B" }}>
               <ToolOutlined style={{ marginRight: "12px", color: "#11375B" }} />
@@ -833,7 +833,7 @@ const Maintenance = () => {
           </Col>
           <Col>
             <Space>
-              <Link to="/MaintenanceForm">
+              <Link to="/tramessy/MaintenanceForm">
                 <Button
                   type="primary"
                   icon={<PlusOutlined />}
@@ -847,16 +847,13 @@ const Maintenance = () => {
                   মেইনটেনেন্স
                 </Button>
               </Link>
-              <Button
-                icon={<FilterOutlined />}
-                onClick={() => setShowFilter(!showFilter)}
-                style={{
-                  background: showFilter ? "#11375b" : "transparent",
-                  color: showFilter ? "white" : "#11375b",
-                  borderColor: "#11375b",
-                }}
-              >
-                ফিল্টার
+               <Button
+  icon={<FilterOutlined />}
+  onClick={() => setShowFilter(!showFilter)}
+  className={`border border-[#11375b] px-4 py-1 rounded 
+    ${showFilter ? "bg-[#11375b] text-white" : "bg-transparent text-[#11375b]"}`}
+>
+  ফিল্টার
               </Button>
             </Space>
           </Col>
@@ -887,18 +884,14 @@ const Maintenance = () => {
         )}
 
         {/* Export and Search */}
-        <Row justify="space-between" align="middle" style={{ marginBottom: "16px" }}>
+        <Row justify="space-between" align="middle" style={{ marginBottom: "16px" }} gutter={[16, 16]}>
           <Col>
             <Space wrap>
               {/* CSV */}
               <Button
                 icon={<FileTextOutlined style={{ color: "#1890ff" }} />}
                 onClick={exportCSV}
-                style={{
-                  backgroundColor: "#e6f7ff",
-                  borderColor: "#91d5ff",
-                  color: "#1890ff",
-                }}
+                className="!bg-blue-50 border !border-blue-100 hover:!bg-white hover:!text-primary"
               >
                 CSV
               </Button>
@@ -906,11 +899,7 @@ const Maintenance = () => {
               <Button
                 icon={<FileExcelOutlined style={{ color: "#52c41a" }} />}
                 onClick={exportExcel}
-                style={{
-                  backgroundColor: "#f6ffed",
-                  borderColor: "#b7eb8f",
-                  color: "#52c41a",
-                }}
+                className="!bg-green-50 border !border-green-100 hover:!bg-white hover:!text-primary"
               >
                 Excel
               </Button>
@@ -918,11 +907,7 @@ const Maintenance = () => {
               <Button
                 icon={<FilePdfOutlined style={{ color: "#f5222d" }} />}
                 onClick={exportPDF}
-                style={{
-                  backgroundColor: "#fff2e8",
-                  borderColor: "#ffbb96",
-                  color: "#f5222d",
-                }}
+                className="!bg-orange-50 border !border-orange-100 hover:!bg-white hover:!text-primary"
               >
                 PDF
               </Button>
@@ -930,11 +915,7 @@ const Maintenance = () => {
               <Button
                 icon={<PrinterOutlined style={{ color: "#722ed1" }} />}
                 onClick={printTable}
-                style={{
-                  backgroundColor: "#f9f0ff",
-                  borderColor: "#d3adf7",
-                  color: "#722ed1",
-                }}
+                className="!bg-blue-50 border !border-blue-100 hover:!bg-white hover:!text-primary"
               >
                 Print
               </Button>
@@ -955,7 +936,7 @@ const Maintenance = () => {
                     borderColor: "#11375B",
                   }}
                 >
-                  <SearchOutlined />
+                  <SearchOutlined className="!text-white"/>
                 </Button>
               }
             />

@@ -328,4 +328,66 @@ input[type="date"].remove-date-icon::-moz-focusring {
   box-shadow: 0 0 0 2px rgba(17, 55, 91, 0.2) !important;
 }
 
+/* select input field css */
+/* Focused or Opened Ant Design Select input field */
+.ant-select-focused .ant-select-selector,
+.ant-select-open .ant-select-selector {
+  border-color: #11375b !important;
+  /* box-shadow: 0 0 0 2px rgba(17, 55, 91, 0.2) !important; */
+}
+
+/* Default hover effect for consistency */
+.ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+  border-color: #11375b !important;
+}
+
+/* ant button color */
+/* Custom primary modal OK button */
+.ant-btn-primary {
+  background-color: #11375B !important;
+  border-color: #11375B !important;
+}
+
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
+  background-color: #0e2f4d !important; /* slightly darker */
+  border-color: #0e2f4d !important;
+}
+
+/* Outline/Cancel Button Style */
+.ant-btn-default {
+  border-color: #11375B !important;
+  color: #11375B !important;
+}
+
+.ant-btn-default:hover,
+.ant-btn-default:focus {
+  border-color: #0e2f4d !important;
+  color: #0e2f4d !important;
+}
+
+/* Global style for Ant Design Input and Search component */
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused,
+.ant-input:focus,
+.ant-input-focused {
+  border-color: #11375B !important;
+  box-shadow: 0 0 0 2px rgba(17, 55, 91, 0.2) !important;
+  outline: none !important;
+}
+
+.ant-input-affix-wrapper:hover,
+.ant-input:hover {
+  border-color: #11375B !important;
+}
+
+.ant-btn-primary {
+  background-color: #11375B;
+  border-color: #11375B;
+}
+
+.ant-btn-primary:hover {
+  background-color: #0f2f4d;
+  border-color: #0f2f4d;
+}
 

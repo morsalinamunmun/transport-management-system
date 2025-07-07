@@ -692,12 +692,12 @@ const AddTripForm = () => {
   const [vehicles, setVehicles] = useState([]);
 
   useEffect(() => {
-    fetch("https://api.dropshep.com/api/vehicle")
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/vehicle`)
       .then((res) => res.json())
       .then((data) => setVehicles(data.data))
       .catch((err) => console.error(err));
 
-    fetch("https://api.dropshep.com/api/driver")
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/driver`)
       .then((res) => res.json())
       .then((data) => setDrivers(data.data))
       .catch((err) => console.error(err));
@@ -711,13 +711,13 @@ setLoading(true);
       formData.append(key, values[key]);
     }
 
-    const response = await axios.post("https://api.dropshep.com/api/trip", formData);
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/trip`, formData);
     const resData = response.data;
 
     if (resData.status === "success") {
       toast.success("ট্রিপ সফলভাবে সংরক্ষণ হয়েছে!");
       form.resetFields(); 
-      navigate("/trip-list")
+      navigate("/tramessy/trip-list")
     } else {
       toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
     }

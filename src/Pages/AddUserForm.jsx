@@ -213,14 +213,14 @@ const AddUserForm = () => {
       }
 
       const response = await axios.post(
-        "https://api.dropshep.com/api/users",
+        `${import.meta.env.VITE_BASE_URL}/api/users`,
         formData
       );
 
       if (response.data.status === "success") {
         toast.success("ইউজার সফলভাবে যোগ হয়েছে!", { position: "top-right" });
         form.resetFields();
-        navigate('/all-users')
+        navigate('/tramessy/all-users')
       } else {
         toast.error("সার্ভার ত্রুটি: " + (response.data.message || "অজানা সমস্যা"));
       }

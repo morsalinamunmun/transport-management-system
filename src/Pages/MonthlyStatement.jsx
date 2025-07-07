@@ -18,9 +18,9 @@ const MonthlyStatement = () => {
   const fetchData = async () => {
     try {
       const [tripRes, fuelRes, maintenanceRes] = await Promise.all([
-        axios.get("https://api.dropshep.com/api/trip"),
-        axios.get("https://api.dropshep.com/api/fuel"),
-        axios.get("https://api.dropshep.com/api/maintenance"),
+        axios.get(`${import.meta.env.VITE_BASE_URL}/api/trip`),
+        axios.get(`${import.meta.env.VITE_BASE_URL}/api/fuel`),
+        axios.get(`${import.meta.env.VITE_BASE_URL}/api/maintenance`),
       ]);
 
       const tripData = tripRes.data.data || [];
@@ -190,7 +190,7 @@ const MonthlyStatement = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-[10px]">
+    <div className="p-[10px]">
       <Card>
         <Title level={4} className="flex gap-3 items-center"><SlCalender />মাসিক স্টেটমেন্ট</Title>
         <Table
@@ -201,6 +201,7 @@ const MonthlyStatement = () => {
           summary={summary}
           scroll={{ x: "max-content" }}
           className="mt-4"
+          size="small"
 
           pagination={{
               current: pagination.current,

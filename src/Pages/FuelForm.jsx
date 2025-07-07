@@ -305,14 +305,21 @@ const FuelForm = () => {
   const [drivers, setDrivers] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const fuelDateRef = useRef(null);
+  const [total, setTotal] = useState(0);
+
+const onValuesChange = () => {
+  const quantity = parseFloat(form.getFieldValue("quantity")) || 0;
+  const price = parseFloat(form.getFieldValue("price")) || 0;
+  setTotal(quantity * price);
+};
 
   useEffect(() => {
-    fetch("https://api.dropshep.com/api/vehicle")
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/vehicle`)
       .then((response) => response.json())
       .then((data) => setVehicles(data.data))
       .catch((error) => console.error("Error fetching vehicle data:", error));
 
-    fetch("https://api.dropshep.com/api/driver")
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/driver`)
       .then((response) => response.json())
       .then((data) => setDrivers(data.data))
       .catch((error) => console.error("Error fetching driver data:", error));
@@ -332,22 +339,17 @@ const FuelForm = () => {
       }
       formData.append("total_price", total_price);
 
-      const response = await axios.post("https://api.dropshep.com/api/fuel", formData);
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/fuel`, formData);
       if (response.data.status === "Success") {
         toast.success("ফুয়েল সফলভাবে সংরক্ষণ হয়েছে!");
         form.resetFields();
-        Navigate("/fuel")
+        Navigate("/tramessy/fuel")
       } else {
         toast.error("ত্রুটি: " + (response.data.message || "অজানা সমস্যা"));
       }
     } catch (error) {
       toast.error("সার্ভার ত্রুটি: " + (error.response?.data?.message || error.message));
     }
-  };
-
-  const watchTotal = () => {
-    const { quantity, price } = form.getFieldsValue();
-    return (parseFloat(quantity) || 0) * (parseFloat(price) || 0);
   };
 
   return (
@@ -362,6 +364,7 @@ const FuelForm = () => {
           form={form}
           layout="vertical"
           onFinish={handleSubmit}
+          onValuesChange={onValuesChange}
         >
           <div className="grid md:grid-cols-2 gap-4 -space-y-4">
             <Form.Item
@@ -452,7 +455,7 @@ const FuelForm = () => {
             <Form.Item label="মোট টাকা">
               <Input
                 readOnly
-                value={watchTotal()}
+                 value={(form.getFieldValue("quantity") || 0) * (form.getFieldValue("price") || 0)}
                 className="bg-gray-200 cursor-not-allowed"
               />
             </Form.Item>

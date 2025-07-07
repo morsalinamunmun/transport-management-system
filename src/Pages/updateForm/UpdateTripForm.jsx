@@ -41,7 +41,7 @@
 //   // car name / registration number
 //   const [vehicles, setVehicles] = useState([]);
 //   useEffect(() => {
-//     fetch("https://api.dropshep.com/api/vehicle")
+//     fetch("${import.meta.env.VITE_BASE_URL}/api/vehicle")
 //       .then((response) => response.json())
 //       .then((data) => setVehicles(data.data))
 //       .catch((error) => console.error("Error fetching driver data:", error));
@@ -53,7 +53,7 @@
 //   }));
 //   // driver name
 //   useEffect(() => {
-//     fetch("https://api.dropshep.com/api/driver")
+//     fetch("${import.meta.env.VITE_BASE_URL}/api/driver")
 //       .then((response) => response.json())
 //       .then((data) => setDrivers(data.data))
 //       .catch((error) => console.error("Error fetching driver data:", error));
@@ -74,7 +74,7 @@
 //   const onSubmit = async (data) => {
 //     try {
 //       const response = await axios.post(
-//         `https://api.dropshep.com/api/trip/${id}`,
+//         `${import.meta.env.VITE_BASE_URL}/api/trip/${id}`,
 //         data,
 //         {
 //           headers: {
@@ -456,13 +456,13 @@ const UpdateTripForm = () => {
   }, [form]);
 
   useEffect(() => {
-    fetch("https://api.dropshep.com/api/vehicle")
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/vehicle`)
       .then((res) => res.json())
       .then((data) => setVehicles(data.data || []));
   }, []);
 
   useEffect(() => {
-    fetch("https://api.dropshep.com/api/driver")
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/driver`)
       .then((res) => res.json())
       .then((data) => setDrivers(data.data || []));
   }, []);
@@ -475,14 +475,14 @@ const UpdateTripForm = () => {
       };
 
       const response = await axios.post(
-        `https://api.dropshep.com/api/trip/${id}`,
+        `${import.meta.env.VITE_BASE_URL}/api/trip/${id}`,
         payload
       );
 
       if (response.data.status === "success") {
         toast.success("ট্রিপ সফলভাবে আপডেট হয়েছে!");
         form.resetFields();
-        navigate("/trip-list")
+        navigate("/tramessy/trip-list")
       } else {
         toast.error("সার্ভার ত্রুটি: " + (response.data.message || "অজানা সমস্যা"));
       }
@@ -609,7 +609,7 @@ const UpdateTripForm = () => {
               </Form.Item>
             </Col>
             <Col xs={24} md={6}>
-              <Form.Item label="কাস্টমারের মোবাইল" name="customer">
+              <Form.Item label="কাস্টমারের মোবাইল" name="customer_mobile">
                 <Input placeholder="কাস্টমারের মোবাইল" />
               </Form.Item>
             </Col>

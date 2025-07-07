@@ -303,7 +303,7 @@ const OverViewCard = () => {
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
-        const response = await axios.get("https://api.dropshep.com/api/vehicle")
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/vehicle`)
         const vehicles = response.data?.data || []
         const todayDate = dayjs()
         const expiring = []
@@ -337,7 +337,7 @@ const OverViewCard = () => {
   useEffect(() => {
     const fetchFuelData = async () => {
       try {
-        const response = await axios.get("https://api.dropshep.com/api/fuel")
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/fuel`)
         const fuels = response.data?.data || []
         let octen = 0
         let diesel = 0
@@ -374,7 +374,7 @@ const OverViewCard = () => {
   useEffect(() => {
     const fetchMaintenanceData = async () => {
       try {
-        const response = await axios.get("https://api.dropshep.com/api/maintenance")
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/maintenance`)
         const data = response.data.data
         const today = new Date().toISOString().split("T")[0]
 
@@ -395,7 +395,7 @@ const OverViewCard = () => {
   useEffect(() => {
     const fetchTripData = async () => {
       try {
-        const response = await axios.get("https://api.dropshep.com/api/trip")
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/trip`)
         const data = response.data.data
         setTrips(data)
 
@@ -530,7 +530,7 @@ const OverViewCard = () => {
               </Space>
             }
             className="h-[150px] shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300"
-            bodyStyle={{ padding: "12px", maxHeight: "140px", overflowY: "auto" }}
+            bodyStyle={{ padding: "12px", maxHeight: "100px", overflowY: "auto" }}
           >
             {loadingReminder ? (
               <div className="flex justify-center items-center h-full">
@@ -541,7 +541,7 @@ const OverViewCard = () => {
                 size="small"
                 dataSource={expiringDocs}
                 renderItem={(item) => (
-                  <List.Item className="py-2 border-b border-gray-100 last:border-b-0">
+                  <List.Item className="py-0 border-b border-gray-100 last:border-b-0">
                     <Space direction="vertical" size="small" style={{ width: "100%" }}>
                       <div className="flex justify-between items-center">
                         <Text strong className="text-xs text-gray-900">{item.vehicle}</Text>

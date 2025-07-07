@@ -3,7 +3,7 @@ import React, { useRef } from "react";
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { FiCalendar } from "react-icons/fi";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import BtnSubmit from "../../components/Button/BtnSubmit";
 
 const UpdatePartsForm = () => {
@@ -11,11 +11,12 @@ const UpdatePartsForm = () => {
   const partsDateRef = useRef(null);
   const updatePartsLoaderData = useLoaderData();
   const { id, name, date } = updatePartsLoaderData.data;
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
       const response = await axios.put(
-        `https://api.dropshep.com/api/parts/${id}`,
+        `${import.meta.env.VITE_BASE_URL}/api/parts/${id}`,
         data,
         {
           headers: {
@@ -28,6 +29,7 @@ const UpdatePartsForm = () => {
 
       if (resData.status === "success") {
         toast.success("পার্টস সফলভাবে আপডেট হয়েছে!", { position: "top-right" });
+        navigate("/tramessy/parts")
       } else {
         toast.error("সার্ভার ত্রুটি: " + (resData.message || "অজানা সমস্যা"));
       }
@@ -39,7 +41,7 @@ const UpdatePartsForm = () => {
     }
   };
   return (
-    <div className="bg-gray-100 py-20">
+    <div className=" py-20">
       <Toaster position="top-center" reverseOrder={false} />
       <div className="flex justify-center items-center z-50">
         <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg relative">

@@ -918,7 +918,7 @@ const AllUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("https://api.dropshep.com/api/users");
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/users`);
       if (response.data.status === "success") {
         setUsers(response.data.data);
       }
@@ -947,7 +947,7 @@ const handleDelete = async () => {
 
     try {
       const response = await axios.delete(
-        `https://api.dropshep.com/api/users/delete/${selectedUser.id}`
+        `${import.meta.env.VITE_BASE_URL}/api/users/delete/${selectedUser.id}`
       );
       if (response.data.status === "success") {
         setUsers((prev) => prev.filter((user) => user.id !== selectedUser.id));
@@ -1022,7 +1022,7 @@ const handleDelete = async () => {
       render: (_, record) => (
         <Space>
           <Tooltip title="সম্পাদনা">
-            <Link to={`/update-usersForm/${record.id}`}>
+            <Link to={`/tramessy/update-usersForm/${record.id}`}>
               <EditOutlined className="!text-yellow-500 cursor-pointer text-lg hover:!text-primary" />
             </Link>
           </Tooltip>
@@ -1049,9 +1049,9 @@ const handleDelete = async () => {
 
   return (
     <div className="p-4">
-      <Card className="max-w-7xl mx-auto">
+      <Card className="">
         {/* Header */}
-        <Row justify="space-between" align="middle" className="mb-4">
+        <Row justify="space-between" align="middle" className="mb-4" gutter={[16, 16]}>
           <Col>
             <Title level={4} style={{ margin: 0, color: "#11375B" }}>
               <UserOutlined style={{ marginRight: "12px", color: "#11375B" }} />
@@ -1059,7 +1059,7 @@ const handleDelete = async () => {
             </Title>
           </Col>
           <Col>
-            <Link to="/add-userForm">
+            <Link to="/tramessy/add-userForm">
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
@@ -1086,7 +1086,7 @@ const handleDelete = async () => {
                     borderColor: "#11375B",
                   }}
                 >
-                  <SearchOutlined />
+                  <SearchOutlined className="!text-white"/>
                 </Button>
               }
             />

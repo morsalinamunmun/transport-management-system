@@ -442,13 +442,13 @@ const DailyIncome = () => {
 
   const fetchTrips = async () => {
     try {
-      const response = await axios.get("https://api.dropshep.com/api/trip")
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/trip`)
       const sorted = response.data.data.sort((a, b) => new Date(b.trip_date) - new Date(a.trip_date))
       setTrips(sorted)
       setLoading(false)
     } catch (error) {
       console.error("Error fetching trips:", error)
-      message.error("ট্রিপ ডেটা লোড করতে সমস্যা হয়েছে")
+      // message.error("ট্রিপ ডেটা লোড করতে সমস্যা হয়েছে")
       setLoading(false)
     }
   }
@@ -623,7 +623,7 @@ const DailyIncome = () => {
       title: "তারিখ",
       dataIndex: "trip_date",
       key: "trip_date",
-      width: 120,
+      // width: 120,
       render: (date) => (
         <Space>
           <Text>{new Date(date).toLocaleDateString("en-GB")}</Text>
@@ -634,7 +634,7 @@ const DailyIncome = () => {
       title: "গাড়ি",
       dataIndex: "vehicle_number",
       key: "vehicle_number",
-      width: 100,
+      // width: 100,
       render: (vehicle) => (
         <Space>
           <Text strong>{vehicle}</Text>
@@ -645,7 +645,7 @@ const DailyIncome = () => {
       title: "লোড",
       dataIndex: "load_point",
       key: "load_point",
-      width: 150,
+      // width: 150,
       ellipsis: {
         showTitle: false,
       },
@@ -659,7 +659,7 @@ const DailyIncome = () => {
       title: "আনলোড",
       dataIndex: "unload_point",
       key: "unload_point",
-      width: 130,
+      // width: 130,
       ellipsis: {
         showTitle: false,
       },
@@ -673,7 +673,7 @@ const DailyIncome = () => {
       title: "ট্রিপের ভাড়া",
       dataIndex: "trip_price",
       key: "trip_price",
-      width: 120,
+      // width: 120,
       render: (price) => (
         <Space>
           <Text strong> {price}</Text>
@@ -683,7 +683,7 @@ const DailyIncome = () => {
     {
       title: "চলমানখরচ",
       key: "total_cost",
-      width: 120,
+      // width: 120,
       render: (_, record) => {
         const totalCost = (
           Number(record.other_expenses || 0) +
@@ -701,7 +701,7 @@ const DailyIncome = () => {
     {
       title: "লাভ",
       key: "profit",
-      width: 120,
+      // width: 120,
       render: (_, record) => {
         const totalCost =
           Number(record.other_expenses || 0) +
@@ -718,20 +718,20 @@ const DailyIncome = () => {
         )
       },
     },
-    {
-      title: "অ্যাকশন",
-      key: "actions",
-      width: 50,
-      render: (_, record) => (
-        <Tooltip title="সম্পাদনা">
-                    <Link to={`/update-dailyIncomeForm/${record.id}`}>
-                        <EditOutlined
-                          className="!text-yellow-500 cursor-pointer text-lg hover:!text-primary"
-                        />
-                        </Link>
-                      </Tooltip>
-      ),
-    },
+    // {
+    //   title: "অ্যাকশন",
+    //   key: "actions",
+    //   width: 50,
+    //   render: (_, record) => (
+    //     <Tooltip title="সম্পাদনা">
+    //                 <Link to={`/tramessy/update-dailyIncomeForm/${record.id}`}>
+    //                     <EditOutlined
+    //                       className="!text-yellow-500 cursor-pointer text-lg hover:!text-primary"
+    //                     />
+    //                     </Link>
+    //                   </Tooltip>
+    //   ),
+    // },
   ]
 
   return (
@@ -742,7 +742,7 @@ const DailyIncome = () => {
       }}
     >
       <Card
-        className="max-w-7xl mx-auto"
+        className=""
         style={{
           boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
           background: "rgba(255,255,255,0.9)",
@@ -750,7 +750,7 @@ const DailyIncome = () => {
         }}
       >
         {/* Header */}
-        <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }}>
+        <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }} gutter={[16, 16]}>
           <Col>
             <Title level={4} style={{ margin: 0, color: "#11375B" }}>
               <TruckOutlined style={{ marginRight: "12px", color: "#11375B" }} />
@@ -758,17 +758,14 @@ const DailyIncome = () => {
             </Title>
           </Col>
           <Col>
-            <Button
-              icon={<FilterOutlined />}
-              onClick={() => setShowFilter(!showFilter)}
-              style={{
-                background: showFilter ? "#11375b" : "transparent",
-                color: showFilter ? "white" : "#11375b",
-                borderColor: "#11375b",
-              }}
-            >
-              ফিল্টার
-            </Button>
+             <Button
+  icon={<FilterOutlined />}
+  onClick={() => setShowFilter(!showFilter)}
+  className={`border border-[#11375b] px-4 py-1 rounded 
+    ${showFilter ? "bg-[#11375b] text-white" : "bg-transparent text-[#11375b]"}`}
+>
+  ফিল্টার
+              </Button>
           </Col>
         </Row>
 
@@ -797,18 +794,14 @@ const DailyIncome = () => {
         )}
 
         {/* Export and Search */}
-        <Row justify="space-between" align="middle" style={{ marginBottom: "16px" }}>
+        <Row justify="space-between" align="middle" style={{ marginBottom: "16px" }} gutter={[16, 16]}>
           <Col>
             <Space wrap>
               {/* CSV */}
               <Button
                 icon={<FileTextOutlined style={{ color: "#1890ff" }} />}
                 onClick={exportCSV}
-                style={{
-                  backgroundColor: "#e6f7ff",
-                  borderColor: "#91d5ff",
-                  color: "#1890ff",
-                }}
+                className="!bg-blue-50 border !border-blue-100 hover:!bg-white hover:!text-primary"
               >
                 CSV
               </Button>
@@ -816,11 +809,7 @@ const DailyIncome = () => {
               <Button
                 icon={<FileExcelOutlined style={{ color: "#52c41a" }} />}
                 onClick={exportExcel}
-                style={{
-                  backgroundColor: "#f6ffed",
-                  borderColor: "#b7eb8f",
-                  color: "#52c41a",
-                }}
+                className="!bg-green-50 border !border-green-100 hover:!bg-white hover:!text-primary"
               >
                 Excel
               </Button>
@@ -828,11 +817,7 @@ const DailyIncome = () => {
               <Button
                 icon={<FilePdfOutlined style={{ color: "#f5222d" }} />}
                 onClick={exportPDF}
-                style={{
-                  backgroundColor: "#fff2e8",
-                  borderColor: "#ffbb96",
-                  color: "#f5222d",
-                }}
+                className="!bg-orange-50 border !border-orange-100 hover:!bg-white hover:!text-primary"
               >
                 PDF
               </Button>
@@ -840,11 +825,7 @@ const DailyIncome = () => {
               <Button
                 icon={<PrinterOutlined style={{ color: "#722ed1" }} />}
                 onClick={printTable}
-                style={{
-                  backgroundColor: "#f9f0ff",
-                  borderColor: "#d3adf7",
-                  color: "#722ed1",
-                }}
+                className="!bg-blue-50 border !border-blue-100 hover:!bg-white hover:!text-primary"
               >
                 Print
               </Button>
@@ -859,13 +840,12 @@ const DailyIncome = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               enterButton={
                 <Button
+                  className="!bg-primary !border-primary"
                   style={{
-                    backgroundColor: "#11375B",
-                    color: "#fff",
-                    borderColor: "#11375B",
+                    backgroundColor: "#11375B"
                   }}
                 >
-                  <SearchOutlined />
+                  <SearchOutlined className="!text-white"/>
                 </Button>
               }
             />

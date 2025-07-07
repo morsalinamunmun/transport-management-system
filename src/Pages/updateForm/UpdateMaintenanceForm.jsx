@@ -430,7 +430,7 @@ const UpdateMaintenanceForm = () => {
 
     // Set initial image preview
     if (receipt) {
-      setPreviewImage(`https://api.dropshep.com/public/uploads/maintenance/${receipt}`)
+      setPreviewImage(`${import.meta.env.VITE_BASE_URL}/public/uploads/maintenance/${receipt}`)
     }
 
     // Fetch vehicles
@@ -441,7 +441,7 @@ const UpdateMaintenanceForm = () => {
 
   const fetchVehicles = async () => {
     try {
-      const response = await fetch("https://api.dropshep.com/api/vehicle")
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/vehicle`)
       const data = await response.json()
       setVehicles(data.data || [])
     } catch (error) {
@@ -452,7 +452,7 @@ const UpdateMaintenanceForm = () => {
 
   const fetchDrivers = async () => {
     try {
-      const response = await fetch("https://api.dropshep.com/api/driver")
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/driver`)
       const data = await response.json()
       setDrivers(data.data || [])
     } catch (error) {
@@ -487,7 +487,7 @@ const UpdateMaintenanceForm = () => {
         formData.append("receipt", imageFile)
       }
 
-      const response = await axios.post(`https://api.dropshep.com/api/maintenance/${id}`, formData, {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/maintenance/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

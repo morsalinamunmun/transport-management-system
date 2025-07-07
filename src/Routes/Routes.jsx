@@ -33,11 +33,11 @@ import MonthlyStatement from "../Pages/MonthlyStatement";
 import DailyTripExpense from "../Pages/DailyTripExpense";
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/tramessy",
     element: <Main />,
     children: [
       {
-        path: "/",
+        path: "/tramessy",
         element: (
           <PrivateRoute>
             <Home />
@@ -45,7 +45,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/car-list",
+        path: "/tramessy/car-list",
         element: (
           <PrivateRoute>
             <CarList />
@@ -53,7 +53,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/add-carForm",
+        path: "/tramessy/add-carForm",
         element: (
           <PrivateRoute>
             <AddCarForm />
@@ -61,17 +61,17 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/update-CarForm/:id",
+        path: "/tramessy/update-CarForm/:id",
         element: (
           <PrivateRoute>
             <UpdateCarForm />
           </PrivateRoute>
         ),
         loader: ({ params }) =>
-          fetch(`https://api.dropshep.com/api/vehicle/${params.id}`),
+          fetch(`${import.meta.env.VITE_BASE_URL}/api/vehicle/${params.id}`),
       },
       {
-        path: "/driver-list",
+        path: "/tramessy/driver-list",
         element: (
           <PrivateRoute>
             <DriverList />
@@ -79,7 +79,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/add-driverForm",
+        path: "/tramessy/add-driverForm",
         element: (
           <PrivateRoute>
             <AddDriverForm />
@@ -87,17 +87,17 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/update-driverForm/:id",
+        path: "/tramessy/update-driverForm/:id",
         element: (
           <PrivateRoute>
             <UpdateDriverForm />
           </PrivateRoute>
         ),
         loader: ({ params }) =>
-          fetch(`https://api.dropshep.com/api/driver/${params.id}`),
+          fetch(`${import.meta.env.VITE_BASE_URL}/api/driver/${params.id}`),
       },
       {
-        path: "/trip-list",
+        path: "/tramessy/trip-list",
         element: (
           <PrivateRoute>
             <TripList />
@@ -105,7 +105,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/add-tripForm",
+        path: "/tramessy/add-tripForm",
         element: (
           <PrivateRoute>
             <AddTripForm />
@@ -113,17 +113,17 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/update-tripForm/:id",
+        path: "/tramessy/update-tripForm/:id",
         element: (
           <PrivateRoute>
             <UpdateTripForm />
           </PrivateRoute>
         ),
         loader: ({ params }) =>
-          fetch(`https://api.dropshep.com/api/trip/${params.id}`),
+          fetch(`${import.meta.env.VITE_BASE_URL}/api/trip/${params.id}`),
       },
       {
-        path: "/fuel",
+        path: "/tramessy/fuel",
         element: (
           <PrivateRoute>
             <Fuel />
@@ -131,7 +131,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/fuel-form",
+        path: "/tramessy/fuel-form",
         element: (
           <PrivateRoute>
             <FuelForm />
@@ -139,17 +139,17 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/update-fuelForm/:id",
+        path: "/tramessy/update-fuelForm/:id",
         element: (
           <PrivateRoute>
             <UpdateFuelForm />
           </PrivateRoute>
         ),
         loader: ({ params }) =>
-          fetch(`https://api.dropshep.com/api/fuel/${params.id}`),
+          fetch(`${import.meta.env.VITE_BASE_URL}/api/fuel/${params.id}`),
       },
       {
-        path: "/Parts",
+        path: "/tramessy/Parts",
         element: (
           <PrivateRoute>
             <Parts />
@@ -157,17 +157,17 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/update-partsForm/:id",
+        path: "/tramessy/update-partsForm/:id",
         element: (
           <PrivateRoute>
             <UpdatePartsForm />
           </PrivateRoute>
         ),
         loader: ({ params }) =>
-          fetch(`https://api.dropshep.com/api/parts/${params.id}`),
+          fetch(`${import.meta.env.VITE_BASE_URL}/api/parts/${params.id}`),
       },
       {
-        path: "/maintenance",
+        path: "/tramessy/maintenance",
         element: (
           <PrivateRoute>
             <Maintenance />
@@ -175,7 +175,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/maintenanceForm",
+        path: "/tramessy/maintenanceForm",
         element: (
           <PrivateRoute>
             <MaintenanceForm />
@@ -183,17 +183,17 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/update-maintenanceForm/:id",
+        path: "/tramessy/update-maintenanceForm/:id",
         element: (
           <PrivateRoute>
             <UpdateMaintenanceForm />
           </PrivateRoute>
         ),
         loader: ({ params }) =>
-          fetch(`https://api.dropshep.com/api/maintenance/${params.id}`),
+          fetch(`${import.meta.env.VITE_BASE_URL}/api/maintenance/${params.id}`),
       },
       {
-        path: "/daily-income",
+        path: "/tramessy/daily-income",
         element: (
           <AdminRoute>
             <DailyIncome />
@@ -201,7 +201,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/daily-trip-expense",
+        path: "/tramessy/daily-trip-expense",
         element: (
           <PrivateRoute>
             <DailyTripExpense />
@@ -209,7 +209,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/daily-expense",
+        path: "/tramessy/daily-expense",
         element: (
           <PrivateRoute>
             <DailyExpense />
@@ -217,7 +217,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/monthly-statement",
+        path: "/tramessy/monthly-statement",
         element: (
           <PrivateRoute>
             <MonthlyStatement/>
@@ -225,7 +225,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/all-users",
+        path: "/tramessy/all-users",
         element: (
           <AdminRoute>
             <AllUsers />
@@ -233,7 +233,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/add-userForm",
+        path: "/tramessy/add-userForm",
         element: (
           <AdminRoute>
             <AddUserForm />
@@ -241,42 +241,42 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/update-usersForm/:id",
+        path: "/tramessy/update-usersForm/:id",
         element: (
           <PrivateRoute>
             <UpdateUsersForm />
           </PrivateRoute>
         ),
         loader: ({ params }) =>
-          fetch(`https://api.dropshep.com/api/users/${params.id}`),
+          fetch(`${import.meta.env.VITE_BASE_URL}/api/users/${params.id}`),
       },
       {
-        path: "/Login",
+        path: "/tramessy/Login",
         element: <Login />,
       },
       {
-        path: "/ResetPass",
+        path: "/tramessy/ResetPass",
         element: <ResetPass />,
       },
       {
-        path: "/update-DailyIncomeForm/:id",
+        path: "/tramessy/update-DailyIncomeForm/:id",
         element: (
           <AdminRoute>
             <UpdateDailyIncomeForm />
           </AdminRoute>
         ),
         loader: ({ params }) =>
-          fetch(`https://api.dropshep.com/api/trip/${params.id}`),
+          fetch(`${import.meta.env.VITE_BASE_URL}/api/trip/${params.id}`),
       },
       {
-        path: "/Update-ExpenseForm/:id",
+        path: "/tramessy/Update-ExpenseForm/:id",
         element: (
           <PrivateRoute>
             <UpdateExpenseForm />
           </PrivateRoute>
         ),
         loader: ({ params }) =>
-          fetch(`https://api.dropshep.com/api/trip/${params.id}`),
+          fetch(`${import.meta.env.VITE_BASE_URL}/api/trip/${params.id}`),
       },
     ],
   },

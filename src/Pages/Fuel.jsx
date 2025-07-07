@@ -501,7 +501,7 @@ const Fuel = () => {
 
   const fetchFuelData = async () => {
     try {
-      const response = await axios.get("https://api.dropshep.com/api/fuel")
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/fuel`)
       if (response.data.status === "success") {
         setFuel(response.data.data)
       }
@@ -517,7 +517,7 @@ const Fuel = () => {
     if (!selectedFuelId) return
 
     try {
-      const response = await fetch(`https://api.dropshep.com/api/fuel/${selectedFuelId}`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/fuel/${selectedFuelId}`, {
         method: "DELETE",
       })
 
@@ -634,32 +634,6 @@ const Fuel = () => {
     doc.save("fuel_data.pdf")
   }
 
-  // print fuel table info
-  // const printFuelTable = () => {
-  //   // hide specific column
-  //   const actionColumns = document.querySelectorAll(".action_column");
-  //   actionColumns.forEach((col) => {
-  //     col.style.display = "none";
-  //   });
-  //   const printContent = document.querySelector("table").outerHTML;
-  //   const WinPrint = window.open("", "", "width=900,height=650");
-  //   WinPrint.document.write(`
-  //   <html>
-  //       <head>
-  //         <title>Print</title>
-  //         <style>
-  //           table { width: 100%; border-collapse: collapse; }
-  //           th, td { border: 1px solid #000; padding: 8px; text-align: left; }
-  //         </style>
-  //       </head>
-  //       <body>${printContent}</body>
-  //     </html>
-  // `);
-  //   WinPrint.document.close();
-  //   WinPrint.focus();
-  //   WinPrint.print();
-  //   WinPrint.close();
-  // };
 
   const printFuelTable = () => {
   const actionColumns = document.querySelectorAll(".action_column");
@@ -829,7 +803,7 @@ const Fuel = () => {
       render: (_, record) => (
         <Space>
           <Tooltip title="সম্পাদনা">
-                     <Link to={`/update-FuelForm/${record.id}`}>
+                     <Link to={`/tramessy/update-FuelForm/${record.id}`}>
                         <EditOutlined
                           className="!text-yellow-500 cursor-pointer text-lg hover:!text-primary"
                         />
@@ -860,7 +834,7 @@ const Fuel = () => {
       }}
     >
       <Card
-        className="max-w-7xl mx-auto"
+        className=""
         style={{
           boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
           background: "rgba(255,255,255,0.9)",
@@ -868,7 +842,7 @@ const Fuel = () => {
         }}
       >
         {/* Header */}
-        <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }}>
+        <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }} gutter={[16, 16]}>
           <Col>
             <Title level={4} style={{ margin: 0, color: "#11375B" }}>
               <CarOutlined style={{ marginRight: "12px", color: "#11375B" }} />
@@ -877,7 +851,7 @@ const Fuel = () => {
           </Col>
           <Col>
             <Space>
-              <Link to="/fuel-form">
+              <Link to="/tramessy/fuel-form">
                 <Button
                   type="primary"
                   icon={<PlusOutlined />}
@@ -891,15 +865,12 @@ const Fuel = () => {
                 </Button>
               </Link>
               <Button
-                icon={<FilterOutlined />}
-                onClick={() => setShowFilter(!showFilter)}
-                style={{
-                  background: showFilter ? "#11375b" : "transparent",
-                  color: showFilter ? "white" : "#11375b",
-                  borderColor: "#11375b",
-                }}
-              >
-                ফিল্টার
+  icon={<FilterOutlined />}
+  onClick={() => setShowFilter(!showFilter)}
+  className={`border border-[#11375b] px-4 py-1 rounded 
+    ${showFilter ? "bg-[#11375b] text-white" : "bg-transparent text-[#11375b]"}`}
+>
+  ফিল্টার
               </Button>
             </Space>
           </Col>
@@ -930,7 +901,7 @@ const Fuel = () => {
         )}
 
         {/* Export and Search */}
-        <Row justify="space-between" align="middle" style={{ marginBottom: "16px" }}>
+        <Row justify="space-between" align="middle" style={{ marginBottom: "16px" }} gutter={[16, 16]}>
           <Col>
             {/* <Space>
               <Dropdown menu={{ items: exportMenuItems }} placement="bottomLeft">
@@ -993,7 +964,7 @@ const Fuel = () => {
           borderColor: "#11375B"
         }}
       >
-        <SearchOutlined />
+        <SearchOutlined className="!text-white"/>
       </Button>
     }
   />
@@ -1042,7 +1013,7 @@ const Fuel = () => {
                 <Text strong className="!text-primary">Total</Text>
               </Table.Summary.Cell>
               <Table.Summary.Cell index={1}>
-                <Text strong className="!text-primary">৳ b{totalQuantity.toFixed(2)}</Text>
+                <Text strong className="!text-primary">৳ {totalQuantity.toFixed(2)}</Text>
               </Table.Summary.Cell>
               <Table.Summary.Cell index={2}>
                 <Text strong className="!text-primary">৳ {totalPrice.toFixed(2)}</Text>

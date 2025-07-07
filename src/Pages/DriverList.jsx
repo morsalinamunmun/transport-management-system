@@ -588,14 +588,14 @@ const DriverList = () => {
 
   const fetchDrivers = async () => {
     try {
-      const response = await axios.get("https://api.dropshep.com/api/driver")
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/driver`)
       if (response.data.status === "success") {
         setDrivers(response.data.data)
       }
       setLoading(false)
     } catch (error) {
       console.error("Error fetching driver data:", error)
-      message.error("ড্রাইভারের তথ্য লোড করতে সমস্যা হয়েছে")
+      // message.error("ড্রাইভারের তথ্য লোড করতে সমস্যা হয়েছে")
       setLoading(false)
     }
   }
@@ -604,7 +604,7 @@ const DriverList = () => {
     if (!selectedDriverId) return
 
     try {
-      const response = await fetch(`https://api.dropshep.com/api/driver/${selectedDriverId}`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/driver/${selectedDriverId}`, {
         method: "DELETE",
       })
 
@@ -624,7 +624,7 @@ const DriverList = () => {
 
   const handleView = async (id) => {
     try {
-      const response = await axios.get(`https://api.dropshep.com/api/driver/${id}`)
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/driver/${id}`)
       if (response.data.status === "success") {
         setSelectedDriver(response.data.data)
         setViewModalOpen(true)
@@ -633,7 +633,7 @@ const DriverList = () => {
       }
     } catch (error) {
       console.error("View error:", error)
-      message.error("ড্রাইভারের তথ্য আনতে সমস্যা হয়েছে")
+      // message.error("ড্রাইভারের তথ্য আনতে সমস্যা হয়েছে")
     }
   }
 
@@ -948,7 +948,7 @@ const DriverList = () => {
                               <Link to={`/UpdateDriverForm/${record.id}`}>
                                   <EditOutlined
                                     className="!text-yellow-500 cursor-pointer text-lg hover:!text-primary"
-                                    onClick={() => (window.location.href = `/update-driverForm/${record.id}`)}
+                                    onClick={() => (window.location.href = `/tramessy/update-driverForm/${record.id}`)}
                                   />
                                   </Link>
                                 </Tooltip>
@@ -986,7 +986,7 @@ const DriverList = () => {
       }}
     >
       <Card
-        className="max-w-7xl mx-auto rounded-lg"
+        className="rounded-lg"
         style={{
           boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
           background: "rgba(255,255,255,0.9)",
@@ -994,7 +994,7 @@ const DriverList = () => {
         }}
       >
         {/* Header */}
-        <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }}>
+        <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }} gutter={[16, 16]}>
           <Col>
             <Title level={3} style={{ margin: 0, color: "#11375B" }}>
               <UserOutlined style={{ marginRight: "12px", color: "#11375B" }} />
@@ -1002,7 +1002,7 @@ const DriverList = () => {
             </Title>
           </Col>
           <Col>
-            <Link to="/add-driverForm">
+            <Link to="/tramessy/add-driverForm">
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
@@ -1016,7 +1016,7 @@ const DriverList = () => {
         </Row>
 
         {/* Export and Search */}
-        <Row justify="space-between" align="middle" style={{ marginBottom: "16px" }}>
+        <Row justify="space-between" align="middle" style={{ marginBottom: "16px" }} gutter={[16, 16]}>
           <Col>
             {/* <Space>
               <Dropdown menu={{ items: exportMenuItems }} placement="bottomLeft">
@@ -1079,7 +1079,7 @@ const DriverList = () => {
           borderColor: "#11375B"
         }}
       >
-        <SearchOutlined />
+        <SearchOutlined className="!text-white" />
       </Button>
     }
     // style={{ width: 300 }}

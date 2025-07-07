@@ -431,11 +431,11 @@ const MaintenanceForm = () => {
 
   // Load Vehicles and Drivers
   useEffect(() => {
-    fetch("https://api.dropshep.com/api/vehicle")
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/vehicle`)
       .then((res) => res.json())
       .then((data) => setVehicles(data.data || []));
 
-    fetch("https://api.dropshep.com/api/driver")
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/driver`)
       .then((res) => res.json())
       .then((data) => setDrivers(data.data || []));
   }, []);
@@ -490,12 +490,12 @@ const MaintenanceForm = () => {
       const total_cost = cost + cost_by;
       formData.append("total_cost", total_cost);
 
-      const res = await axios.post("https://api.dropshep.com/api/maintenance", formData);
+      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/maintenance`, formData);
       if (res.data.status === "success") {
         toast.success("তথ্য সফলভাবে সংরক্ষণ হয়েছে!");
         form.resetFields();
         removeImage();
-        navigate("/maintenance")
+        navigate("/tramessy/maintenance")
          setLoading(false);
       } else {
         toast.error("সার্ভার ত্রুটি: " + (res.data.message || "Unknown Error"));

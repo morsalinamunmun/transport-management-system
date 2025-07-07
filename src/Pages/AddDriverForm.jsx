@@ -314,8 +314,6 @@ import {
   Card,
   Row,
   Col,
-  Space,
-  message,
   Image,
 } from "antd";
 import {
@@ -343,8 +341,30 @@ const AddDriverForm = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+    // upload image
+    const uploadProps = {
+    beforeUpload: (file) => {
+      const isImage = file.type.startsWith("image/");
+      if (!isImage) {
+        message.error("শুধুমাত্র ছবি ফাইল আপলোড করা যাবে!");
+        return false;
+      }
+      const isLt5M = file.size / 1024 / 1024 < 5;
+      if (!isLt5M) {
+        message.error("ছবির সাইজ ৫MB এর কম হতে হবে!");
+        return false;
+      }
+      setImageFile(file);
+      setPreviewImage(URL.createObjectURL(file));
+      return false;
+    },
+    showUploadList: false,
+  };
+
+
   const onFinish = async (values) => {
-    setLoading(true);
+    console.log(values)
+    // setLoading(true);
     try {
       const formData = new FormData();
       Object.keys(values).forEach((key) => {
@@ -356,20 +376,20 @@ const AddDriverForm = () => {
       });
       if (imageFile) formData.append("license_image", imageFile);
 
-      const response = await axios.post("https://api.dropshep.com/api/driver", formData);
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/driver`, formData);
       if (response.data.status === "success") {
         toast.success("তথ্য সফলভাবে সংরক্ষণ হয়েছে!");
         form.resetFields();
         setPreviewImage(null);
         setImageFile(null);
-        navigate("/driver-list")
+        navigate("/tramessy/driver-list")
       } else {
         toast.error("সার্ভার ত্রুটি: " + (response.data.message || "অজানা সমস্যা"));
       }
     } catch (error) {
-      toast.error("সার্ভার ত্রুটি: " + (error.response?.data?.message || error.message));
+      // toast.error("সার্ভার ত্রুটি: " + (error.response?.data?.message || error.message));
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -471,7 +491,7 @@ const AddDriverForm = () => {
                 name="expire_date"
                 rules={[{ required: true, message: "পূরণ করতে হবে" }]}
               >
-                <DatePicker style={{ width: "100%" }} placeholder="তারিখ নির্বাচন করুন" format="YYYY-MM-DD" />
+                <DatePicker size="middel" style={{ width: "100%" }} placeholder="তারিখ নির্বাচন করুন" format="YYYY-MM-DD" />
               </Form.Item>
             </Col>
           </Row>
@@ -484,41 +504,38 @@ const AddDriverForm = () => {
                 name="status"
                 rules={[{ required: true, message: "পূরণ করতে হবে" }]}
               >
-                <Select placeholder="স্ট্যাটাস নির্বাচন করুন">
+                <Select placeholder="স্ট্যাটাস নির্বাচন করুন" size="middel">
                   <Option value="Active">Active</Option>
                   <Option value="Inactive">Inactive</Option>
                 </Select>
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
-              <Form.Item label="লাইসেন্সের ছবি" name="license_image">
-                <Upload
-                  beforeUpload={(file) => {
-                    handleImageChange({ file });
-                    return false;
-                  }}
-                  showUploadList={false}
-                >
-                  <Button icon={<UploadOutlined />}>ছবি আপলোড করুন</Button>
-                </Upload>
-                {previewImage && (
-                  <div className="mt-2 relative">
-                    <Image
-                      src={previewImage}
-                      alt="License Preview"
-                      style={{ maxWidth: "200px", borderRadius: "8px" }}
-                    />
-                    <Button
-                      type="primary"
-                      danger
-                      icon={<DeleteOutlined />}
-                      size="small"
-                      onClick={removeImage}
-                      style={{ position: "absolute", top: 4, right: 4 }}
-                    />
-                  </div>
-                )}
-              </Form.Item>
+
+ <Form.Item label="লাইসেন্সের ছবি"  name="license_image">
+        <Upload {...uploadProps} accept="image/*" listType="picture">
+          <Button icon={<UploadOutlined />} className="border-primary text-primary">
+            ছবি আপলোড করুন
+          </Button>
+        </Upload>
+
+        {previewImage && (
+          <div className="relative inline-block max-w-xs mt-4">
+            <Image
+              src={previewImage}
+              alt="Receipt Preview"
+              style={{ borderRadius: 8, border: "1px solid #d9d9d9" }}
+            />
+            <Button
+              danger
+              icon={<DeleteOutlined />}
+              size="small"
+              onClick={removeImage}
+              className="absolute top-2 right-2 shadow-md"
+            />
+          </div>
+        )}
+      </Form.Item>
             </Col>
           </Row>
 

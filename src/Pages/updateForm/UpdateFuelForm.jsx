@@ -336,10 +336,10 @@ const UpdateFuelForm = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("https://api.dropshep.com/api/vehicle")
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/vehicle`)
       .then((res) => res.json())
       .then((data) => setVehicles(data.data || []));
-    fetch("https://api.dropshep.com/api/driver")
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/driver`)
       .then((res) => res.json())
       .then((data) => setDrivers(data.data || []));
   }, []);
@@ -373,12 +373,12 @@ const UpdateFuelForm = () => {
     };
     try {
       const res = await axios.put(
-        `https://api.dropshep.com/api/fuel/${id}`,
+        `${import.meta.env.VITE_BASE_URL}/api/fuel/${id}`,
         payload
       );
       if (res.data.status === "success") {
         toast.success("ফুয়েল সফলভাবে আপডেট হয়েছে!");
-        navigate("/fuel")
+        navigate("/tramessy/fuel")
       } else {
         toast.error(res.data.message || "সার্ভার ত্রুটি হয়েছে");
       }
@@ -402,12 +402,12 @@ const UpdateFuelForm = () => {
         >
           <Row gutter={16}>
             <Col xs={24} md={12}>
-              <Form.Item name="date_time" label="তারিখ" rules={[{ required: true }]}> 
+              <Form.Item name="date_time" label="তারিখ" rules={[{ required: false}]}> 
                 <DatePicker format="YYYY-MM-DD" className="w-full" />
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
-              <Form.Item name="vehicle_number" label="গাড়ির নম্বর" rules={[{ required: true }]}> 
+              <Form.Item name="vehicle_number" label="গাড়ির নম্বর" rules={[{ required: false}]}> 
                 <Select placeholder="গাড়ির নম্বর নির্বাচন করুন">
                   {vehicles.map((v) => (
                     <Option key={v.id} value={v.registration_number}>{v.registration_number}</Option>
@@ -416,7 +416,7 @@ const UpdateFuelForm = () => {
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
-              <Form.Item name="driver_name" label="ড্রাইভারের নাম" rules={[{ required: true }]}> 
+              <Form.Item name="driver_name" label="ড্রাইভারের নাম" rules={[{ required: false}]}> 
                 <Select placeholder="ড্রাইভারের নাম নির্বাচন করুন">
                   {drivers.map((d) => (
                     <Option key={d.id} value={d.name}>{d.name}</Option>
@@ -440,7 +440,7 @@ const UpdateFuelForm = () => {
               </Form.Item>
             </Col>
             <Col xs={24} md={12}>
-              <Form.Item name="type" label="তেলের ধরন" rules={[{ required: true }]}> 
+              <Form.Item name="type" label="তেলের ধরন" rules={[{ required: false}]}> 
                 <Select>
                   <Option value="Octen">Octen</Option>
                   <Option value="Gas">Gas</Option>

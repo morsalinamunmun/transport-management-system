@@ -437,7 +437,7 @@ const DailyTripExpense = () => {
 
   const fetchTripData = async () => {
     try {
-      const response = await axios.get("https://api.dropshep.com/api/trip")
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/trip`)
       if (response.data.status === "success") {
         const sortedData = response.data.data.sort((a, b) => {
           const dateTimeA = new Date(`${a.trip_date}T${a.trip_time}`)
@@ -449,7 +449,7 @@ const DailyTripExpense = () => {
       setLoading(false)
     } catch (error) {
       console.error("Error fetching trip data:", error)
-      message.error("ট্রিপ ডেটা লোড করতে সমস্যা হয়েছে")
+      // message.error("ট্রিপ ডেটা লোড করতে সমস্যা হয়েছে")
       setLoading(false)
     }
   }
@@ -636,7 +636,7 @@ const DailyTripExpense = () => {
       title: "তারিখ",
       dataIndex: "trip_date",
       key: "trip_date",
-      width: 120,
+      // width: 120,
       render: (date) => (
         <Space>
           <Text>{date}</Text>
@@ -647,7 +647,7 @@ const DailyTripExpense = () => {
       title: "গাড়ি না.",
       dataIndex: "vehicle_number",
       key: "vehicle_number",
-      width: 100,
+      // width: 100,
       render: (vehicle) => (
         <Space>
           <Text strong>{vehicle}</Text>
@@ -658,7 +658,7 @@ const DailyTripExpense = () => {
       title: "ড্রাইভারের নাম",
       dataIndex: "driver_name",
       key: "driver_name",
-      width: 150,
+      // width: 150,
       render: (name) => (
         <Space>
           <Text>{name}</Text>
@@ -669,7 +669,7 @@ const DailyTripExpense = () => {
       title: "ট্রিপ খরচ",
       dataIndex: "trip_price",
       key: "trip_price",
-      width: 120,
+      // width: 120,
       render: (price) => (
         <Space>
           <Text > {Number.parseFloat(price ?? "0").toFixed(2)}</Text>
@@ -679,7 +679,7 @@ const DailyTripExpense = () => {
     {
       title: "অন্যান্য খরচ",
       key: "other_cost",
-      width: 120,
+      // width: 120,
       render: (_, record) => {
         const fuel = Number.parseFloat(record.fuel_price ?? "0") || 0
         const gas = Number.parseFloat(record.gas_price ?? "0") || 0
@@ -696,7 +696,7 @@ const DailyTripExpense = () => {
     {
       title: "টোটাল খরচ",
       key: "total_cost",
-      width: 120,
+      // width: 120,
       render: (_, record) => {
         const fuel = Number.parseFloat(record.fuel_price ?? "0") || 0
         const gas = Number.parseFloat(record.gas_price ?? "0") || 0
@@ -714,20 +714,20 @@ const DailyTripExpense = () => {
         )
       },
     },
-    {
-      title: "অ্যাকশন",
-      key: "actions",
-      width: 80,
-      render: (_, record) => (
-        <Tooltip title="সম্পাদনা">
-                    <Link to={`/update-expenseForm/${record.id}`}>
-                        <EditOutlined
-                          className="!text-yellow-500 cursor-pointer text-lg hover:!text-primary"
-                        />
-                        </Link>
-                      </Tooltip>
-      ),
-    },
+    // {
+    //   title: "অ্যাকশন",
+    //   key: "actions",
+    //   width: 80,
+    //   render: (_, record) => (
+    //     <Tooltip title="সম্পাদনা">
+    //                 <Link to={`/tramessy/update-expenseForm/${record.id}`}>
+    //                     <EditOutlined
+    //                       className="!text-yellow-500 cursor-pointer text-lg hover:!text-primary"
+    //                     />
+    //                     </Link>
+    //                   </Tooltip>
+    //   ),
+    // },
   ]
 
   return (
@@ -738,7 +738,7 @@ const DailyTripExpense = () => {
       }}
     >
       <Card
-        className="max-w-7xl mx-auto"
+        className=""
         style={{
           boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
           background: "rgba(255,255,255,0.9)",
@@ -746,7 +746,7 @@ const DailyTripExpense = () => {
         }}
       >
         {/* Header */}
-        <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }}>
+        <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }} gutter={[16, 16]}>
           <Col>
             <Title level={3} style={{ margin: 0, color: "#11375B" }}>
               <TruckOutlined style={{ marginRight: "12px", color: "#11375B" }} />
@@ -754,17 +754,14 @@ const DailyTripExpense = () => {
             </Title>
           </Col>
           <Col>
-            <Button
-              icon={<FilterOutlined />}
-              onClick={() => setShowFilter(!showFilter)}
-              style={{
-                background: showFilter ? "#11375b" : "transparent",
-                color: showFilter ? "white" : "#11375b",
-                borderColor: "#11375b",
-              }}
-            >
-              ফিল্টার
-            </Button>
+             <Button
+  icon={<FilterOutlined />}
+  onClick={() => setShowFilter(!showFilter)}
+  className={`border border-[#11375b] px-4 py-1 rounded 
+    ${showFilter ? "bg-[#11375b] text-white" : "bg-transparent text-[#11375b]"}`}
+>
+  ফিল্টার
+              </Button>
           </Col>
         </Row>
 
@@ -875,18 +872,14 @@ const DailyTripExpense = () => {
         )}
 
         {/* Export and Search */}
-        <Row justify="space-between" align="middle" style={{ marginBottom: "16px" }}>
-          <Col>
+        <Row justify="space-between" align="middle" style={{ marginBottom: "16px" }} gutter={[16, 16]}>
+        <Col>
             <Space wrap>
               {/* CSV */}
               <Button
                 icon={<FileTextOutlined style={{ color: "#1890ff" }} />}
                 onClick={exportCSV}
-                style={{
-                  backgroundColor: "#e6f7ff",
-                  borderColor: "#91d5ff",
-                  color: "#1890ff",
-                }}
+                className="!bg-blue-50 border !border-blue-100 hover:!bg-white hover:!text-primary"
               >
                 CSV
               </Button>
@@ -894,11 +887,7 @@ const DailyTripExpense = () => {
               <Button
                 icon={<FileExcelOutlined style={{ color: "#52c41a" }} />}
                 onClick={exportExcel}
-                style={{
-                  backgroundColor: "#f6ffed",
-                  borderColor: "#b7eb8f",
-                  color: "#52c41a",
-                }}
+                className="!bg-green-50 border !border-green-100 hover:!bg-white hover:!text-primary"
               >
                 Excel
               </Button>
@@ -906,11 +895,7 @@ const DailyTripExpense = () => {
               <Button
                 icon={<FilePdfOutlined style={{ color: "#f5222d" }} />}
                 onClick={exportPDF}
-                style={{
-                  backgroundColor: "#fff2e8",
-                  borderColor: "#ffbb96",
-                  color: "#f5222d",
-                }}
+                className="!bg-orange-50 border !border-orange-100 hover:!bg-white hover:!text-primary"
               >
                 PDF
               </Button>
@@ -918,11 +903,7 @@ const DailyTripExpense = () => {
               <Button
                 icon={<PrinterOutlined style={{ color: "#722ed1" }} />}
                 onClick={printTable}
-                style={{
-                  backgroundColor: "#f9f0ff",
-                  borderColor: "#d3adf7",
-                  color: "#722ed1",
-                }}
+                className="!bg-blue-50 border !border-blue-100 hover:!bg-white hover:!text-primary"
               >
                 Print
               </Button>
@@ -932,18 +913,19 @@ const DailyTripExpense = () => {
           {/* Search */}
           <Col>
             <Search
-              placeholder="ব্যয় খুঁজুন...."
+              placeholder="ট্রিপ ব্যয় খুঁজুন...."
               allowClear
               onChange={(e) => setSearchTerm(e.target.value)}
               enterButton={
                 <Button
+                
                   style={{
                     backgroundColor: "#11375B",
                     color: "#fff",
                     borderColor: "#11375B",
                   }}
                 >
-                  <SearchOutlined />
+                  <SearchOutlined className="!text-white"/>
                 </Button>
               }
             />

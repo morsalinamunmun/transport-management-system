@@ -556,6 +556,7 @@
 // };
 
 // export default CarList;
+
 import { useEffect, useState } from "react";
 import {
   Table,
@@ -613,7 +614,7 @@ const CarList = () => {
 
   const fetchVehicles = async () => {
     try {
-      const response = await axios.get("https://api.dropshep.com/api/vehicle");
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/vehicle`);
       if (response.data.status === "success") {
         setVehicle(response.data.data);
       }
@@ -626,7 +627,7 @@ const CarList = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`https://api.dropshep.com/api/vehicle/${selectedDriverId}`);
+      await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/vehicle/${selectedDriverId}`);
       setVehicle((prev) => prev.filter((v) => v.id !== selectedDriverId));
       message.success("গাড়িটি সফলভাবে ডিলিট হয়েছে");
       setDeleteModalOpen(false);
@@ -638,7 +639,7 @@ const CarList = () => {
 
   const handleViewCar = async (id) => {
     try {
-      const response = await axios.get(`https://api.dropshep.com/api/vehicle/${id}`);
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/vehicle/${id}`);
       if (response.data.status === "success") {
         setSelectedCar(response.data.data);
         setViewModalOpen(true);
@@ -804,7 +805,7 @@ const CarList = () => {
       render: (_, record) => (
         <Space>
                    <Tooltip title="সম্পাদনা">
-                    <Link to={`/update-carForm/${record.id}`}>
+                    <Link to={`/tramessy/update-carForm/${record.id}`}>
                         <EditOutlined
                           className="!text-yellow-500 cursor-pointer text-lg hover:!text-primary"
                         />
@@ -845,7 +846,7 @@ const CarList = () => {
           </Title>
         </Col>
         <Col>
-          <Link to="/add-carForm">
+          <Link to="/tramessy/add-carForm">
             <Button icon={<PlusOutlined />} type="primary" className="!bg-primary">
               গাড়ি
             </Button>
@@ -885,7 +886,7 @@ const CarList = () => {
           borderColor: "#11375B"
         }}
       >
-        <SearchOutlined />
+        <SearchOutlined className="!text-white"/>
       </Button>
     }
     // style={{ width: 300 }}

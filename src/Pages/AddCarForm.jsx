@@ -458,7 +458,7 @@ const AddCarForm = () => {
 
   const fetchDrivers = async () => {
     try {
-      const response = await fetch("https://api.dropshep.com/api/driver")
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/driver`)
       const data = await response.json()
       setDrivers(data.data || [])
     } catch (error) {
@@ -478,11 +478,11 @@ const AddCarForm = () => {
           )
         }
       }
-      const response = await axios.post("https://api.dropshep.com/api/vehicle", formData)
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/vehicle`, formData)
       if (response.data.status === "Vehicle saved successfully") {
         toast.success("গাড়ি সফলভাবে সংরক্ষণ হয়েছে!")
         form.resetFields()
-        navigate("/car-list")
+        navigate("/tramessy/car-list")
       } else {
         message.error("সার্ভার ত্রুটি: " + (response.data.message || "অজানা সমস্যা"))
       }

@@ -442,7 +442,7 @@ const UpdateCarForm = () => {
   const car = loaderData?.data;
 
   useEffect(() => {
-    fetch("https://api.dropshep.com/api/driver")
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/driver`)
       .then((res) => res.json())
       .then((data) => setDrivers(data.data))
       .catch(() => message.error("ড্রাইভার লোড করতে ব্যর্থ"));
@@ -459,8 +459,8 @@ const UpdateCarForm = () => {
         fitness_date: values.fitness_date?.format("YYYY-MM-DD"),
       };
 
-      const res = await axios.put(
-        `https://api.dropshep.com/api/vehicle/${car.id}`,
+      const res = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/vehicle/${car.id}`,
         payload,
         {
           headers: { "Content-Type": "application/json" },
@@ -469,7 +469,7 @@ const UpdateCarForm = () => {
 
       if (res.data.status === "Vehicle updated successfully") {
         toast.success("গাড়ি সফলভাবে আপডেট হয়েছে!");
-        navigate("/car-list")
+        navigate("/tramessy/car-list")
       } else {
         throw new Error(res.data.message || "ত্রুটি");
       }

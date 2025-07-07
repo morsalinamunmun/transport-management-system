@@ -396,7 +396,7 @@ const Parts = () => {
 
   const fetchParts = async () => {
     try {
-      const response = await axios.get("https://api.dropshep.com/api/parts")
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/parts`)
       if (response.data.status === "success") {
         setParts(response.data.data)
       }
@@ -416,7 +416,7 @@ const Parts = () => {
         formData.append("date", values.date.format("YYYY-MM-DD"))
       }
 
-      const response = await axios.post("https://api.dropshep.com/api/parts", formData)
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/parts`, formData)
 
       if (response.data.status === "success") {
         message.success("পার্টস সফলভাবে সংরক্ষণ হয়েছে!")
@@ -437,7 +437,7 @@ const Parts = () => {
     if (!selectedPartId) return
 
     try {
-      const response = await fetch(`https://api.dropshep.com/api/parts/${selectedPartId}`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/parts/${selectedPartId}`, {
         method: "DELETE",
       })
 
@@ -539,7 +539,7 @@ const Parts = () => {
       render: (_, record) => (
         <Space>
            <Tooltip title="সম্পাদনা">
-            <Link to={`/update-partsForm/${record.id}`}>
+            <Link to={`/tramessy/update-partsForm/${record.id}`}>
                 <EditOutlined
                   className="!text-yellow-500 cursor-pointer text-lg hover:!text-primary"
                 />
@@ -568,7 +568,7 @@ const Parts = () => {
       }}
     >
       <Card
-        className="max-w-7xl mx-auto"
+        className=""
         style={{
           boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
           background: "rgba(255,255,255,0.9)",
@@ -576,7 +576,7 @@ const Parts = () => {
         }}
       >
         {/* Header */}
-        <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }}>
+        <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }} gutter={[16, 16]}>
           <Col>
             <Title level={4} style={{ margin: 0, color: "#11375B" }}>
               <ToolOutlined style={{ marginRight: "12px", color: "#11375B" }} />
@@ -597,7 +597,7 @@ const Parts = () => {
         </Row>
 
         {/* Search parts*/}
-        <Row justify="end" style={{ marginBottom: "16px" }}>
+        <Row justify="end" style={{ marginBottom: "16px" }} gutter={[16, 16]}>
           <Col>
   <Search
     placeholder="পার্টস খুঁজুন..."
@@ -611,7 +611,7 @@ const Parts = () => {
           borderColor: "#11375B"
         }}
       >
-        <SearchOutlined />
+        <SearchOutlined className="!text-white"/>
       </Button>
     }
   />

@@ -491,7 +491,7 @@ const Sidebar = () => {
     {
       key: "dashboard",
       icon: <DashboardOutlined />,
-      label: <Link to="/">ড্যাশবোর্ড</Link>,
+      label: <Link to="/tramessy">ড্যাশবোর্ড</Link>,
     },
     {
       key: "fleet",
@@ -500,27 +500,27 @@ const Sidebar = () => {
       children: [
         {
           key: "CarList",
-          label: <Link to="/car-list">গাড়ি তালিকা</Link>,
+          label: <Link to="/tramessy/car-list">গাড়ি তালিকা</Link>,
         },
         {
           key: "DriverList",
-          label: <Link to="/driver-list">ড্রাইভার তালিকা</Link>,
+          label: <Link to="/tramessy/driver-list">ড্রাইভার তালিকা</Link>,
         },
         {
           key: "TripList",
-          label: <Link to="/trip-list">ট্রিপ হিসাব</Link>,
+          label: <Link to="/tramessy/trip-list">ট্রিপ হিসাব</Link>,
         },
         {
           key: "Fuel",
-          label: <Link to="/fuel">ফুয়েল হিসাব</Link>,
+          label: <Link to="/tramessy/fuel">ফুয়েল হিসাব</Link>,
         },
         {
           key: "Parts",
-          label: <Link to="/parts">পার্টস এন্ড স্পায়ারস</Link>,
+          label: <Link to="/tramessy/parts">পার্টস এন্ড স্পায়ারস</Link>,
         },
         {
           key: "Maintenance",
-          label: <Link to="/maintenance">মেইনটেনেন্স</Link>,
+          label: <Link to="/tramessy/maintenance">মেইনটেনেন্স</Link>,
         },
       ],
     },
@@ -531,19 +531,19 @@ const Sidebar = () => {
       children: [
         {
           key: "DailyIncome",
-          label: <Link to="/daily-income">দৈনিক আয়</Link>,
+          label: <Link to="/tramessy/daily-income">দৈনিক আয়</Link>,
         },
         {
           key: "DailyTripExpense",
-          label: <Link to="/daily-trip-expense">দৈনিক ট্রিপের ব্যয়</Link>,
+          label: <Link to="/tramessy/daily-trip-expense">দৈনিক ট্রিপের ব্যয়</Link>,
         },
         {
           key: "DailyExpense",
-          label: <Link to="/daily-expense">দৈনিক ব্যয়</Link>,
+          label: <Link to="/tramessy/daily-expense">দৈনিক ব্যয়</Link>,
         },
          {
           key: "monthlyStatement",
-          label: <Link to="/monthly-statement">মাসিক স্টেটমেন্ট</Link>,
+          label: <Link to="/tramessy/monthly-statement">মাসিক স্টেটমেন্ট</Link>,
         },
       ],
     },
@@ -554,7 +554,7 @@ const Sidebar = () => {
       children: [
         {
           key: "AllUsers",
-          label: <Link to="/all-users">সকল ইউজার</Link>,
+          label: <Link to="/tramessy/all-users">সকল ইউজার</Link>,
         },
       ],
     },

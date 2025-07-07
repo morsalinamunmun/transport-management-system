@@ -672,13 +672,11 @@ import {
   Space,
   Typography,
   Tooltip,
-  Tag,
   Row,
   Col,
   Statistic,
   Divider,
   message,
-  Dropdown,
 } from "antd"
 import {
   TruckOutlined,
@@ -687,14 +685,8 @@ import {
   EditOutlined,
   EyeOutlined,
   DeleteOutlined,
-  ExportOutlined,
   PrinterOutlined,
   SearchOutlined,
-  CalendarOutlined,
-  UserOutlined,
-  PhoneOutlined,
-  EnvironmentOutlined,
-  DollarOutlined,
   FileTextOutlined,
   FileExcelOutlined,
   FilePdfOutlined,
@@ -707,6 +699,7 @@ import autoTable from "jspdf-autotable"
 import { saveAs } from "file-saver"
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import { Link } from "react-router-dom";
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
@@ -732,36 +725,6 @@ const TripList = () => {
   current: 1,
   pageSize: 10,
 })
-
-// print trip table info
-// const printTripTable = () => {
-//     // hide specific column
-//     const actionColumns = document.querySelectorAll(".action_column");
-//     actionColumns.forEach((col) => {
-//       col.style.display = "none";
-//     });
-//     const printContent = document.querySelector("table").outerHTML;
-//     const WinPrint = window.open("", "", "width=900,height=650");
-//     WinPrint.document.write(`
-//       <html>
-//         <head>
-//           <title>Print</title>
-//           <style>
-//             table { width: 100%; border-collapse: collapse; }
-//             th, td { border: 1px solid #000; padding: 8px; text-align: left; }
-//             @media print {
-//             .action_column { display: none !important; }
-//           }
-//           </style>
-//         </head>
-//         <body>${printContent}</body>
-//       </html>
-//     `);
-//     WinPrint.document.close();
-//     WinPrint.focus();
-//     WinPrint.print();
-//     WinPrint.close();
-//   };
 
 const printTripTable = () => {
   const actionColumns = document.querySelectorAll(".action_column");
@@ -812,7 +775,7 @@ const printTripTable = () => {
 
   const fetchTrips = async () => {
     try {
-      const response = await fetch("https://api.dropshep.com/api/trip")
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/trip`)
       const data = await response.json()
 
       if (data.status === "success") {
@@ -869,7 +832,7 @@ const printTripTable = () => {
     if (!selectedTripId) return
 
     try {
-      const response = await fetch(`https://api.dropshep.com/api/trip/${selectedTripId}`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/trip/${selectedTripId}`, {
         method: "DELETE",
       })
 
@@ -890,7 +853,7 @@ const printTripTable = () => {
   // View trip details
   const handleView = async (id) => {
     try {
-      const response = await fetch(`https://api.dropshep.com/api/trip/${id}`)
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/trip/${id}`)
       const data = await response.json()
 
       if (data.status === "success") {
@@ -1046,26 +1009,6 @@ const printTripTable = () => {
     saveAs(blob, "trip_data.csv")
   }
 
-  const exportMenuItems = [
-    {
-      key: "csv",
-      label: "CSV",
-      icon: <ExportOutlined />,
-      onClick: exportCSV,
-    },
-    {
-      key: "excel",
-      label: "Excel",
-      icon: <ExportOutlined />,
-      onClick: exportExcel,
-    },
-    {
-      key: "pdf",
-      label: "PDF",
-      icon: <ExportOutlined />,
-      onClick: exportPDF,
-    },
-  ]
 
   // Table columns
   const columns = [
@@ -1177,10 +1120,11 @@ const printTripTable = () => {
       render: (_, record) => (
         <Space>
            <Tooltip title="সম্পাদনা">
+            <Link to={`/tramessy/update-tripForm/${record.id}`}>
                 <EditOutlined
                   className="!text-yellow-500 cursor-pointer text-lg hover:!text-primary"
-                  onClick={() => (window.location.href = `/update-tripForm/${record.id}`)}
                 />
+                </Link>
               </Tooltip>
 
           <Tooltip title="দেখুন">
@@ -1206,18 +1150,18 @@ const printTripTable = () => {
 
 
   return (
-    <div className="overflow-hidden  mx-auto -z-10">
+    <div >
     <div
       style={{ padding: "10px", minHeight: "100vh" }}
     >
       <Card
+      className=""
         style={{
-          maxWidth: "100%",
-          boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
+       
+          boxShadow: "0 8px 32px rgba(48, 47, 47, 0.1)",
           background: "rgba(255,255,255,0.9)",
           backdropFilter: "blur(10px)",
         }}
-        className="rounded-lg"
       >
         {/* Header */}
         <Row justify="space-between" align="middle" style={{ marginBottom: "24px" }}>
@@ -1229,25 +1173,23 @@ const printTripTable = () => {
           </Col>
           <Col className="mt-3 md:mt-0">
             <Space>
+              <Link to={"/tramessy/add-tripForm"}>
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
                 style={{ background: "#11375B", borderColor: "#11375B" }}
-                onClick={() => (window.location.href = "/add-tripForm")}
               >
                 ট্রিপ
               </Button>
+              </Link>
               <Button
-                icon={<FilterOutlined />}
-                onClick={() => setShowFilter(!showFilter)}
-                style={{
-                  background: showFilter ? "#11375b" : "transparent",
-                  color: showFilter ? "white" : "#11375b",
-                  borderColor: "#11375b",
-                }}
-              >
-                ফিল্টার
-              </Button>
+  icon={<FilterOutlined />}
+  onClick={() => setShowFilter(!showFilter)}
+  className={`border border-[#11375b] px-4 py-1 rounded 
+    ${showFilter ? "bg-[#11375b] text-white" : "bg-transparent text-[#11375b]"}`}
+>
+  ফিল্টার
+</Button>
             </Space>
           </Col>
         </Row>
@@ -1342,7 +1284,7 @@ const printTripTable = () => {
           borderColor: "#11375B"
         }}
       >
-        <SearchOutlined />
+        <SearchOutlined className="!text-white"/>
       </Button>
     }
     // style={{ width: 300 }}

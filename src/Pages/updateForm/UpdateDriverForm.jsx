@@ -334,7 +334,7 @@ const UpdateDriverForm = () => {
 
   const [previewImage, setPreviewImage] = useState(
     license_image
-      ? `https://api.dropshep.com/public/uploads/driver/${license_image}`
+      ? `${import.meta.env.VITE_BASE_URL}/public/uploads/driver/${license_image}`
       : null
   );
 
@@ -345,7 +345,7 @@ const UpdateDriverForm = () => {
             uid: "-1",
             name: "license.jpg",
             status: "done",
-            url: `https://api.dropshep.com/public/uploads/driver/${license_image}`,
+            url: `${import.meta.env.VITE_BASE_URL}/public/uploads/driver/${license_image}`,
           },
         ]
       : []
@@ -366,7 +366,7 @@ const UpdateDriverForm = () => {
   }, [form]);
 
   const handleSubmit = async (values) => {
-    setLoading(true);
+    // setLoading(true);
     try {
       const formData = new FormData();
 
@@ -383,7 +383,7 @@ const UpdateDriverForm = () => {
       }
 
       const response = await axios.post(
-        `https://api.dropshep.com/api/driver/${id}`,
+        `${import.meta.env.VITE_BASE_URL}/api/driver/${id}`,
         formData
       );
 
@@ -392,7 +392,8 @@ const UpdateDriverForm = () => {
         form.resetFields();
         setPreviewImage(null);
         setFileList([]);
-        navigate("/driver-list")
+        navigate("/tramessy/driver-list")
+        setLoading(false);
       } else {
         toast.error("সার্ভার ত্রুটি: " + (response.data.message || "অজানা সমস্যা"));
       }
@@ -400,7 +401,7 @@ const UpdateDriverForm = () => {
       const errorMessage =
         error.response?.data?.message || error.message || "Unknown error";
       toast.error("সার্ভার ত্রুটি: " + errorMessage);
-      setLoading(false);
+      
     }
   };
 
@@ -419,12 +420,12 @@ const UpdateDriverForm = () => {
         >
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item label="ড্রাইভারের নাম" name="name">
+              <Form.Item label="ড্রাইভারের নাম" name="name" rules={[{ required: false}]}>
                 <Input placeholder="ড্রাইভারের নাম" />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="মোবাইল নম্বর" name="contact">
+              <Form.Item label="মোবাইল নম্বর" name="contact" rules={[{ required: false}]}>
                 <Input placeholder="মোবাইল নম্বর" />
               </Form.Item>
             </Col>
@@ -490,15 +491,22 @@ const UpdateDriverForm = () => {
             </Col>
           </Row>
 
-          {previewImage && (
-            <div className="my-4">
-              <img
-                src={previewImage}
-                alt="Preview"
-                className="max-w-xs border rounded shadow"
-              />
-            </div>
-          )}
+          <div className="my-4">
+  {previewImage ? (
+    <img
+      src={previewImage}
+      alt="Preview"
+      className="max-w-xs border rounded shadow"
+    />
+  ) : (
+    <img
+  src="/no-image.png" // Put your placeholder in the public folder
+  alt="No Image"
+  className="max-w-xs border rounded shadow"
+/>
+  )}
+</div>
+
 
           <Form.Item className="mt-6">
             <Button type="primary" htmlType="submit" className="!bg-primary flex justify-start" loading={loading}>
