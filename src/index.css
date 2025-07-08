@@ -391,3 +391,17 @@ input[type="date"].remove-date-icon::-moz-focusring {
   border-color: #0f2f4d;
 }
 
+/* ant menu----------------------------------- */
+
+/* 
+:where(.css-12s4gah).ant-menu-light .ant-menu-item-selected{
+  color: white !important;
+}
+
+:where(.css-12s4gah).ant-menu-light .ant-menu-item-selected{
+  background-color: #11375B !important;
+}
+
+.ant-menu-item .ant-menu-item-active .ant-menu-item-selected{
+   background-color: #11375B !important;
+} */

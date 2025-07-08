@@ -395,6 +395,7 @@ const UpdateMaintenanceForm = () => {
   const [previewImage, setPreviewImage] = useState(null)
   const [imageFile, setImageFile] = useState(null)
   const navigate = useNavigate();
+  const [fileList, setFileList] = useState([])
 
   // Load existing data
   const updateMaintenanceLoaderData = useLoaderData()
@@ -430,14 +431,22 @@ const UpdateMaintenanceForm = () => {
 
     // Set initial image preview
     if (receipt) {
-      setPreviewImage(`${import.meta.env.VITE_BASE_URL}/public/uploads/maintenance/${receipt}`)
+      const imageUrl = `${import.meta.env.VITE_BASE_URL}/public/uploads/maintenance/${receipt}`
+      setPreviewImage(imageUrl)
+      setFileList([
+        {
+          uid: "-1",
+          name: "receipt.jpg",
+          status: "done",
+          url: imageUrl,
+        },
+      ])
     }
-
     // Fetch vehicles
     fetchVehicles()
     // Fetch drivers
     fetchDrivers()
-  }, [])
+  }, [receipt])
 
   const fetchVehicles = async () => {
     try {
@@ -521,6 +530,24 @@ const UpdateMaintenanceForm = () => {
     setImageFile(null)
   }
 
+  // const uploadProps = {
+  //   beforeUpload: (file) => {
+  //     const isImage = file.type.startsWith("image/")
+  //     if (!isImage) {
+  //       message.error("শুধুমাত্র ছবি ফাইল আপলোড করা যাবে!")
+  //       return false
+  //     }
+  //     const isLt5M = file.size / 1024 / 1024 < 5
+  //     if (!isLt5M) {
+  //       message.error("ছবির সাইজ ৫MB এর কম হতে হবে!")
+  //       return false
+  //     }
+  //     handleImageChange({ file })
+  //     return false // Prevent automatic upload
+  //   },
+  //   showUploadList: false,
+  // }
+
   const uploadProps = {
     beforeUpload: (file) => {
       const isImage = file.type.startsWith("image/")
@@ -533,11 +560,28 @@ const UpdateMaintenanceForm = () => {
         message.error("ছবির সাইজ ৫MB এর কম হতে হবে!")
         return false
       }
-      handleImageChange({ file })
-      return false // Prevent automatic upload
+
+      const url = URL.createObjectURL(file)
+      setPreviewImage(url)
+      setImageFile(file)
+      setFileList([
+        {
+          uid: "-1",
+          name: file.name,
+          status: "done",
+          url,
+        },
+      ])
+
+      return false // Prevent auto upload
     },
-    showUploadList: false,
+    fileList,
+    onPreview: (file) => {
+      setPreviewImage(file.url || URL.createObjectURL(file.originFileObj))
+    },
+    onChange: ({ fileList: newFileList }) => setFileList(newFileList),
   }
+
 
   return (
     <div
@@ -846,31 +890,26 @@ const UpdateMaintenanceForm = () => {
                     </Button>
                   </Upload>
 
-                  {previewImage && (
-                    <div style={{ position: "relative", display: "inline-block", maxWidth: "300px" }}>
-                      <Image
-                        src={previewImage || "/placeholder.svg"}
-                        alt="Receipt Preview"
-                        style={{
-                          maxWidth: "100%",
-                          borderRadius: "8px",
-                          border: "1px solid #d9d9d9",
-                        }}
-                      />
-                      <Button
-                        danger
-                        icon={<DeleteOutlined />}
-                        size="small"
-                        onClick={removeImage}
-                        style={{
-                          position: "absolute",
-                          top: "8px",
-                          right: "8px",
-                          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-                        }}
-                      />
-                    </div>
-                  )}
+                  {previewImage ? (
+                  <div style={{ marginTop: "16px", position: "relative", display: "inline-block" }}>
+                    <Image
+                      src={previewImage}
+                      alt="Preview"
+                      width={300}
+                      style={{ borderRadius: "8px", border: "1px solid #ccc" }}
+                    />
+                    <Button
+                      danger
+                      size="small"
+                      icon={<DeleteOutlined />}
+                      onClick={removeImage}
+                      style={{ position: "absolute", top: 8, right: 8 }}
+                    />
+                  </div>
+                ) : (
+                  <img src="/no-image.png" alt="No Image" className="mt-4 w-[300px] border rounded" />
+                )}
+
                 </div>
               </Form.Item>
             </Col>
