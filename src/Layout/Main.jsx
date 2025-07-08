@@ -74,8 +74,8 @@ const Main = () => {
   const sidebarRef = useRef(null);
 
   const hideMenu =
-    location.pathname.includes("/Login") ||
-    location.pathname.includes("/ResetPass");
+    location.pathname.includes("/tramessy/Login") ||
+    location.pathname.includes("/tramessy/ResetPass");
 
   useEffect(() => {
     const handleClickOutside = (event) => {

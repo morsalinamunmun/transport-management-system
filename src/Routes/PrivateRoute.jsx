@@ -5,7 +5,7 @@ const PrivateRoute = ({ children }) => {
   const { user } = useContext(AuthContext);
   // console.log("Role", user.data.user.role);
   if (!user) {
-    return <Navigate to="/Login" />;
+    return <Navigate to="/tramessy/Login" />;
   }
   return children;
 };
