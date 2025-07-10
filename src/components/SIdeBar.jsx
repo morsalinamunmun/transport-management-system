@@ -470,7 +470,7 @@ import { Layout, Menu, Avatar } from "antd"
 import { DashboardOutlined, CarOutlined, FundOutlined, UserOutlined } from "@ant-design/icons"
 import { Link, useLocation } from "react-router-dom"
 import useAdmin from "../hooks/useAdmin"
-import logo from "../assets/logo.png";
+import logo from "../assets/parkline-logo.png"
 import avatar from "../assets/avatar.png";
 
 const { Sider } = Layout
@@ -631,12 +631,12 @@ const Sidebar = () => {
       }}
     >
       {/* Logo Section */}
-      <div className="flex justify-center items-center p-4 border-b border-gray-200">
+      <div className="flex justify-center items-center px-4 py-4 lg:py-0  border-b border-gray-200">
         <Link to="/">
           <img
             src={logo}
             alt="Logo"
-            className={`transition-all duration-300 ${collapsed ? "w-8 h-8" : "w-16 h-9"}`}
+            className={`transition-all duration-300 ${collapsed ? "w-10 h-10" : "w-20 h-18"}`}
           />
         </Link>
       </div>

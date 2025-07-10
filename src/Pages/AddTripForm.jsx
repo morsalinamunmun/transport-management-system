@@ -754,12 +754,12 @@ setLoading(true);
             </Row>
             <Row gutter={16}>
               <Col xs={24} md={12}>
-                <Form.Item label="লোড পয়েন্ট " name="load_point" rules={[{ required: true, message: "পূরণ করতে হবে" }]}> 
+                <Form.Item label="পিকআপ পয়েন্ট " name="load_point" rules={[{ required: true, message: "পূরণ করতে হবে" }]}> 
                   <Input placeholder="লোড পয়েন্ট..." />
                 </Form.Item>
               </Col>
               <Col xs={24} md={12}>
-                <Form.Item label="আনলোড পয়েন্ট " name="unload_point" rules={[{ required: true, message: "পূরণ করতে হবে" }]}> 
+                <Form.Item label="ড্রপ পয়েন্ট" name="unload_point" rules={[{ required: true, message: "পূরণ করতে হবে" }]}> 
                   <Input placeholder="আনলোড পয়েন্ট..." />
                 </Form.Item>
               </Col>
