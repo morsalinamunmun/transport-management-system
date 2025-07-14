@@ -162,16 +162,56 @@ const StatisticsCard = () => {
   const [vehicle, setvehicle] = useState([])
   const [uniqueCustomerCount, setUniqueCustomerCount] = useState(0)
   const [driver, setDriver] = useState([]);
-
+const [todayIncome, setTodayIncome] = useState(0)
   const [loadingVehicle, setLoadingVehicle] = useState(true)
   const [loadingCustomer, setLoadingCustomer] = useState(true)
   const [loadingDriver, setLoadingDriver] = useState(true)
+  // loading
+    const [loadingIncome, setLoadingIncome] = useState(true)
+  const [loadingTrips, setLoadingTrips] = useState(true)
 
   // trips
   useEffect(() => {
     axios.get(`${import.meta.env.VITE_BASE_URL}/api/trip`).then((res) => {
       setTrips(res.data.data)
     })
+  }, [])
+
+  // income
+  useEffect(() => {
+    const fetchTripData = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/trip`)
+        const data = response.data.data
+        setTrips(data)
+
+        const today = new Date().toISOString().split("T")[0]
+        const todayTrips = data.filter((trip) => trip.trip_date === today)
+
+        const totalOtherExpenses = todayTrips.reduce(
+          (sum, trip) => sum + Number.parseFloat(trip.other_expenses || 0),
+          0,
+        )
+        const totalDemarage = todayTrips.reduce((sum, trip) => sum + Number.parseFloat(trip.demarage || 0), 0)
+        const totalCommission = todayTrips.reduce(
+          (sum, trip) => sum + Number.parseFloat(trip.driver_percentage || 0),
+          0,
+        )
+        const totalTripIncome = todayTrips.reduce((sum, trip) => sum + Number.parseFloat(trip.trip_price || 0), 0)
+
+        setOtherExpenses(totalOtherExpenses)
+        setDemarage(totalDemarage)
+        setDriverCommission(totalCommission)
+        setTodayIncome(totalTripIncome)
+      } catch (error) {
+        console.error("Failed to fetch trip data", error)
+      } finally {
+        setLoadingTrips(false)
+        setLoadingIncome(false)
+      }
+    }
+
+    fetchTripData()
   }, [])
 
   // vehicle
@@ -220,9 +260,9 @@ const StatisticsCard = () => {
     //   borderColor: "border-l-blue-500",
     // },
     {
-      title: "টোটাল গাড়ি",
-      value: vehicle.length,
-      loading: loadingVehicle,
+      title: "আজকের আয়",
+      value: todayIncome,
+      loading: loadingIncome,
       icon: <CarOutlined className="!text-white text-xl" />,
       iconBg: "bg-gradient-to-r from-green-500 to-green-600",
       cardBg: "bg-gradient-to-r from-green-50 to-green-100",
@@ -240,9 +280,9 @@ const StatisticsCard = () => {
       borderColor: "border-l-orange-500",
     },
     {
-      title: "ড্রাইভার",
-      value: driver.length,
-      loading: loadingDriver,
+      title: "টোটাল ট্রিপ",
+      value: trips.length,
+      loading: loadingTrips,
       icon: <UserAddOutlined className="!text-white text-xl" />,
       iconBg: "bg-gradient-to-r from-purple-500 to-purple-600",
       cardBg: "bg-gradient-to-r from-purple-50 to-purple-100",

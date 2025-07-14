@@ -516,11 +516,15 @@ const Sidebar = () => {
         },
         {
           key: "Parts",
-          label: <Link to="/tramessy/parts">পার্টস এন্ড স্পায়ারস</Link>,
+          label: <Link to="/tramessy/parts">পার্টস এন্ড স্পায়ার্স</Link>,
         },
         {
           key: "Maintenance",
           label: <Link to="/tramessy/maintenance">মেইনটেনেন্স</Link>,
+        },
+        {
+          key: "Booking",
+          label: <Link to="/tramessy/booking">বুকিং</Link>,
         },
       ],
     },

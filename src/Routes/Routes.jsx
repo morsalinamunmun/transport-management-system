@@ -31,6 +31,8 @@ import UpdateExpenseForm from "../Pages/updateForm/UpdateExpenseForm";
 import AdminRoute from "./AdminRoute";
 import MonthlyStatement from "../Pages/MonthlyStatement";
 import DailyTripExpense from "../Pages/DailyTripExpense";
+import Booking from "../Pages/Booking";
+import AddBookingForm from "../Pages/AddBooking";
 export const router = createBrowserRouter([
   {
     path: "/tramessy",
@@ -171,6 +173,22 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <Maintenance />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/tramessy/booking",
+        element: (
+          <PrivateRoute>
+            <Booking />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/tramessy/add-booking",
+        element: (
+          <PrivateRoute>
+            <AddBookingForm/>
           </PrivateRoute>
         ),
       },
