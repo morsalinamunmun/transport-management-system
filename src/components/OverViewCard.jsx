@@ -219,6 +219,56 @@ const OverViewCard = () => {
   fetchBookings();
 }, []);
 
+// parts & spearce
+const [expiredParts, setExpiredParts] = useState([]);
+const [warningParts, setWarningParts] = useState([]);
+const [loadingPartsReminder, setLoadingPartsReminder] = useState(true);
+
+useEffect(() => {
+  const fetchParts = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/parts`);
+      const data = response.data?.data || [];
+      const today = dayjs();
+      const tomorrow = today.add(1, 'day').startOf('day');
+
+      const expired = [];
+      const warnings = [];
+
+      data.forEach((part) => {
+        if (part.date && dayjs(part.date).isValid()) {
+          const partDate = dayjs(part.date).startOf('day');
+
+          if (partDate.isBefore(today, 'day')) {
+            expired.push({
+              id: part.id,
+              name: part.name,
+              expireDate: partDate.format("DD-MM-YYYY"),
+              daysAgo: today.diff(partDate, 'day'),
+            });
+          } else if (partDate.isSame(tomorrow, 'day')) {
+            warnings.push({
+              id: part.id,
+              name: part.name,
+              expireDate: partDate.format("DD-MM-YYYY"),
+            });
+          }
+        }
+      });
+
+      setExpiredParts(expired);
+      setWarningParts(warnings);
+    } catch (error) {
+      console.error("Failed to fetch parts:", error);
+    } finally {
+      setLoadingPartsReminder(false);
+    }
+  };
+
+  fetchParts();
+}, []);
+
+
 
   const columns = [
     {
@@ -259,28 +309,58 @@ const OverViewCard = () => {
   return (
     <div className="p-6">
       <Row gutter={[16, 16]} className="mb-5">
-        <Col xs={24} sm={12} md={12} lg={8}>
-          <Card
-            size="small"
-            title={
-              <Space className="text-gray-800">
-                <TrophyOutlined style={{ color: "#faad14" }} />
-                <span>পার্টস এন্ড স্পায়ার্স</span>
-              </Space>
-            }
-            // extra={<Badge count="আয়" style={{ backgroundColor: "#52c41a" }} />}
-            className="h-[150px] shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300"
-          >
-            <div className="flex items-center justify-center h-full mt-7">
-              <Statistic
-                value={todayIncome}
-                suffix="টাকা"
-                valueStyle={{ color: "#11375b", fontSize: "20px" }}
-                loading={loadingIncome}
-              />
-            </div>
-          </Card>
-        </Col>
+        <Col xs={24} sm={24} md={12} lg={8}>
+  <Card
+    size="small"
+    title={
+      <Space className="text-gray-800">
+        <ToolOutlined style={{ color: "#f5222d" }} />
+        <span>পার্টস এন্ড স্পায়ার্স সতর্কতা</span>
+        {(expiredParts.length + warningParts.length) > 0 && (
+          <Badge count={expiredParts.length + warningParts.length} />
+        )}
+      </Space>
+    }
+    className="h-[150px] shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300"
+    bodyStyle={{ padding: "12px", maxHeight: "100px", overflowY: "auto" }}
+  >
+    {loadingPartsReminder ? (
+      <div className="flex justify-center items-center h-full">
+        <Spin size="small" />
+      </div>
+    ) : (expiredParts.length + warningParts.length) > 0 ? (
+      <List
+        size="small"
+        dataSource={[...warningParts, ...expiredParts]}
+        renderItem={(item) => (
+          <List.Item className="py-0 border-b border-gray-100 last:border-b-0">
+            <Space direction="vertical" size="small" style={{ width: "100%" }}>
+              <div className="flex justify-between items-center">
+                <Text strong className="text-xs text-gray-900">{item.name}</Text>
+                {item.daysAgo ? (
+                  <Tag color="red" className="text-xs font-medium">
+                    {item.daysAgo} দিন আগে শেষ
+                  </Tag>
+                ) : (
+                  <Tag color="orange" className="text-xs font-medium">
+                    আগামিকাল শেষ
+                  </Tag>
+                )}
+              </div>
+              <Text className="text-xs text-red-600">মেয়াদ: {item.expireDate}</Text>
+            </Space>
+          </List.Item>
+        )}
+      />
+    ) : (
+      <div className="flex flex-col items-center justify-center h-full text-gray-400">
+        <ToolOutlined className="text-2xl mb-2" />
+        <Text type="secondary" className="text-xs">কোনো সতর্কতা নেই</Text>
+      </div>
+    )}
+  </Card>
+</Col>
+
 
         <Col xs={24} sm={12} md={12} lg={8}>
           <Card
@@ -333,7 +413,7 @@ const OverViewCard = () => {
     title={
       <Space className="text-gray-800">
         <BellOutlined style={{ color: "#13c2c2" }} />
-        <span>আগামীকাল বুকিং শুরু</span>
+        <span>বুকিং রিমাইন্ডার</span>
         {bookingReminders.length > 0 && <Badge count={bookingReminders.length} />}
       </Space>
     }

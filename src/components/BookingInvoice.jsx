@@ -43,7 +43,7 @@ const BookingInvoice = forwardRef(( { data}, ref) => {
           </div>
         </div>
 
-        <div className="mt-3 grid grid-cols-3 gap-3 text-xs">
+        <div className="mt-3 grid grid-cols-4 gap-3 text-xs">
           <div>
             <p className="text-black font-semibold">Office:</p>
             <p className="text-gray-600">123 Motijheel, Dhaka-1000</p>

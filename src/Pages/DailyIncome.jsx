@@ -686,14 +686,15 @@ const DailyIncome = () => {
       // width: 120,
       render: (_, record) => {
         const totalCost = (
-          Number(record.other_expenses || 0) +
-          Number(record.gas_price || 0) +
-          Number(record.fuel_price || 0) +
-          Number(record.driver_percentage || 0)
+          parseFloat(record.other_expenses || 0) +
+          parseFloat(record.gas_price || 0) +
+          parseFloat(record.fuel_price || 0) +
+          parseFloat(record.driver_percentage || 0)
         ).toFixed(2)
+         const finalCost = isNaN(totalCost) ? 0 : totalCost;
         return (
           <Space>
-            <Text> {totalCost}</Text>
+            <Text> {finalCost || 0} </Text>
           </Space>
         )
       },
@@ -704,15 +705,16 @@ const DailyIncome = () => {
       // width: 120,
       render: (_, record) => {
         const totalCost =
-          Number(record.other_expenses || 0) +
-          Number(record.gas_price || 0) +
-          Number(record.fuel_price || 0) +
-          Number(record.driver_percentage || 0)
-        const profit = Number(record.trip_price || 0) - totalCost
+          parseFloat(record.other_expenses || 0) +
+          parseFloat(record.gas_price || 0) +
+          parseFloat(record.fuel_price || 0) +
+          parseFloat(record.driver_percentage || 0)
+        const profit = parseFloat(record.trip_price || 0) - totalCost
+         const finalProfit = isNaN(profit) ? 0 : profit;
         return (
           <Space>
             <Text strong style={{ color: profit >= 0 ? "" : "#ff4d4f" }}>
-              {profit.toFixed(2)}
+              {finalProfit.toFixed(2)}
             </Text>
           </Space>
         )
@@ -888,7 +890,7 @@ const DailyIncome = () => {
               })
 
               const totalPageProfit = totalPageRevenue - totalPageCost
-
+ const finalTotalPageProfit = isNaN(totalPageProfit) ? 0 : totalPageProfit;
               return (
                 <Table.Summary fixed>
                   <Table.Summary.Row style={{ backgroundColor: "#e6f7ff" }}>
@@ -909,7 +911,7 @@ const DailyIncome = () => {
                     </Table.Summary.Cell>
                     <Table.Summary.Cell index={3}>
                       <Text strong style={{ color: totalPageProfit >= 0 ? "#11375B" : "#ff4d4f" }}>
-                        ৳ {totalPageProfit.toFixed(2)}
+                        ৳ {finalTotalPageProfit.toFixed(2)}
                       </Text>
                     </Table.Summary.Cell>
                     <Table.Summary.Cell />
